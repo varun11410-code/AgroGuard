@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - Project Context
+# AgroGuard - Project Context
 
 Version: 1.0
 
@@ -8,7 +8,7 @@ Status: Active Project Context
 
 # Project Overview
 
-AgroGuard 3.0 is an AI-powered crop disease diagnosis and agricultural advisory web application.
+AgroGuard is an AI-powered crop disease diagnosis and agricultural advisory web application.
 
 The platform combines:
 
@@ -341,4 +341,4 @@ View Scan History
 
 within a few minutes and clearly understand the technical depth of the project.
 
-This user journey is the primary demonstration flow of AgroGuard 3.0.
+This user journey is the primary demonstration flow of AgroGuard.

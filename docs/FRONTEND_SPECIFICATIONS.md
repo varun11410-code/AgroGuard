@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - Frontend Specification Document
+# AgroGuard - Frontend Specification Document
 
 Version: 1.0
 
@@ -8,7 +8,7 @@ Status: Approved
 
 # 1. Purpose
 
-This document defines the complete frontend design system, user experience, visual identity, layout structure, animations, components, responsiveness, and interaction behavior for AgroGuard 3.0.
+This document defines the complete frontend design system, user experience, visual identity, layout structure, animations, components, responsiveness, and interaction behavior for AgroGuard.
 
 This document serves as the UI/UX source of truth.
 
