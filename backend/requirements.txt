@@ -1,2 +1,29 @@
-# Generated using:
-# pip freeze > requirements.txt
+# AgroGuard Backend Dependencies
+
+# Core
+flask==3.1.1
+flask-sqlalchemy==3.1.1
+flask-migrate==4.1.0
+flask-jwt-extended==4.7.1
+flask-cors==5.0.1
+
+# Environment
+python-dotenv==1.1.0
+
+# Validation
+pydantic==2.11.5
+
+# Security
+bcrypt==4.3.0
+
+# Database driver
+psycopg2-binary==2.9.10
+
+# PDF Generation
+reportlab==4.4.1
+
+# AI
+google-generativeai==0.8.5
+
+# Storage
+cloudinary==1.42.2
