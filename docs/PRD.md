@@ -1,11 +1,11 @@
-# AgroGuard 3.0 - Product Requirements Document (PRD)
+# AgroGuard - Product Requirements Document (PRD)
 
 ## 1. Product Overview
 
-* **Product Name:** AgroGuard 3.0
+* **Product Name:** AgroGuard
 * **Product Type:** AI-Powered Crop Disease Diagnosis and Agricultural Advisory Platform
 * **Version:** V1 (Portfolio & Production-Oriented Release)
-* **Project Goal:** * AgroGuard 3.0 is a modern web application that helps farmers identify crop diseases from leaf images and receive AI-powered agricultural guidance.
+* **Project Goal:** * AgroGuard is a modern web application that helps farmers identify crop diseases from leaf images and receive AI-powered agricultural guidance.
 * *Primary Goal:* Demonstrate strong software engineering, machine learning, AI integration, and product design skills through a polished, production-oriented application suitable for portfolio and recruiter evaluation.
 * *Secondary Goal:* Provide practical value to real users by offering disease diagnosis, treatment recommendations, and agricultural assistance.
 
@@ -272,7 +272,7 @@ The following features are intentionally excluded:
 
 ## 13. Definition of Done
 
-AgroGuard 3.0 V1 is considered complete when the following are operational and implemented:
+AgroGuard V1 is considered complete when the following are operational and implemented:
 
 * [x] Frontend deployed.
 * [x] Backend deployed.

@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - Architecture Document
+# AgroGuard - Architecture Document
 
 ## Version
 
@@ -14,7 +14,7 @@ Approved Architecture Baseline
 
 ## System Purpose
 
-AgroGuard 3.0 is an AI-powered crop disease diagnosis and agricultural advisory platform.
+AgroGuard is an AI-powered crop disease diagnosis and agricultural advisory platform.
 
 The system combines:
 

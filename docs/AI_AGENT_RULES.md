@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - AI Agent Rules
+# AgroGuard - AI Agent Rules
 
 Version: 1.0
 
@@ -16,7 +16,7 @@ Applies To:
 
 # 1. Purpose
 
-This document defines the development rules that all AI coding agents must follow while working on AgroGuard 3.0.
+This document defines the development rules that all AI coding agents must follow while working on AgroGuard.
 
 The goal is to maintain:
 

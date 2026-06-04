@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - Todo.md
+# AgroGuard - Todo.md
 
 ## Project Status
 

@@ -1,4 +1,4 @@
-# AgroGuard 3.0 - Security & Access Control Document
+# AgroGuard - Security & Access Control Document
 
 Version: 1.0
 
@@ -8,7 +8,7 @@ Status: Approved
 
 # 1. Purpose
 
-This document defines the security architecture, access control policies, authentication rules, authorization rules, data protection standards, and operational security requirements for AgroGuard 3.0.
+This document defines the security architecture, access control policies, authentication rules, authorization rules, data protection standards, and operational security requirements for AgroGuard.
 
 The goal is to ensure:
 
