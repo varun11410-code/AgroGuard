@@ -64,7 +64,7 @@ Then open `.env` and fill in your values:
 |---|---|---|
 | `FLASK_ENV` | Yes | `development` \| `testing` \| `production` |
 | `FLASK_DEBUG` | Dev only | `1` to enable debugger |
-| `PORT` | No | Dev server port (default: `5000`) |
+| `PORT` | No | Dev server port (default: `5001`) |
 | `SECRET_KEY` | Yes (prod) | Random string for session signing |
 | `DATABASE_URL` | Yes (prod) | PostgreSQL connection string — blank = SQLite fallback |
 | `JWT_SECRET_KEY` | Yes (prod) | Random string for JWT signing |
@@ -90,7 +90,7 @@ Expected output:
 ```
 * Serving Flask app 'app'
 * Debug mode: on
-* Running on http://127.0.0.1:5000
+* Running on http://127.0.0.1:5001
 ```
 
 ---
@@ -98,7 +98,7 @@ Expected output:
 ## 6. Verify
 
 ```bash
-curl http://127.0.0.1:5000/api/health
+curl http://127.0.0.1:5001/api/health
 # Expected: {"message": "AgroGuard API is running", "success": true, "version": "1.0"}
 ```
 
