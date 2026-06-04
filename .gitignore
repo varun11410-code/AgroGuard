@@ -5,9 +5,12 @@ frontend/out/
 
 # Backend
 backend/.env
+backend/venv/
 backend/.venv/
-backend/__pycache__/
-backend/**/*.pyc
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+*.db
 
 # OS
 .DS_Store
