@@ -21,6 +21,7 @@ app = create_app(os.getenv("FLASK_ENV", "development"))
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.getenv("PORT", 5000)),
+        port=int(os.getenv("PORT", 5001)),
         debug=app.config.get("DEBUG", True),
+        use_reloader=False,  # Reloader causes blueprint registration issues on Windows
     )

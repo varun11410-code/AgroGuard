@@ -22,6 +22,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from app.config import config_map
+from app.config.validator import validate_production_config
 from app.database import db, migrate
 
 
@@ -46,6 +47,11 @@ def create_app(env: str | None = None) -> Flask:
     # Configuration                                                        #
     # ------------------------------------------------------------------ #
     app.config.from_object(config_map[env])
+
+    # Validate required secrets are set before accepting requests.
+    # Only enforced in production — dev/testing use safe fallback defaults.
+    if env == "production":
+        validate_production_config(app)
 
     # ------------------------------------------------------------------ #
     # Extensions                                                           #

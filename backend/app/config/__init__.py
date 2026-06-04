@@ -47,6 +47,17 @@ class Config:
         "http://127.0.0.1:3000",
     ]
 
+    # Server
+    PORT: int = int(os.getenv("PORT") or 5001)
+
+    # AI (Google Gemini)
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY") or ""
+
+    # Storage (Cloudinary)
+    CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME") or ""
+    CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY") or ""
+    CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET") or ""
+
 
 class DevelopmentConfig(Config):
     """Development configuration — debug enabled."""
