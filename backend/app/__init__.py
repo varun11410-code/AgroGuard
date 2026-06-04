@@ -1,0 +1,84 @@
+"""
+AgroGuard Backend - Application Factory
+
+This module defines create_app(), the central factory function that
+initialises Flask extensions, registers blueprints, and returns a
+fully configured Flask application instance.
+
+Using a factory function (instead of a module-level app object) allows:
+  - Multiple configurations (dev / test / prod) from the same codebase.
+  - Easier unit testing by calling create_app("testing") per test.
+  - No circular-import issues between extensions and models.
+
+Usage:
+    from app import create_app
+    app = create_app("development")
+    app.run()
+"""
+
+import os
+from flask import Flask
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+
+from app.config import config_map
+from app.database import db, migrate
+
+
+def create_app(env: str | None = None) -> Flask:
+    """
+    Create and configure the Flask application.
+
+    Args:
+        env: Environment name — "development", "testing", or "production".
+             Defaults to the FLASK_ENV environment variable, falling back
+             to "development".
+
+    Returns:
+        A fully configured Flask application instance.
+    """
+    if env is None:
+        env = os.getenv("FLASK_ENV", "development")
+
+    app = Flask(__name__)
+
+    # ------------------------------------------------------------------ #
+    # Configuration                                                        #
+    # ------------------------------------------------------------------ #
+    app.config.from_object(config_map[env])
+
+    # ------------------------------------------------------------------ #
+    # Extensions                                                           #
+    # ------------------------------------------------------------------ #
+    _register_extensions(app)
+
+    # ------------------------------------------------------------------ #
+    # Blueprints                                                           #
+    # ------------------------------------------------------------------ #
+    _register_blueprints(app)
+
+    return app
+
+
+def _register_extensions(app: Flask) -> None:
+    """Initialise all Flask extensions with the application instance."""
+    # Database
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # Authentication
+    JWTManager(app)
+
+    # Cross-Origin Resource Sharing
+    CORS(
+        app,
+        origins=app.config.get("CORS_ORIGINS", ["http://localhost:3000"]),
+        supports_credentials=True,
+    )
+
+
+def _register_blueprints(app: Flask) -> None:
+    """Register all route blueprints on the application."""
+    from app.routes.health import health_bp
+
+    app.register_blueprint(health_bp, url_prefix="/api")
