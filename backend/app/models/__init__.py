@@ -15,13 +15,15 @@ Exported models:
     Scan           — scans table (Task 1.4)
     Report         — reports table (Task 1.5)
     ChatSession    — chat_sessions table (Task 1.6)
+    ChatMessage    — chat_messages table (Task 1.7)
 """
 
-from app.models.user import User, UserRole, BudgetTier  # noqa: F401
-from app.models.crop import Crop                        # noqa: F401
-from app.models.scan import Scan                        # noqa: F401
-from app.models.report import Report                    # noqa: F401
-from app.models.chat_session import ChatSession         # noqa: F401
+from app.models.user import User, UserRole, BudgetTier          # noqa: F401
+from app.models.crop import Crop                                # noqa: F401
+from app.models.scan import Scan                                # noqa: F401
+from app.models.report import Report                            # noqa: F401
+from app.models.chat_session import ChatSession                 # noqa: F401
+from app.models.chat_message import ChatMessage, MessageRole    # noqa: F401
 
 __all__ = [
     # Task 1.2
@@ -36,5 +38,8 @@ __all__ = [
     "Report",
     # Task 1.6
     "ChatSession",
+    # Task 1.7
+    "ChatMessage",
+    "MessageRole",
 ]
 
