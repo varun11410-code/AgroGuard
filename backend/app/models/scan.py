@@ -64,6 +64,7 @@ Usage:
 from __future__ import annotations
 
 import uuid
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import Float, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -72,6 +73,11 @@ from sqlalchemy.sql.sqltypes import DateTime
 
 from app.database import db
 from app.models.user import BudgetTier
+
+if TYPE_CHECKING:
+    from app.models.user import User
+    from app.models.crop import Crop
+    from app.models.report import Report
 
 
 class Scan(db.Model):
@@ -213,16 +219,25 @@ class Scan(db.Model):
     # Relationships
     # ------------------------------------------------------------------
 
-    user: Mapped["User | None"] = relationship(  # type: ignore[name-defined]  # noqa: F821
+    user: Mapped["User | None"] = relationship(
         "User",
         back_populates="scans",
         lazy="select",
     )
 
-    crop: Mapped["Crop"] = relationship(  # type: ignore[name-defined]  # noqa: F821
+    crop: Mapped["Crop"] = relationship(
         "Crop",
         back_populates="scans",
         lazy="select",
+    )
+
+    report: Mapped[Optional["Report"]] = relationship(
+        "Report",
+        back_populates="scan",
+        uselist=False,
+        lazy="select",
+        cascade="all, delete-orphan",
+        doc="The generated report for this scan, if one exists (one-to-one).",
     )
 
     # ------------------------------------------------------------------
