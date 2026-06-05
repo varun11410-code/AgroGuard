@@ -40,13 +40,17 @@ from __future__ import annotations
 
 import enum
 import uuid
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Boolean, Enum, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.sqltypes import DateTime
 
 from app.database import db
+
+if TYPE_CHECKING:
+    from app.models.scan import Scan
 
 
 # ---------------------------------------------------------------------------
@@ -204,6 +208,18 @@ class User(db.Model):
         server_default=func.now(),
         onupdate=func.now(),
         doc="UTC timestamp automatically updated on every row modification.",
+    )
+
+    # ------------------------------------------------------------------
+    # Relationships
+    # ------------------------------------------------------------------
+
+    scans: Mapped[List["Scan"]] = relationship(
+        "Scan",
+        back_populates="user",
+        lazy="select",
+        cascade="all, delete-orphan",
+        doc="All scans belonging to this user.",
     )
 
     # ------------------------------------------------------------------
