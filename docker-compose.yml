@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     container_name: agroguard-backend
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/agroguard
       - JWT_SECRET_KEY=dev_secret_key_change_in_production
@@ -33,7 +33,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - NEXT_PUBLIC_API_URL=http://localhost:5001
     depends_on:
       - backend
 
