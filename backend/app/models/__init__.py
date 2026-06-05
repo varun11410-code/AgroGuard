@@ -13,11 +13,13 @@ Exported models:
     User           — users table (Task 1.2)
     Crop           — crops table (Task 1.3)
     Scan           — scans table (Task 1.4)
+    Report         — reports table (Task 1.5)
 """
 
 from app.models.user import User, UserRole, BudgetTier  # noqa: F401
 from app.models.crop import Crop                        # noqa: F401
 from app.models.scan import Scan                        # noqa: F401
+from app.models.report import Report                    # noqa: F401
 
 __all__ = [
     # Task 1.2
@@ -28,5 +30,6 @@ __all__ = [
     "Crop",
     # Task 1.4
     "Scan",
+    # Task 1.5
+    "Report",
 ]
-
