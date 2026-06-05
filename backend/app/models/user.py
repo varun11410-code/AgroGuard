@@ -51,6 +51,7 @@ from app.database import db
 
 if TYPE_CHECKING:
     from app.models.scan import Scan
+    from app.models.chat_session import ChatSession
 
 
 # ---------------------------------------------------------------------------
@@ -220,6 +221,14 @@ class User(db.Model):
         lazy="select",
         cascade="all, delete-orphan",
         doc="All scans belonging to this user.",
+    )
+
+    chat_sessions: Mapped[List["ChatSession"]] = relationship(
+        "ChatSession",
+        back_populates="user",
+        lazy="select",
+        cascade="all, delete-orphan",
+        doc="All chat sessions opened by this user.",
     )
 
     # ------------------------------------------------------------------
