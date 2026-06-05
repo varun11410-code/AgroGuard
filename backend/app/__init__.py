@@ -63,6 +63,11 @@ def create_app(env: str | None = None) -> Flask:
     # ------------------------------------------------------------------ #
     _register_blueprints(app)
 
+    # ------------------------------------------------------------------ #
+    # Commands                                                             #
+    # ------------------------------------------------------------------ #
+    _register_commands(app)
+
     return app
 
 
@@ -93,3 +98,9 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.health import health_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
+
+
+def _register_commands(app: Flask) -> None:
+    """Register all custom CLI commands on the application."""
+    from app.commands import register_commands
+    register_commands(app)
