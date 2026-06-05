@@ -11,12 +11,18 @@ auto-detect the full schema.
 
 Exported models:
     User           — users table (Task 1.2)
+    Crop           — crops table (Task 1.3)
 """
 
 from app.models.user import User, UserRole, BudgetTier  # noqa: F401
+from app.models.crop import Crop                        # noqa: F401
 
 __all__ = [
+    # Task 1.2
     "User",
     "UserRole",
     "BudgetTier",
+    # Task 1.3
+    "Crop",
 ]
+
