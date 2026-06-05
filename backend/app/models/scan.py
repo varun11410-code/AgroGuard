@@ -64,7 +64,7 @@ Usage:
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import Float, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -78,6 +78,7 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.crop import Crop
     from app.models.report import Report
+    from app.models.chat_session import ChatSession
 
 
 class Scan(db.Model):
@@ -238,6 +239,13 @@ class Scan(db.Model):
         lazy="select",
         cascade="all, delete-orphan",
         doc="The generated report for this scan, if one exists (one-to-one).",
+    )
+
+    chat_sessions: Mapped[List["ChatSession"]] = relationship(
+        "ChatSession",
+        back_populates="scan",
+        lazy="select",
+        doc="Chat sessions linked to this scan (Mode B — diagnosis-aware).",
     )
 
     # ------------------------------------------------------------------
