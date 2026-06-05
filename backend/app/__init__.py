@@ -72,6 +72,11 @@ def _register_extensions(app: Flask) -> None:
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Import all models so Alembic/Flask-Migrate can auto-detect the full
+    # schema when generating migrations.  Uses an alias to avoid shadowing
+    # the `app` Flask-instance parameter with the `app` Python package.
+    import app.models as _models  # noqa: F401, PLC0415
+
     # Authentication
     JWTManager(app)
 
