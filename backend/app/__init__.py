@@ -96,8 +96,10 @@ def _register_extensions(app: Flask) -> None:
 def _register_blueprints(app: Flask) -> None:
     """Register all route blueprints on the application."""
     from app.routes.health import health_bp
+    from app.routes.auth_routes import auth_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
 
 def _register_commands(app: Flask) -> None:
