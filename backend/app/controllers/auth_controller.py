@@ -8,7 +8,7 @@ from flask import request, jsonify
 from werkzeug.exceptions import HTTPException
 from pydantic import ValidationError
 
-from app.schemas.auth_schema import RegisterRequestSchema
+from app.schemas.auth_schema import RegisterRequestSchema, LoginRequestSchema
 from app.services.auth_service import AuthService
 
 class AuthController:
@@ -75,6 +75,59 @@ class AuthController:
             
             # Return 500 Unexpected server errors
             # Never expose internal implementation details in 500 per AI_AGENT_RULES
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500
+
+    @staticmethod
+    def login():
+        """
+        Handle POST /api/auth/login
+        """
+        try:
+            data = request.get_json(silent=True)
+            if not data or not isinstance(data, dict):
+                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+
+            validated_data = LoginRequestSchema(**data)
+
+            response_data = AuthService.login_user(
+                email=validated_data.email,
+                password=validated_data.password
+            )
+
+            return jsonify(response_data), 200
+
+        except ValidationError as e:
+            formatted_errors = []
+            for err in e.errors():
+                loc = err.get("loc", ("unknown",))
+                field = str(loc[-1]) if loc else "unknown"
+                formatted_errors.append({"field": field, "message": err.get("msg")})
+                
+            return jsonify({
+                "success": False,
+                "errors": formatted_errors
+            }), 400
+
+        except ValueError as e:
+            if str(e) == "Invalid email or password":
+                return jsonify({
+                    "success": False,
+                    "message": "Invalid email or password"
+                }), 401
+            
+            return jsonify({
+                "success": False,
+                "message": str(e)
+            }), 400
+
+        except HTTPException as e:
+            raise e
+
+        except Exception as e:
+            logging.exception("Unexpected error in login endpoint:")
             return jsonify({
                 "success": False,
                 "message": "An unexpected server error occurred"

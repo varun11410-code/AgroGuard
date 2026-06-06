@@ -11,3 +11,7 @@ auth_bp = Blueprint("auth", __name__)
 @auth_bp.post("/register")
 def register():
     return AuthController.register()
+
+@auth_bp.post("/login")
+def login():
+    return AuthController.login()
