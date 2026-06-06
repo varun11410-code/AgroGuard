@@ -38,7 +38,8 @@ class Config:
     JWT_SECRET_KEY: str = (
         os.getenv("JWT_SECRET_KEY") or "jwt-change-me-in-production"
     )
-    JWT_ACCESS_TOKEN_EXPIRES: timedelta = timedelta(hours=24)
+    JWT_ACCESS_TOKEN_EXPIRES: timedelta = timedelta(minutes=15)
+    JWT_REFRESH_TOKEN_EXPIRES: timedelta = timedelta(days=30)
     JWT_ALGORITHM: str = "HS256"
 
     # CORS

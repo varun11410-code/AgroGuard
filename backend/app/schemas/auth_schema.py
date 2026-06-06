@@ -36,3 +36,23 @@ class RegisterRequestSchema(BaseModel):
         if not re.search(r"\d", v):
             raise ValueError("Password must contain at least one digit")
         return v
+
+class LoginRequestSchema(BaseModel):
+    email: str = Field(...)
+    password: str = Field(...)
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def normalize_email(cls, v: str) -> str:
+        """Strip whitespace and lowercase the email."""
+        if isinstance(v, str):
+            return v.strip().lower()
+        return v
+
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, v: str) -> str:
+        if not re.match(r"^[^@]+@[^@]+\.[^@]+$", v):
+            raise ValueError("Invalid email format")
+        return v
+

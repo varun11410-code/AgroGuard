@@ -39,3 +39,37 @@ class AuthService:
             "email": created_user.email,
             "role": created_user.role.value
         }
+
+    @staticmethod
+    def login_user(email: str, password: str) -> dict:
+        """
+        Authenticate a user and return JWT tokens.
+        Raises ValueError if credentials are invalid.
+        """
+        user = UserRepository.get_by_email(email)
+        if not user:
+            raise ValueError("Invalid email or password")
+
+        # Verify bcrypt password
+        if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
+            raise ValueError("Invalid email or password")
+
+        # Import JWT functions locally or at the top of the file
+        from flask_jwt_extended import create_access_token, create_refresh_token
+
+        identity = str(user.id)
+        additional_claims = {"role": user.role.value}
+
+        access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+        refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
+
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user": {
+                "id": identity,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role.value
+            }
+        }
