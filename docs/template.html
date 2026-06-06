@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroGuard - AI Powered Agriculture</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+
+--primary:#166534;
+--secondary:#22C55E;
+--soft:#DCFCE7;
+
+--bg:#08110c;
+--text:#ffffff;
+
+--glass:rgba(255,255,255,.08);
+--border:rgba(255,255,255,.12);
+
+--danger:#ef4444;
+--warning:#f59e0b;
+--success:#22c55e;
+
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+
+background:#08110c;
+color:white;
+overflow-x:hidden;
+min-height:100vh;
+position:relative;
+
+}
+
+/* =========================
+AURORA BACKGROUND
+========================= */
+
+.aurora-bg{
+
+position:fixed;
+inset:0;
+overflow:hidden;
+z-index:-10;
+
+}
+
+.aurora{
+
+position:absolute;
+width:120vw;
+height:120vh;
+
+filter:blur(120px);
+opacity:.7;
+
+mix-blend-mode:screen;
+
+}
+
+.aurora-1{
+
+background:
+radial-gradient(
+circle,
+rgba(34,197,94,.9) 0%,
+rgba(34,197,94,.35) 35%,
+transparent 70%
+);
+
+top:-20%;
+left:-10%;
+
+animation:
+auroraOne 20s infinite alternate ease-in-out;
+
+}
+
+.aurora-2{
+
+background:
+radial-gradient(
+circle,
+rgba(22,101,52,.9) 0%,
+rgba(22,101,52,.25) 35%,
+transparent 70%
+);
+
+right:-15%;
+top:10%;
+
+animation:
+auroraTwo 25s infinite alternate ease-in-out;
+
+}
+
+.aurora-3{
+
+background:
+radial-gradient(
+circle,
+rgba(134,239,172,.8) 0%,
+rgba(134,239,172,.15) 35%,
+transparent 70%
+);
+
+bottom:-15%;
+left:25%;
+
+animation:
+auroraThree 30s infinite alternate ease-in-out;
+
+}
+
+@keyframes auroraOne{
+
+0%{
+transform:
+translate(0,0)
+scale(1);
+}
+
+100%{
+transform:
+translate(120px,-100px)
+scale(1.4);
+}
+
+}
+
+@keyframes auroraTwo{
+
+0%{
+transform:
+translate(0,0)
+scale(1);
+}
+
+100%{
+transform:
+translate(-150px,100px)
+scale(1.5);
+}
+
+}
+
+@keyframes auroraThree{
+
+0%{
+transform:
+translate(0,0)
+scale(1);
+}
+
+100%{
+transform:
+translate(100px,-120px)
+scale(1.35);
+}
+
+}
+
+/* =========================
+NOISE LAYER
+========================= */
+
+body::after{
+
+content:"";
+
+position:fixed;
+inset:0;
+
+background-image:
+radial-gradient(
+rgba(255,255,255,.03) 1px,
+transparent 1px
+);
+
+background-size:4px 4px;
+
+pointer-events:none;
+z-index:-1;
+
+}
+
+/* =========================
+PARTICLES
+========================= */
+
+.particle{
+
+position:fixed;
+
+width:4px;
+height:4px;
+
+background:white;
+
+border-radius:50%;
+
+opacity:.25;
+
+animation:
+particleMove linear infinite;
+
+z-index:-2;
+
+}
+
+@keyframes particleMove{
+
+0%{
+transform:
+translateY(120vh);
+}
+
+100%{
+transform:
+translateY(-20vh);
+}
+
+}
+
+/* =========================
+GLASS
+========================= */
+
+.glass{
+
+background:var(--glass);
+
+backdrop-filter:blur(24px);
+-webkit-backdrop-filter:blur(24px);
+
+border:1px solid var(--border);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,.25);
+
+border-radius:28px;
+
+}
+
+/* =========================
+NAVBAR
+========================= */
+
+nav{
+
+position:fixed;
+
+top:20px;
+left:50%;
+
+transform:translateX(-50%);
+
+width:92%;
+max-width:1400px;
+
+padding:18px 30px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+z-index:999;
+
+}
+
+.logo{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+font-size:1.3rem;
+font-weight:800;
+
+}
+
+.logo-box{
+
+width:50px;
+height:50px;
+
+border-radius:18px;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.nav-links{
+
+display:flex;
+align-items:center;
+gap:30px;
+
+}
+
+.nav-links a{
+
+text-decoration:none;
+color:white;
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.nav-links a:hover{
+
+color:#86efac;
+
+}
+
+.btn{
+
+padding:15px 30px;
+
+border:none;
+
+border-radius:999px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.btn:hover{
+
+transform:
+translateY(-4px);
+
+}
+
+.btn-primary{
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+color:white;
+
+}
+
+.btn-secondary{
+
+background:white;
+color:black;
+
+}
+
+/* =========================
+SECTIONS
+========================= */
+
+section{
+
+padding:120px 8%;
+
+}
+
+.container{
+
+max-width:1400px;
+margin:auto;
+
+}
+
+.section-title{
+
+text-align:center;
+
+margin-bottom:70px;
+
+}
+
+.section-title h2{
+
+font-size:3rem;
+
+margin-bottom:15px;
+
+}
+
+.section-title p{
+
+color:#cbd5e1;
+
+}
+
+/* =========================
+HERO
+========================= */
+
+.hero{
+
+min-height:100vh;
+
+display:grid;
+grid-template-columns:1fr 1fr;
+
+align-items:center;
+
+gap:80px;
+
+}
+
+.hero-content h1{
+
+font-size:5rem;
+
+font-weight:800;
+
+line-height:1.05;
+
+}
+
+.hero-content p{
+
+font-size:1.15rem;
+
+color:#cbd5e1;
+
+margin-top:25px;
+
+line-height:1.9;
+
+max-width:650px;
+
+}
+
+.hero-buttons{
+
+display:flex;
+
+gap:20px;
+
+margin-top:40px;
+
+flex-wrap:wrap;
+
+}
+
+.hero-visual{
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+position:relative;
+
+}
+
+.glow{
+
+position:absolute;
+
+width:500px;
+height:500px;
+
+border-radius:50%;
+
+background:
+radial-gradient(
+circle,
+rgba(34,197,94,.3),
+transparent
+);
+
+animation:
+pulse 4s infinite;
+
+}
+
+@keyframes pulse{
+
+0%,100%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.2);
+}
+
+}
+
+.hero-plant{
+
+font-size:220px;
+
+animation:
+floatPlant 5s infinite ease-in-out;
+
+z-index:2;
+
+}
+
+@keyframes floatPlant{
+
+0%,100%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-20px);
+}
+
+}
+
+/* =========================
+STATS
+========================= */
+
+.stats{
+
+margin-top:-50px;
+
+display:grid;
+
+grid-template-columns:
+repeat(4,1fr);
+
+gap:25px;
+
+}
+
+.stat-card{
+
+padding:30px;
+
+text-align:center;
+
+}
+
+.stat-card h3{
+
+font-size:2rem;
+
+color:#86efac;
+
+}
+
+/* =========================
+GRID
+========================= */
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:25px;
+
+}
+
+.card{
+
+padding:35px;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:
+translateY(-10px);
+
+}
+
+.card-icon{
+
+width:70px;
+height:70px;
+
+border-radius:20px;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:2rem;
+
+margin-bottom:20px;
+
+}
+
+/* =========================
+CROPS
+========================= */
+
+.crop-card{
+
+text-align:center;
+padding:40px;
+
+}
+
+.crop-card .emoji{
+
+font-size:90px;
+
+margin-bottom:15px;
+
+}
+
+/* =========================
+HOW IT WORKS
+========================= */
+
+.steps{
+
+display:grid;
+
+grid-template-columns:
+repeat(4,1fr);
+
+gap:25px;
+
+}
+
+.step{
+
+padding:30px;
+text-align:center;
+
+}
+
+.step-number{
+
+width:60px;
+height:60px;
+
+border-radius:50%;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-weight:800;
+
+margin:auto;
+margin-bottom:20px;
+
+}
+
+/* =========================
+FEATURES
+========================= */
+
+.feature-card{
+
+padding:35px;
+
+}
+
+/* =========================
+UPLOAD SECTION
+========================= */
+
+.upload-grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:25px;
+
+margin-bottom:25px;
+
+}
+
+.crop-select{
+
+padding:30px;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.crop-select.active{
+
+border:2px solid var(--secondary);
+
+}
+
+.upload-box{
+
+padding:70px;
+
+text-align:center;
+
+border:2px dashed rgba(255,255,255,.25);
+
+cursor:pointer;
+
+}
+
+.upload-box:hover{
+
+background:
+rgba(255,255,255,.04);
+
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:1024px){
+
+.hero{
+
+grid-template-columns:1fr;
+
+text-align:center;
+
+}
+
+.hero-content p{
+
+margin:auto;
+margin-top:25px;
+
+}
+
+.hero-buttons{
+
+justify-content:center;
+
+}
+
+.stats{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+.steps{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:768px){
+
+.hero-content h1{
+
+font-size:3rem;
+
+}
+
+.nav-links{
+
+display:none;
+
+}
+
+.stats{
+
+grid-template-columns:1fr;
+
+}
+
+.steps{
+
+grid-template-columns:1fr;
+
+}
+
+.upload-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.hero-plant{
+
+font-size:150px;
+
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="aurora-bg">
+
+<div class="aurora aurora-1"></div>
+<div class="aurora aurora-2"></div>
+<div class="aurora aurora-3"></div>
+
+</div>
+
+<nav class="glass">
+
+<div class="logo">
+
+<div class="logo-box">
+🌱
+</div>
+
+AgroGuard
+
+</div>
+
+<div class="nav-links">
+
+<a href="#home">Home</a>
+<a href="#features">Features</a>
+<a href="#upload">Upload</a>
+<a href="#dashboard">Dashboard</a>
+
+<button class="btn btn-primary">
+Login
+</button>
+
+</div>
+
+</nav>
+
+<section id="home">
+
+<div class="container hero">
+
+<div class="hero-content">
+
+<h1>
+AI-Powered Crop Disease Detection &
+Agricultural Intelligence
+</h1>
+
+<p>
+
+Protect your harvest with next-generation AI.
+Detect diseases instantly,
+receive treatment recommendations,
+generate reports,
+and make smarter farming decisions.
+
+</p>
+
+<div class="hero-buttons">
+
+<button class="btn btn-primary">
+Start Scanning
+</button>
+
+<button class="btn btn-secondary">
+Watch Demo
+</button>
+
+</div>
+
+</div>
+
+<div class="hero-visual">
+
+<div class="glow"></div>
+
+<div class="hero-plant">
+🌿
+</div>
+
+</div>
+
+</div>
+
+<div class="container stats">
+
+<div class="glass stat-card">
+<h3>50K+</h3>
+<p>Crop Scans</p>
+</div>
+
+<div class="glass stat-card">
+<h3>96%</h3>
+<p>AI Accuracy</p>
+</div>
+
+<div class="glass stat-card">
+<h3>10K+</h3>
+<p>Farmers</p>
+</div>
+
+<div class="glass stat-card">
+<h3>24/7</h3>
+<p>AI Support</p>
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Supported Crops</h2>
+
+<p>
+Version 1 currently supports tomato and potato disease analysis.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="glass crop-card">
+
+<div class="emoji">🍅</div>
+
+<h3>Tomato</h3>
+
+<p>
+Disease detection and treatment recommendations.
+</p>
+
+</div>
+
+<div class="glass crop-card">
+
+<div class="emoji">🥔</div>
+
+<h3>Potato</h3>
+
+<p>
+AI-powered crop health monitoring.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>How It Works</h2>
+
+<p>
+Simple workflow powered by AgroGuard AI.
+</p>
+
+</div>
+
+<div class="steps">
+
+<div class="glass step">
+
+<div class="step-number">1</div>
+
+<h3>Upload Image</h3>
+
+<p>
+Upload a crop image from your device.
+</p>
+
+</div>
+
+<div class="glass step">
+
+<div class="step-number">2</div>
+
+<h3>AI Analysis</h3>
+
+<p>
+Disease detection using deep learning.
+</p>
+
+</div>
+
+<div class="glass step">
+
+<div class="step-number">3</div>
+
+<h3>Recommendations</h3>
+
+<p>
+Receive treatment and prevention plans.
+</p>
+
+</div>
+
+<div class="glass step">
+
+<div class="step-number">4</div>
+
+<h3>Report</h3>
+
+<p>
+Download your detailed crop report.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="features">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Platform Features</h2>
+
+<p>
+Everything farmers need in one intelligent platform.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="glass feature-card">
+
+<div class="card-icon">🔬</div>
+
+<h3>Disease Detection</h3>
+
+<p>
+Accurate crop disease identification with confidence scores.
+</p>
+
+</div>
+
+<div class="glass feature-card">
+
+<div class="card-icon">🤖</div>
+
+<h3>AI Assistant</h3>
+
+<p>
+Ask questions and get agricultural guidance instantly.
+</p>
+
+</div>
+
+<div class="glass feature-card">
+
+<div class="card-icon">📄</div>
+
+<h3>PDF Reports</h3>
+
+<p>
+Generate downloadable diagnosis reports.
+</p>
+
+</div>
+
+<div class="glass feature-card">
+
+<div class="card-icon">📈</div>
+
+<h3>Scan History</h3>
+
+<p>
+Access previous crop analyses anytime.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="upload">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Analyze Your Crop</h2>
+
+<p>
+Upload an image and let AgroGuard AI identify issues.
+</p>
+
+</div>
+
+<div class="upload-grid">
+
+<div class="glass crop-select active">
+
+<h3>🍅 Tomato</h3>
+
+<p>
+Tomato Disease Detection
+</p>
+
+</div>
+
+<div class="glass crop-select">
+
+<h3>🥔 Potato</h3>
+
+<p>
+Potato Disease Detection
+</p>
+
+</div>
+
+</div>
+
+<div class="glass upload-box">
+
+<div style="font-size:80px">
+📷
+</div>
+
+<h3 style="margin-top:15px">
+Drag & Drop Image
+</h3>
+
+<p style="margin-top:10px;color:#cbd5e1">
+Supports JPG, PNG and WEBP
+</p>
+
+<input type="file" id="fileInput" hidden>
+
+<br><br>
+
+<button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+Choose Image
+</button>
+
+</div>
+
+<div style="text-align:center;margin-top:30px">
+
+<button class="btn btn-primary" id="analyzeBtn">
+Analyze Crop
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="dashboard">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Results Dashboard</h2>
+
+<p>
+AI-generated crop diagnosis and recommendations.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="glass card">
+
+<h3>Disease</h3>
+
+<h2 style="margin-top:15px;color:#86efac">
+Late Blight
+</h2>
+
+</div>
+
+<div class="glass card">
+
+<h3>Confidence</h3>
+
+<h2 style="margin-top:15px;color:#22c55e">
+96.4%
+</h2>
+
+</div>
+
+<div class="glass card">
+
+<h3>Risk Level</h3>
+
+<h2 style="margin-top:15px;color:#ef4444">
+High
+</h2>
+
+</div>
+
+</div>
+
+<div style="height:30px"></div>
+
+<div class="grid">
+
+<div class="glass card">
+
+<h3>AI Summary</h3>
+
+<p style="margin-top:20px">
+
+Late blight is a destructive fungal-like disease.
+Early intervention can prevent significant crop losses.
+
+</p>
+
+</div>
+
+<div class="glass card">
+
+<h3>Treatment Plans</h3>
+
+<div style="margin-top:20px">
+
+<div style="padding:15px;border-radius:16px;background:rgba(255,255,255,.05);margin-bottom:12px">
+
+<strong>Budget Plan</strong>
+
+<p style="margin-top:8px">
+Neem treatment and infected leaf removal.
+</p>
+
+</div>
+
+<div style="padding:15px;border-radius:16px;background:rgba(255,255,255,.05);margin-bottom:12px">
+
+<strong>Standard Plan</strong>
+
+<p style="margin-top:8px">
+Fungicide spray and field monitoring.
+</p>
+
+</div>
+
+<div style="padding:15px;border-radius:16px;background:rgba(255,255,255,.05)">
+
+<strong>Premium Plan</strong>
+
+<p style="margin-top:8px">
+Integrated disease management strategy.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Scan History</h2>
+
+<p>
+View previous diagnoses and reports.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="glass card">
+
+<h3>🍅 Tomato</h3>
+
+<p>Disease: Late Blight</p>
+
+<p>Confidence: 96%</p>
+
+<p>Date: Today</p>
+
+</div>
+
+<div class="glass card">
+
+<h3>🥔 Potato</h3>
+
+<p>Disease: Early Blight</p>
+
+<p>Confidence: 91%</p>
+
+<p>Date: Yesterday</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>User Profile</h2>
+
+<p>
+Manage language and budget preferences.
+</p>
+
+</div>
+
+<div class="glass" style="padding:40px;max-width:700px;margin:auto">
+
+<div style="margin-bottom:20px">
+
+<label>Name</label>
+
+<input style="width:100%;padding:14px;border-radius:14px;border:none;margin-top:8px"
+value="Farmer User">
+
+</div>
+
+<div style="margin-bottom:20px">
+
+<label>Email</label>
+
+<input style="width:100%;padding:14px;border-radius:14px;border:none;margin-top:8px"
+value="farmer@example.com">
+
+</div>
+
+<div style="margin-bottom:20px">
+
+<label>Language</label>
+
+<select style="width:100%;padding:14px;border-radius:14px;border:none;margin-top:8px">
+
+<option>English</option>
+<option>Hindi</option>
+
+</select>
+
+</div>
+
+<div style="margin-bottom:20px">
+
+<label>Budget Preference</label>
+
+<select style="width:100%;padding:14px;border-radius:14px;border:none;margin-top:8px">
+
+<option>Budget</option>
+<option>Standard</option>
+<option>Premium</option>
+
+</select>
+
+</div>
+
+<button class="btn btn-primary">
+Save Settings
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>Admin Dashboard</h2>
+
+<p>
+Platform analytics overview.
+</p>
+
+</div>
+
+<div class="grid">
+
+<div class="glass stat-card">
+<h3>2,548</h3>
+<p>Total Users</p>
+</div>
+
+<div class="glass stat-card">
+<h3>14,873</h3>
+<p>Total Scans</p>
+</div>
+
+<div class="glass stat-card">
+<h3>384</h3>
+<p>Today's Scans</p>
+</div>
+
+<div class="glass stat-card">
+<h3>96%</h3>
+<p>AI Accuracy</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer style="padding:80px 8%">
+
+<div class="container">
+
+<div class="glass" style="padding:40px;text-align:center">
+
+<h2>AgroGuard</h2>
+
+<p style="margin-top:15px;color:#cbd5e1">
+AI Powered Agriculture Intelligence Platform
+</p>
+
+<div style="margin-top:25px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
+
+<a href="#" style="color:white;text-decoration:none">GitHub</a>
+<a href="#" style="color:white;text-decoration:none">Contact</a>
+<a href="#" style="color:white;text-decoration:none">Privacy</a>
+
+</div>
+
+<p style="margin-top:25px;color:#94a3b8">
+© 2026 AgroGuard. All Rights Reserved.
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- AI ASSISTANT -->
+
+<div id="chatBtn">
+
+💬
+
+</div>
+
+<div id="chatWindow">
+
+<div id="chatHeader">
+
+AgroGuard AI
+
+<span id="closeChat">
+✕
+</span>
+
+</div>
+
+<div id="messages">
+
+<div class="bot-msg">
+Hello 👋<br>
+How can I help you today?
+</div>
+
+</div>
+
+<div id="chatInputArea">
+
+<input id="chatInput" placeholder="Ask AgroGuard AI...">
+
+<button id="sendBtn">
+➜
+</button>
+
+</div>
+
+</div>
+
+<style>
+
+#chatBtn{
+
+position:fixed;
+
+right:25px;
+bottom:25px;
+
+width:75px;
+height:75px;
+
+border-radius:50%;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:30px;
+
+cursor:pointer;
+
+z-index:999;
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.25);
+
+}
+
+#chatWindow{
+
+position:fixed;
+
+right:25px;
+bottom:120px;
+
+width:400px;
+height:550px;
+
+background:#0f172a;
+
+border-radius:25px;
+
+overflow:hidden;
+
+display:none;
+
+z-index:999;
+
+border:1px solid rgba(255,255,255,.1);
+
+}
+
+#chatHeader{
+
+padding:20px;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--secondary)
+);
+
+display:flex;
+justify-content:space-between;
+
+}
+
+#messages{
+
+height:420px;
+
+overflow:auto;
+
+padding:20px;
+
+}
+
+.bot-msg,
+.user-msg{
+
+padding:12px;
+
+border-radius:12px;
+
+margin-bottom:12px;
+
+}
+
+.bot-msg{
+
+background:#1e293b;
+
+}
+
+.user-msg{
+
+background:#166534;
+
+}
+
+#chatInputArea{
+
+display:flex;
+
+padding:15px;
+
+gap:10px;
+
+}
+
+#chatInput{
+
+flex:1;
+
+padding:12px;
+
+border:none;
+
+border-radius:12px;
+
+}
+
+#sendBtn{
+
+padding:12px 16px;
+
+border:none;
+
+border-radius:12px;
+
+background:var(--secondary);
+
+color:white;
+
+cursor:pointer;
+
+}
+
+</style>
+
+<script>
+
+/* PARTICLES */
+
+for(let i=0;i<40;i++){
+
+const p=document.createElement('div');
+
+p.classList.add('particle');
+
+p.style.left=Math.random()*100+'vw';
+
+p.style.animationDuration=
+(12+Math.random()*18)+'s';
+
+p.style.animationDelay=
+Math.random()*10+'s';
+
+document.body.appendChild(p);
+
+}
+
+/* CROP SELECTION */
+
+document
+.querySelectorAll('.crop-select')
+.forEach(card=>{
+
+card.onclick=()=>{
+
+document
+.querySelectorAll('.crop-select')
+.forEach(c=>c.classList.remove('active'));
+
+card.classList.add('active');
+
+};
+
+});
+
+/* ANALYZE BUTTON */
+
+const analyzeBtn=
+document.getElementById('analyzeBtn');
+
+analyzeBtn.onclick=()=>{
+
+analyzeBtn.innerHTML=
+'Uploading Image...';
+
+setTimeout(()=>{
+
+analyzeBtn.innerHTML=
+'Analyzing Disease...';
+
+},1200);
+
+setTimeout(()=>{
+
+analyzeBtn.innerHTML=
+'Generating Recommendations...';
+
+},2400);
+
+setTimeout(()=>{
+
+analyzeBtn.innerHTML=
+'Preparing Results...';
+
+},3600);
+
+setTimeout(()=>{
+
+analyzeBtn.innerHTML=
+'Analysis Complete ✓';
+
+},5000);
+
+};
+
+/* CHAT */
+
+const chatBtn=
+document.getElementById('chatBtn');
+
+const chatWindow=
+document.getElementById('chatWindow');
+
+const closeChat=
+document.getElementById('closeChat');
+
+chatBtn.onclick=()=>{
+
+chatWindow.style.display='block';
+
+};
+
+closeChat.onclick=()=>{
+
+chatWindow.style.display='none';
+
+};
+
+document
+.getElementById('sendBtn')
+.onclick=()=>{
+
+const input=
+document.getElementById('chatInput');
+
+if(!input.value.trim()) return;
+
+const messages=
+document.getElementById('messages');
+
+messages.innerHTML +=
+`
+<div class="user-msg">
+${input.value}
+</div>
+`;
+
+setTimeout(()=>{
+
+messages.innerHTML +=
+`
+<div class="bot-msg">
+Based on your query, AgroGuard recommends monitoring symptoms and following preventive disease management practices.
+</div>
+`;
+
+messages.scrollTop=
+messages.scrollHeight;
+
+},700);
+
+input.value='';
+
+};
+
+</script>
+
+</body>
+</html>
