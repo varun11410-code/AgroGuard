@@ -161,3 +161,37 @@ class AuthController:
                 "success": False,
                 "message": "An unexpected server error occurred"
             }), 500
+
+    @staticmethod
+    def me():
+        """
+        Handle GET /api/auth/me
+        """
+        try:
+            identity = get_jwt_identity()
+
+            user_data = AuthService.get_current_user(user_id=identity)
+
+            return jsonify({
+                "success": True,
+                "data": user_data
+            }), 200
+
+        except ValueError as e:
+            if str(e) == "User not found":
+                return jsonify({
+                    "success": False,
+                    "message": "User not found"
+                }), 404
+            
+            return jsonify({
+                "success": False,
+                "message": str(e)
+            }), 400
+
+        except Exception as e:
+            logging.exception("Unexpected error in me endpoint:")
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500
