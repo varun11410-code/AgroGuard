@@ -6,6 +6,7 @@ Maps URLs to AuthController methods.
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from app.controllers.auth_controller import AuthController
+from app.decorators.auth_decorators import admin_required
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -26,3 +27,8 @@ def refresh():
 @jwt_required()
 def me():
     return AuthController.me()
+
+@auth_bp.get("/admin-test")
+@admin_required()
+def admin_test():
+    return AuthController.admin_test()

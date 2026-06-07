@@ -195,3 +195,14 @@ class AuthController:
                 "success": False,
                 "message": "An unexpected server error occurred"
             }), 500
+
+    @staticmethod
+    def admin_test():
+        """
+        Handle GET /api/auth/admin-test
+        Demonstration endpoint for verifying RBAC.
+        """
+        return jsonify({
+            "success": True,
+            "message": "Admin access granted"
+        }), 200
