@@ -472,14 +472,6 @@ Install Shadcn/UI.
 
 Create theme configuration.
 
-### Theme
-
-```text
-Green
-Off-white
-Glassmorphism
-```
-
 ---
 
 ## TASK 3.3
