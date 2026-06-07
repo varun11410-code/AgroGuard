@@ -25,6 +25,7 @@ from app.models.report import Report                            # noqa: F401
 from app.models.chat_session import ChatSession                 # noqa: F401
 from app.models.chat_message import ChatMessage, MessageRole    # noqa: F401
 from app.models.activity_log import ActivityLog, ActivityType    # noqa: F401
+from app.models.revoked_token import RevokedToken               # noqa: F401
 
 __all__ = [
     # Task 1.2
@@ -45,5 +46,6 @@ __all__ = [
     # Task 1.8
     "ActivityLog",
     "ActivityType",
+    "RevokedToken",
 ]
 

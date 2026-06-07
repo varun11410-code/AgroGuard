@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Planning Complete
-Development Not Started
+Backend Authentication Complete (Phase 2)
+Frontend Foundation In Progress (Phase 3)
 ```
 
 ---
@@ -434,6 +434,25 @@ ADMIN
 Admin routes protected.
 
 ---
+
+## TASK 2.7
+
+### Goal
+
+Implement logout endpoint.
+
+### Endpoint
+
+POST /api/auth/logout
+
+### Requirements
+
+• Invalidate refresh token
+• Support token revocation/blacklisting
+
+### Acceptance Criteria
+
+User logout invalidates future refresh attempts.
 
 # PHASE 3 — Frontend Foundation
 
