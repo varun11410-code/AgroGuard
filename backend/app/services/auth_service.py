@@ -88,3 +88,20 @@ class AuthService:
         access_token = create_access_token(identity=identity, additional_claims=additional_claims)
 
         return access_token
+
+    @staticmethod
+    def get_current_user(user_id: str) -> dict:
+        """
+        Fetch the current authenticated user details.
+        Raises ValueError if the user is not found in the database.
+        """
+        user = UserRepository.get_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        return {
+            "id": str(user.id),
+            "name": user.name,
+            "email": user.email,
+            "role": user.role.value
+        }

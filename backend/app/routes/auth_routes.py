@@ -21,3 +21,8 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     return AuthController.refresh()
+
+@auth_bp.get("/me")
+@jwt_required()
+def me():
+    return AuthController.me()

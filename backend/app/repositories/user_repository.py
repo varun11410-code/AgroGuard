@@ -15,6 +15,16 @@ class UserRepository:
         return db.session.execute(db.select(User).where(User.email == email)).scalar_one_or_none()
 
     @staticmethod
+    def get_by_id(user_id: str) -> Optional[User]:
+        """Fetch a user by ID."""
+        import uuid
+        try:
+            uid = uuid.UUID(user_id)
+            return db.session.execute(db.select(User).where(User.id == uid)).scalar_one_or_none()
+        except ValueError:
+            return None
+
+    @staticmethod
     def create(user: User) -> User:
         """
         Insert a new user into the database.
