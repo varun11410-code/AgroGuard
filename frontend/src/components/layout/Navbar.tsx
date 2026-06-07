@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
@@ -72,12 +73,12 @@ export default function Navbar() {
           ))}
 
           <div className="flex items-center gap-2 ml-2">
-            <button className="font-sans font-semibold text-[0.88rem] py-2 px-5 rounded-full transition-all duration-300 text-foreground border border-border bg-transparent hover:bg-secondary">
+            <Button variant="outline">
               Login
-            </button>
-            <button className="font-sans font-semibold text-[0.88rem] py-2 px-5 rounded-full transition-all duration-300 text-primary-foreground bg-primary hover:opacity-90">
+            </Button>
+            <Button>
               Sign Up
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -119,12 +120,13 @@ export default function Navbar() {
             {item.label}
           </Link>
         ))}
-        <button
-          className="mt-4 text-base py-4 px-9 font-sans font-semibold rounded-full text-primary-foreground bg-primary hover:opacity-90"
+        <Button
+          variant="default"
+          size="lg"
           onClick={() => setIsMobileMenuOpen(false)}
         >
           Login
-        </button>
+        </Button>
       </div>
     </>
   );
