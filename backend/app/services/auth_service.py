@@ -105,3 +105,16 @@ class AuthService:
             "email": user.email,
             "role": user.role.value
         }
+
+    @staticmethod
+    def logout_user(jti: str, expires_at: int) -> None:
+        """
+        Log out the user by revoking their refresh token.
+        """
+        import datetime
+        from app.repositories.token_repository import TokenRepository
+        
+        # Convert the UNIX timestamp to a UTC datetime
+        expiry_datetime = datetime.datetime.fromtimestamp(expires_at, datetime.timezone.utc)
+        
+        TokenRepository.add_revoked_token(jti=jti, expires_at=expiry_datetime)

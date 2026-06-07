@@ -32,3 +32,8 @@ def me():
 @admin_required()
 def admin_test():
     return AuthController.admin_test()
+
+@auth_bp.post("/logout")
+@jwt_required(refresh=True)
+def logout():
+    return AuthController.logout()

@@ -83,7 +83,22 @@ def _register_extensions(app: Flask) -> None:
     import app.models as _models  # noqa: F401, PLC0415
 
     # Authentication
-    JWTManager(app)
+    jwt = JWTManager(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+        """
+        Callback to check if a JWT has been revoked.
+        Uses the TokenRepository to verify against the database.
+        """
+        # Optimization: Only check the blocklist for refresh tokens.
+        # This keeps standard API requests fast and stateless.
+        if jwt_payload.get("type") == "access":
+            return False
+            
+        from app.repositories.token_repository import TokenRepository
+        jti = jwt_payload["jti"]
+        return TokenRepository.is_jti_blacklisted(jti)
 
     # Cross-Origin Resource Sharing
     CORS(

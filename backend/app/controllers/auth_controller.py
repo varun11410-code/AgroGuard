@@ -206,3 +206,28 @@ class AuthController:
             "success": True,
             "message": "Admin access granted"
         }), 200
+
+    @staticmethod
+    def logout():
+        """
+        Handle POST /api/auth/logout
+        """
+        try:
+            claims = get_jwt()
+            jti = claims["jti"]
+            expires_at = claims["exp"]
+
+            AuthService.logout_user(jti=jti, expires_at=expires_at)
+
+            return jsonify({
+                "success": True,
+                "message": "Successfully logged out"
+            }), 200
+
+        except Exception as e:
+            import logging
+            logging.exception("Unexpected error in logout endpoint:")
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500
