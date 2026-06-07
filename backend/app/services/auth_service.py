@@ -73,3 +73,18 @@ class AuthService:
                 "role": user.role.value
             }
         }
+
+    @staticmethod
+    def refresh_access_token(identity: str, claims: dict) -> str:
+        """
+        Generate a new access token using existing identity and claims.
+        """
+        from flask_jwt_extended import create_access_token
+
+        additional_claims = {}
+        if "role" in claims:
+            additional_claims["role"] = claims["role"]
+
+        access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+
+        return access_token

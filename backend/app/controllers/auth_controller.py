@@ -7,6 +7,7 @@ import logging
 from flask import request, jsonify
 from werkzeug.exceptions import HTTPException
 from pydantic import ValidationError
+from flask_jwt_extended import get_jwt_identity, get_jwt
 
 from app.schemas.auth_schema import RegisterRequestSchema, LoginRequestSchema
 from app.services.auth_service import AuthService
@@ -128,6 +129,34 @@ class AuthController:
 
         except Exception as e:
             logging.exception("Unexpected error in login endpoint:")
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500
+
+    @staticmethod
+    def refresh():
+        """
+        Handle POST /api/auth/refresh
+        """
+        try:
+            identity = get_jwt_identity()
+            claims = get_jwt()
+
+            access_token = AuthService.refresh_access_token(
+                identity=identity,
+                claims=claims
+            )
+
+            return jsonify({
+                "success": True,
+                "data": {
+                    "access_token": access_token
+                }
+            }), 200
+
+        except Exception as e:
+            logging.exception("Unexpected error in refresh endpoint:")
             return jsonify({
                 "success": False,
                 "message": "An unexpected server error occurred"
