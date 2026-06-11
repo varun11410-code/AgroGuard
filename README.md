@@ -1,4 +1,4 @@
-# AgroGuard 3.0
+# AgroGuard
 
 AI-Powered Crop Disease Detection and Agricultural Advisory Platform
 
