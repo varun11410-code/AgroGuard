@@ -22,10 +22,10 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
+
     // Initial check
     handleScroll();
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -66,17 +66,17 @@ export default function Navbar() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-muted-foreground font-sans font-medium text-[0.9rem] py-2 px-4 rounded-full transition-all duration-300 hover:text-foreground hover:bg-secondary"
+              className="text-muted-foreground font-sans font-medium text-[1.1rem] py-2 px-4 rounded-full transition-all duration-300 hover:text-foreground hover:bg-secondary"
             >
               {item.label}
             </Link>
           ))}
 
           <div className="flex items-center gap-2 ml-2">
-            <Button variant="outline">
+            <Button variant="outline" className="text-[1.1rem]">
               Login
             </Button>
-            <Button>
+            <Button className="text-[1.1rem]">
               Sign Up
             </Button>
           </div>
