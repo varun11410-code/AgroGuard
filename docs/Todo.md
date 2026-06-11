@@ -520,18 +520,18 @@ Build recruiter-facing landing page.
 
 ## TASK 4.1
 
-Create Hero Section.
+[x] Create Hero Section.
 
 ### Includes
 
-* Product Title
-* CTA Buttons
+* [x] Product Title
+* [x] CTA Buttons
 
 ---
 
 ## TASK 4.2
 
-Create animated 3D plant section.
+[x] Create animated 3D plant section.
 
 ---
 
