@@ -31,11 +31,11 @@ const steps: Step[] = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="relative w-full py-[120px] px-[8%] z-10">
+    <section className="relative w-full py-[80px] lg:py-[120px] px-[8%] z-10">
       <div className="container mx-auto max-w-[1400px]">
         {/* Section Header */}
-        <div className="text-center mb-[70px] max-w-3xl mx-auto flex flex-col items-center">
-          <h2 className="text-[3rem] font-[800] tracking-tight text-white mb-4 font-['Syne',sans-serif]">
+        <div className="text-center mb-[40px] lg:mb-[70px] max-w-3xl mx-auto flex flex-col items-center">
+          <h2 className="text-[clamp(2.5rem,8vw,3.5rem)] font-[800] tracking-tight text-white mb-4 font-['Syne',sans-serif] leading-[1.1]">
             How It Works
           </h2>
           <p className="text-[1.15rem] text-[#cbd5e1] leading-[1.9]">
@@ -44,11 +44,11 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-[25px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-[25px]">
           {steps.map((step, index) => (
             <div
               key={step.id}
-              className="relative bg-[rgba(255,255,255,0.08)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] rounded-[28px] p-[30px] shadow-[0_10px_40px_rgba(0,0,0,0.25)] transition-transform duration-300 hover:-translate-y-[10px] group flex flex-col"
+              className="relative bg-[rgba(255,255,255,0.08)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] rounded-[28px] p-6 lg:p-[30px] shadow-[0_10px_40px_rgba(0,0,0,0.25)] transition-transform duration-300 hover:-translate-y-[10px] group flex flex-col"
             >
               {/* Step Number Badge */}
               <div className="absolute top-6 right-6 text-5xl font-[800] text-white/5 pointer-events-none select-none font-['Syne',sans-serif]">

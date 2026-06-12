@@ -38,19 +38,19 @@ export default function HeroSection() {
 
       <section
         id="home"
-        className="px-[8%] py-[120px]"
+        className="px-[8%] py-[80px] lg:py-[120px] overflow-hidden"
       >
         <div
           className="
             mx-auto max-w-[1400px]
             grid grid-cols-1 lg:grid-cols-2
             items-center
-            gap-[80px]
-            min-h-screen
+            gap-[40px] lg:gap-[80px]
+            min-h-[calc(100vh-100px)] lg:min-h-screen
             lg:text-left text-center
           "
         >
-          <div className="hero-content">
+          <div className="hero-content order-2 lg:order-1 flex flex-col items-center lg:items-start">
             <div className="inline-flex items-center gap-[10px] rounded-full border border-[#22C55E]/20 bg-[#22C55E]/[0.08] px-[18px] py-[10px] text-[0.7rem] font-mono tracking-[0.15em] text-[#22C55E] uppercase mb-[28px] lg:mx-0 mx-auto w-fit">
               <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-blink"></span>
               <span>AI-Powered Agriculture Platform</span>
@@ -58,9 +58,9 @@ export default function HeroSection() {
 
             <h1
               className="
-                text-[clamp(3rem,5.5vw,5.5rem)]
+                text-[clamp(2.5rem,8vw,5.5rem)]
                 font-[800]
-                leading-[1.0]
+                leading-[1.1] lg:leading-[1.0]
                 tracking-[-0.04em]
                 text-white
                 font-['Syne',sans-serif]
@@ -88,14 +88,16 @@ export default function HeroSection() {
 
             <div
               className="
-                flex flex-wrap
-                gap-[20px]
-                mt-[40px]
-                lg:justify-start justify-center
+                flex flex-col sm:flex-row
+                gap-[16px] lg:gap-[20px]
+                mt-[32px] lg:mt-[40px]
+                w-full sm:w-auto
+                justify-center lg:justify-start
               "
             >
               <button
                 className="
+                  w-full sm:w-auto
                   px-[30px] py-[15px]
                   rounded-full
                   font-bold
@@ -114,6 +116,7 @@ export default function HeroSection() {
 
               <button
                 className="
+                  w-full sm:w-auto
                   px-[30px] py-[15px]
                   rounded-full
                   font-bold
@@ -129,9 +132,9 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="flex justify-center items-center relative">
+          <div className="flex justify-center items-center relative order-1 lg:order-2 w-full max-w-[500px] mx-auto aspect-square">
             <div
-              className="absolute rounded-full w-[500px] h-[500px]"
+              className="absolute rounded-full w-full h-full max-w-[280px] max-h-[280px] sm:max-w-[400px] sm:max-h-[400px] lg:max-w-[500px] lg:max-h-[500px]"
               style={{
                 background:
                   "radial-gradient(circle, rgba(34,197,94,0.3), transparent)",
@@ -140,7 +143,7 @@ export default function HeroSection() {
             />
 
             <div
-              className="text-[150px] sm:text-[220px] relative z-[2] select-none"
+              className="text-[120px] sm:text-[180px] lg:text-[220px] relative z-[2] select-none"
               style={{
                 animation: "floatPlant 5s ease-in-out infinite",
               }}
