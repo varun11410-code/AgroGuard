@@ -56,9 +56,9 @@ const exampleConversation: ChatMessage[] = [
 
 export default function AIAssistantPreviewSection() {
   return (
-    <section className="relative w-full py-[120px] px-[8%] z-10" id="assistant-preview">
+    <section className="relative w-full py-[80px] lg:py-[120px] px-[8%] z-10" id="assistant-preview">
       <div className="container mx-auto max-w-[1400px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[60px] items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[60px] items-center">
 
           {/* Left Column: Content */}
           <div className="flex flex-col max-w-2xl">
@@ -69,13 +69,13 @@ export default function AIAssistantPreviewSection() {
             </div>
 
             {/* Header */}
-            <h2 className="text-[clamp(2.5rem,4.5vw,4rem)] font-[800] tracking-tight text-white mb-6 font-['Syne',sans-serif] leading-[1.05]">
+            <h2 className="text-[clamp(2.2rem,8vw,4rem)] font-[800] tracking-tight text-white mb-6 font-['Syne',sans-serif] leading-[1.05]">
               Meet AgroGuard<br />
               <span className="text-transparent bg-clip-text bg-[linear-gradient(90deg,#22C55E,#86EFAC)]">AI Assistant</span>
             </h2>
 
-            <p className="text-[1.15rem] text-[#cbd5e1] leading-[1.9] mb-[48px]">
-              Explore a preview of AgroGuard's upcoming AI assistant, designed to provide disease guidance, crop care recommendations, and conversational agricultural support through future Gemini integration.
+            <p className="text-[1.05rem] lg:text-[1.15rem] text-[#cbd5e1] leading-[1.8] lg:leading-[1.9] mb-[32px] lg:mb-[48px]">
+              Explore a preview of AgroGuard&apos;s upcoming AI assistant, designed to provide disease guidance, crop care recommendations, and conversational agricultural support through future Gemini integration.
             </p>
 
             {/* Features List */}
@@ -83,7 +83,7 @@ export default function AIAssistantPreviewSection() {
               {features.map((feature) => (
                 <div
                   key={feature.id}
-                  className="flex items-center gap-5 p-[20px_24px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[16px] transition-transform duration-300 hover:-translate-y-1"
+                  className="flex items-center gap-4 lg:gap-5 p-[16px_20px] lg:p-[20px_24px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[16px] transition-transform duration-300 hover:-translate-y-1"
                 >
                   <div className="w-[48px] h-[48px] rounded-full bg-[rgba(34,197,94,0.1)] border border-[rgba(34,197,94,0.2)] flex items-center justify-center shrink-0">
                     {feature.icon}
@@ -98,7 +98,7 @@ export default function AIAssistantPreviewSection() {
 
           {/* Right Column: Chat Preview UI */}
           <div className="w-full flex flex-col items-center lg:items-end">
-            <div className="w-full max-w-[440px] h-[540px] bg-[rgba(255,255,255,0.08)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] rounded-[28px] shadow-[0_10px_40px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden relative">
+            <div className="w-full max-w-[440px] h-[450px] sm:h-[500px] lg:h-[540px] bg-[rgba(255,255,255,0.08)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.12)] rounded-[28px] shadow-[0_10px_40px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden relative">
 
               {/* Chat Header */}
               <div className="p-[18px_22px] bg-[linear-gradient(135deg,rgba(22,101,52,0.8),rgba(34,197,94,0.3))] border-b border-[rgba(255,255,255,0.08)] flex items-center gap-[12px] shrink-0">
