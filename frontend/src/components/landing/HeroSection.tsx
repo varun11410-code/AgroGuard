@@ -1,27 +1,12 @@
-"use client";
-
 /**
  * HeroSection.tsx
  *
  * Exact 1-to-1 conversion of the hero in template.html.
  */
 
-import { useRef } from "react";
 
-interface StatItem {
-  value: string;
-  label: string;
-}
-
-const STATS: StatItem[] = [
-  { value: "50K+", label: "Crop Scans" },
-  { value: "96%", label: "AI Accuracy" },
-  { value: "10K+", label: "Farmers" },
-  { value: "24/7", label: "AI Support" },
-];
 
 export default function HeroSection() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
@@ -134,7 +119,7 @@ export default function HeroSection() {
 
           <div className="flex justify-center items-center relative order-1 lg:order-2 w-full max-w-[500px] mx-auto aspect-square">
             <div
-              className="absolute rounded-full w-full h-full max-w-[280px] max-h-[280px] sm:max-w-[400px] sm:max-h-[400px] lg:max-w-[500px] lg:max-h-[500px]"
+              className="absolute rounded-full w-full h-full max-w-[280px] max-h-[280px] sm:max-w-[400px] sm:max-h-[400px] lg:max-w-[500px] lg:max-h-[500px] will-change-transform"
               style={{
                 background:
                   "radial-gradient(circle, rgba(34,197,94,0.3), transparent)",
@@ -143,7 +128,7 @@ export default function HeroSection() {
             />
 
             <div
-              className="text-[120px] sm:text-[180px] lg:text-[220px] relative z-[2] select-none"
+              className="text-[120px] sm:text-[180px] lg:text-[220px] relative z-[2] select-none will-change-transform"
               style={{
                 animation: "floatPlant 5s ease-in-out infinite",
               }}
@@ -154,44 +139,8 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Temporarily hiding fabricated stats data
-        <div
-          className="
-            mx-auto max-w-[1400px]
-            grid
-            grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
-            gap-[25px]
-            mt-12
-          "
-        >
-          {STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-[28px] p-[30px] text-center"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
-              }}
-            >
-              <h3 className="text-[2rem] font-bold text-[#86efac]">
-                {stat.value}
-              </h3>
-              <p className="text-white mt-1">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-        */}
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          aria-hidden="true"
-        />
+
       </section>
     </>
   );
