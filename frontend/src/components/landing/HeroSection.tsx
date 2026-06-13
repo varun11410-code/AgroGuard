@@ -4,7 +4,7 @@
  * Exact 1-to-1 conversion of the hero in template.html.
  */
 
-
+import Link from "next/link";
 
 export default function HeroSection() {
 
@@ -80,7 +80,8 @@ export default function HeroSection() {
                 justify-center lg:justify-start
               "
             >
-              <button
+              <Link
+                href="/upload"
                 className="
                   w-full sm:w-auto
                   px-[30px] py-[15px]
@@ -91,13 +92,14 @@ export default function HeroSection() {
                   cursor-pointer
                   transition-transform duration-300
                   hover:-translate-y-1
+                  text-center
                 "
                 style={{
                   background: "linear-gradient(135deg, #166534, #22C55E)",
                 }}
               >
                 Start Scanning
-              </button>
+              </Link>
 
               <button
                 className="
