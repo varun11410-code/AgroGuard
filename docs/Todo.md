@@ -586,13 +586,13 @@ Implement disease detection workflow.
 
 ## TASK 5.2
 
-Create drag-and-drop uploader.
+[x] Create drag-and-drop uploader.
 
 ---
 
 ## TASK 5.3
 
-Implement file validation.
+[x] Implement file validation.
 
 ### Validate
 
