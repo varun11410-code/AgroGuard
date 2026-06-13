@@ -6,12 +6,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "Crops", href: "#crops" },
-  { label: "Features", href: "#features" },
-  { label: "Upload", href: "#upload" },
-  { label: "Dashboard", href: "#dashboard" },
-  { label: "History", href: "#history" },
+  { label: "Home", href: "/" },
+  { label: "Crops", href: "/#crops" },
+  { label: "Features", href: "/#features" },
+  { label: "Upload", href: "/upload" },
+  { label: "Dashboard", href: "/#dashboard" },
+  { label: "History", href: "/#history" },
 ];
 
 export default function Navbar() {
