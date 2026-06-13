@@ -609,7 +609,7 @@ Implement disease detection workflow.
 
 ## TASK 5.5
 
-Create analysis loading sequence.
+[x] Create analysis loading sequence.
 
 ### Steps
 
