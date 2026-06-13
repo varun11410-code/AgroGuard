@@ -3,6 +3,7 @@
 import { useState, useRef, ChangeEvent, DragEvent, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { validateImageFile } from "@/lib/validators/uploadValidation";
 
 export interface DragDropUploaderProps {
   onFileSelect?: (file: File | null) => void;
@@ -13,6 +14,7 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Cleanup object URLs to avoid memory leaks
@@ -51,9 +53,14 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
   };
 
   const processFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      return; // Basic filtering for images only
+    const validation = validateImageFile(file);
+    if (!validation.isValid) {
+      handleRemove(undefined, false);
+      setErrors(validation.errors);
+      return;
     }
+    
+    setErrors([]);
     
     // Revoke old URL if exists
     if (previewUrl) {
@@ -68,9 +75,12 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
     }
   };
 
-  const handleRemove = (e?: React.MouseEvent | React.KeyboardEvent) => {
+  const handleRemove = (e?: React.MouseEvent | React.KeyboardEvent, clearErrors: boolean = true) => {
     if (e) {
       e.stopPropagation();
+    }
+    if (clearErrors) {
+      setErrors([]);
     }
     setSelectedFile(null);
     if (previewUrl) {
@@ -102,7 +112,7 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
   const btnGhostClass = "px-[26px] py-[12px] font-sans rounded-full text-[0.9rem] font-semibold transition-all duration-300 border border-white/15 bg-transparent text-white/80 hover:bg-white/[0.06] hover:border-white/25 hover:-translate-y-[3px] active:-translate-y-[1px]";
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("w-full flex flex-col gap-4", className)}>
       <div
         className={cn(
           "glass-card relative overflow-hidden p-[60px_40px] text-center border-2 border-dashed transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
@@ -197,6 +207,22 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
           </div>
         )}
       </div>
+
+      {errors.length > 0 && (
+        <div 
+          className="glass-card p-4 !border-red-500/20 !bg-red-500/5 text-red-400 text-[0.85rem] font-sans rounded-lg"
+          aria-live="polite"
+        >
+          <ul className="flex flex-col gap-1">
+            {errors.map((err, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span aria-hidden="true" className="text-red-500">⚠</span>
+                <span>{err}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
