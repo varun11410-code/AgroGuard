@@ -1,9 +1,23 @@
+export interface TreatmentPlan {
+  tier: "budget" | "standard" | "premium";
+  title: string;
+  description: string;
+  estimatedCost: string;
+}
+
 export interface ScanResponse {
   scanId: string;
   status: string;
   prediction?: {
     disease: string;
     confidence: number;
+    // The following fields are not strictly guaranteed by the core ML response
+    // and may be populated downstream by reports or chat APIs.
+    crop?: string;
+    pathogen?: string;
+    riskLevel?: "Low" | "Medium" | "High";
+    aiSummary?: string;
+    treatmentPlans?: TreatmentPlan[];
   };
 }
 

@@ -623,7 +623,7 @@ Generating Insights
 
 ## TASK 5.6
 
-Display prediction results.
+[x] Display prediction results.
 
 ---
 
