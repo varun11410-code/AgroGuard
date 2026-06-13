@@ -603,7 +603,7 @@ Implement disease detection workflow.
 
 ## TASK 5.4
 
-Connect upload endpoint.
+[x] Connect upload endpoint.
 
 ---
 
