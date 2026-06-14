@@ -4,6 +4,9 @@
 
 * **Product Name:** AgroGuard
 * **Product Type:** AI-Powered Crop Disease Diagnosis and Agricultural Advisory Platform
+(Disease detection is performed using a hybrid machine learning pipeline combining deep feature extraction and SVM classification.
+
+Generative AI (Gemini) is used exclusively for post-prediction enrichment, including treatment recommendations, preventive advice, PDF report generation context, and chatbot assistance.)
 * **Version:** V1 (Portfolio & Production-Oriented Release)
 * **Project Goal:** * AgroGuard is a modern web application that helps farmers identify crop diseases from leaf images and receive AI-powered agricultural guidance.
 * *Primary Goal:* Demonstrate strong software engineering, machine learning, AI integration, and product design skills through a polished, production-oriented application suitable for portfolio and recruiter evaluation.

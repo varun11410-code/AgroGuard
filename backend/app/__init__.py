@@ -68,7 +68,16 @@ def create_app(env: str | None = None) -> Flask:
     # ------------------------------------------------------------------ #
     _register_commands(app)
 
+    # ------------------------------------------------------------------ #
+    # ML Models Loading                                                  #
+    # ------------------------------------------------------------------ #
+    if not app.config.get("TESTING"):
+        with app.app_context():
+            from app.ml import ModelLoader
+            ModelLoader.load_all()
+
     return app
+
 
 
 def _register_extensions(app: Flask) -> None:

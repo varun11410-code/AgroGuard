@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Landing Page Complete (Phase 4)
-Upload Workflow In Progress (Phase 5)
+Upload Workflow Complete (Phase 5)
+ML Integration In Progress (Phase 6)
 ```
 
 ---
