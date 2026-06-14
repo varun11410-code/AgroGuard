@@ -151,13 +151,31 @@ Google Gemini API
 
 ## ML Layer
 
-### Framework
-
+### Frameworks:
 TensorFlow / Keras
+Scikit-Learn
 
-### Purpose
+### Purpose:
+Hybrid Disease Classification Pipeline
 
-Disease classification
+### Pipeline:
+Leaf Image
+↓
+CLAHE Enhancement
+↓
+Wavelet Transform
+↓
+ResNet101 Feature Extraction
+↓
+DenseNet201 Feature Extraction
+↓
+Feature Fusion
+↓
+StandardScaler Transformation
+↓
+Mutual Information Feature Selection
+↓
+SVM Classification
 
 ### Supported Classes
 
@@ -169,6 +187,8 @@ Tomato:
 
 Potato:
 
+* Healthy
+* Early Blight
 * Late Blight
 
 ---
@@ -593,10 +613,18 @@ Results
 
 Responsibilities:
 
-* Load model at startup
-* Perform inference
-* Return prediction
-* Return confidence score
+• Load SVM model at startup
+• Load StandardScaler artifact
+• Load feature selection indices
+• Initialize ResNet101 feature extractor
+• Initialize DenseNet201 feature extractor
+• Perform preprocessing
+• Perform feature extraction
+• Perform feature fusion
+• Apply feature scaling
+• Apply feature selection
+• Perform SVM inference
+• Return prediction and confidence score
 
 ---
 
