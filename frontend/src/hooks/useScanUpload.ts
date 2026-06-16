@@ -43,6 +43,7 @@ export function useScanUpload(): UseScanUploadResult {
     setIsUploading(true);
     try {
       const result = await scanService.uploadScan(file, cropId);
+      console.log("Hook Result:", result);
       setScanResult(result);
     } catch (err) {
       if (err instanceof ScanUploadError) {

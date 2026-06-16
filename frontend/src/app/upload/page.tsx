@@ -19,6 +19,9 @@ export default function UploadWorkflowPage() {
     executeUpload,
   } = useScanUpload();
 
+  const prediction = scanResult;
+  console.log("Page Prediction:", prediction);
+
   const handleAnalyze = () => {
     if (!selectedCrop || !selectedFile || isUploading) return;
     executeUpload(selectedFile, selectedCrop);

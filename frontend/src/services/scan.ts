@@ -30,8 +30,13 @@ export class ScanUploadError extends Error {
 
 export const scanService = {
   async uploadScan(file: File, cropId: string): Promise<ScanResponse> {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-    const endpoint = `${API_BASE_URL}/api/scans`;
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
+    const endpoint = cleanBaseUrl.endsWith("/api")
+      ? `${cleanBaseUrl}/scans`
+      : `${cleanBaseUrl}/api/scans`;
+
+    console.log("Upload endpoint:", endpoint);
 
     const formData = new FormData();
     formData.append("image", file);
@@ -54,7 +59,27 @@ export const scanService = {
         throw new ScanUploadError(errorMessage, response.status);
       }
 
-      const data: ScanResponse = await response.json();
+      const responseData = await response.json();
+      console.log("API Response:", responseData);
+
+      if (!responseData.success || !responseData.data) {
+        throw new ScanUploadError(responseData.message || "Failed to retrieve prediction results.");
+      }
+
+      const backendData = responseData.data;
+      const data: ScanResponse = {
+        scanId: `scan_${Date.now()}`,
+        status: "completed",
+        prediction: {
+          disease: backendData.disease,
+          confidence: backendData.confidence,
+          crop: backendData.crop,
+          pathogen: undefined,
+          riskLevel: undefined,
+          aiSummary: undefined,
+          treatmentPlans: []
+        }
+      };
       return data;
     } catch (error) {
       if (error instanceof ScanUploadError) {
