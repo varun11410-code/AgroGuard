@@ -7,6 +7,8 @@ from app.ml.model_loader import ModelLoader
 # Configure logging
 logger = logging.getLogger(__name__)
 
+CONFIDENCE_THRESHOLD = 0.50
+
 class PredictionError(Exception):
     """Exception raised when disease prediction pipeline fails."""
     pass
@@ -106,8 +108,19 @@ def predict_disease(image: np.ndarray) -> Dict[str, Any]:
         # 9. Map prediction using class_mapping.json
         str_pred_idx = str(pred_idx)
         if str_pred_idx not in class_mapping:
-            raise PredictionError(f"Prediction index '{str_pred_idx}' not found in class mapping.")
-            
+            raise PredictionError(f"No class mapping found for prediction index {pred_idx}")
+
+        if confidence < CONFIDENCE_THRESHOLD:
+            logger.info(f"Low confidence prediction treated as unsupported: Index={pred_idx}, Confidence={confidence:.4f}")
+            return {
+                "prediction_index": None,
+                "crop": "Unknown",
+                "disease": "Unsupported",
+                "label": None,
+                "confidence": confidence,
+                "is_supported": False
+            }
+
         class_info = class_mapping[str_pred_idx]
 
         logger.info(f"Successful prediction: Index={pred_idx}, Crop={class_info['crop']}, Disease={class_info['disease']}, Confidence={confidence:.4f}")
@@ -117,7 +130,8 @@ def predict_disease(image: np.ndarray) -> Dict[str, Any]:
             "crop": class_info["crop"],
             "disease": class_info["disease"],
             "label": class_info["label"],
-            "confidence": confidence
+            "confidence": confidence,
+            "is_supported": True
         }
 
     except PredictionError:
