@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-ML Integration Complete (Phase 6)
-Results Page In Progress (Phase 7)
+Results Page Complete (Phase 7)
+PDF Reports In Progress (Phase 8)
 ```
 
 ---
@@ -733,7 +733,7 @@ Build diagnosis experience.
 
 ## TASK 7.7
 
-Save selected plan.
+[x] Save selected plan.
 
 ---
 
@@ -747,7 +747,7 @@ Generate downloadable reports.
 
 ## TASK 8.1
 
-Create PDF template.
+[x] Create PDF template.
 
 ---
 
