@@ -40,7 +40,7 @@ def get_report_styles():
     ))
     
     styles.add(ParagraphStyle(
-        name='BodyText',
+        name='AgroGuardBody',
         parent=styles['Normal'],
         fontSize=11,
         spaceAfter=10,
@@ -67,7 +67,7 @@ def build_report_story(data: ReportData) -> list:
     
     # Header
     story.append(Paragraph("AgroGuard Diagnostic Report", styles['ReportTitle']))
-    story.append(Paragraph(f"Generated at: {data.generated_at.strftime('%Y-%m-%d %H:%M:%S UTC')}", styles['BodyText']))
+    story.append(Paragraph(f"Generated at: {data.generated_at.strftime('%Y-%m-%d %H:%M:%S UTC')}", styles['AgroGuardBody']))
     story.append(Spacer(1, 20))
     
     # Diagnosis Section
@@ -107,7 +107,7 @@ def build_report_story(data: ReportData) -> list:
     # AI Summary Section
     story.append(Paragraph("3. AI Diagnostic Summary", styles['SectionHeader']))
     if data.ai_summary:
-        story.append(Paragraph(data.ai_summary, styles['BodyText']))
+        story.append(Paragraph(data.ai_summary, styles['AgroGuardBody']))
     else:
         story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
@@ -116,7 +116,7 @@ def build_report_story(data: ReportData) -> list:
     story.append(Paragraph("4. Treatment Recommendations", styles['SectionHeader']))
     if data.treatment_recommendations:
         for rec in data.treatment_recommendations:
-            story.append(Paragraph(f"• {rec}", styles['BodyText']))
+            story.append(Paragraph(f"• {rec}", styles['AgroGuardBody']))
     else:
         story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
@@ -125,7 +125,7 @@ def build_report_story(data: ReportData) -> list:
     story.append(Paragraph("5. Prevention Suggestions", styles['SectionHeader']))
     if data.prevention_suggestions:
         for prev in data.prevention_suggestions:
-            story.append(Paragraph(f"• {prev}", styles['BodyText']))
+            story.append(Paragraph(f"• {prev}", styles['AgroGuardBody']))
     else:
         story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
         

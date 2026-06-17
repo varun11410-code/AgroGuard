@@ -765,7 +765,7 @@ Generate downloadable reports.
 
 ## TASK 8.4
 
-Implement report download.
+[x] Implement report download.
 
 ---
 

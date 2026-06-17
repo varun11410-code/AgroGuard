@@ -11,6 +11,8 @@ from pydantic import ValidationError
 from app.schemas.report_contract import ReportData
 from app.services.report_service import generate_report
 from app.utils.image_helper import fetch_image_to_buffer
+import base64
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +37,15 @@ class ReportController:
                     # Fetch external image (e.g., from Cloudinary)
                     stream = fetch_image_to_buffer(validated_data.image_stream)
                     validated_data.image_stream = stream
+                elif validated_data.image_stream.startswith('data:image/'):
+                    # Decode base64 data URI
+                    try:
+                        header, base64_data = validated_data.image_stream.split(',', 1)
+                        image_bytes = base64.b64decode(base64_data)
+                        validated_data.image_stream = io.BytesIO(image_bytes)
+                    except Exception as e:
+                        logger.warning(f"Failed to decode base64 image stream: {e}")
+                        validated_data.image_stream = None
 
             # 4. Generate the PDF buffer
             pdf_buffer = generate_report(validated_data)
