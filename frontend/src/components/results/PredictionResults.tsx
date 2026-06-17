@@ -1,5 +1,5 @@
 import { ScanResponse } from "@/services/scan";
-import { ConfidenceIndicator } from "./ConfidenceIndicator";
+import { ConfidenceDisplay } from "./ConfidenceDisplay";
 import { RecommendationList } from "./RecommendationList";
 import { DiseaseResultCard } from "./DiseaseResultCard";
 import { cn } from "@/lib/utils";
@@ -68,8 +68,9 @@ export function PredictionResults({ result, className }: PredictionResultsProps)
         />
 
         {/* Confidence Score */}
-        <ConfidenceIndicator 
+        <ConfidenceDisplay 
           confidence={confidence} 
+          isSupported={is_supported}
           className="transition-all duration-500 hover:-translate-y-1 delay-100" 
         />
 

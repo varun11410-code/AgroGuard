@@ -691,7 +691,7 @@ Build diagnosis experience.
 
 ## TASK 7.1
 
-Create disease result card.
+[x] Create disease result card.
 
 ---
 
