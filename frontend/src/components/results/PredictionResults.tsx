@@ -3,6 +3,7 @@ import { ConfidenceDisplay } from "./ConfidenceDisplay";
 import { RecommendationList } from "./RecommendationList";
 import { DiseaseResultCard } from "./DiseaseResultCard";
 import { UploadedImagePreview } from "./UploadedImagePreview";
+import { AISummarySection } from "./AISummarySection";
 import { cn } from "@/lib/utils";
 
 export interface PredictionResultsProps {
@@ -97,16 +98,10 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         />
 
         {/* AI Summary */}
-        {aiSummary && (
-          <div className="glass-card p-[36px] col-span-1 sm:col-span-2 lg:col-span-3 transition-all duration-500">
-            <div className="inline-flex items-center gap-[8px] font-mono text-[0.68rem] tracking-[0.1em] px-[14px] py-[6px] rounded-full mb-[20px] bg-[#22c55e]/[0.08] border border-[#22c55e]/20 text-[#22c55e]">
-              <span aria-hidden="true">🤖</span> Gemini AI Summary
-            </div>
-            <p className="text-[0.95rem] text-white/60 leading-[1.85]">
-              {aiSummary}
-            </p>
-          </div>
-        )}
+        <AISummarySection 
+          summary={aiSummary} 
+          className="col-span-1 sm:col-span-2 lg:col-span-3 transition-all duration-500 font-sans" 
+        />
 
         {/* Recommendations */}
         {treatmentPlans && treatmentPlans.length > 0 && (

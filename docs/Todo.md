@@ -709,7 +709,7 @@ Build diagnosis experience.
 
 ## TASK 7.4
 
-Create AI summary section.
+[x] Create AI summary section.
 
 ---
 
