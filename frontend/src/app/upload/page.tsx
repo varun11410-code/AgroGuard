@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CropSelectionCards } from "@/components/upload/CropSelectionCards";
 import { DragDropUploader } from "@/components/upload/DragDropUploader";
 import { AnalysisLoading } from "@/components/upload/AnalysisLoading";
@@ -21,6 +21,20 @@ export default function UploadWorkflowPage() {
 
   const prediction = scanResult;
   console.log("Page Prediction:", prediction);
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setImageUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(selectedFile);
+    setImageUrl(url);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [selectedFile]);
 
   const handleAnalyze = () => {
     if (!selectedCrop || !selectedFile || isUploading) return;
@@ -112,7 +126,7 @@ export default function UploadWorkflowPage() {
         {scanResult && (
            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
              <div className="h-[1px] w-full bg-white/[0.05] my-16 max-w-5xl mx-auto" />
-             <PredictionResults result={scanResult} />
+             <PredictionResults result={scanResult} imageUrl={imageUrl} />
              
              {/* Action to reset and do another scan */}
              <div className="text-center mt-12 pb-12">

@@ -2,14 +2,16 @@ import { ScanResponse } from "@/services/scan";
 import { ConfidenceDisplay } from "./ConfidenceDisplay";
 import { RecommendationList } from "./RecommendationList";
 import { DiseaseResultCard } from "./DiseaseResultCard";
+import { UploadedImagePreview } from "./UploadedImagePreview";
 import { cn } from "@/lib/utils";
 
 export interface PredictionResultsProps {
   result: ScanResponse;
+  imageUrl?: string | null;
   className?: string;
 }
 
-export function PredictionResults({ result, className }: PredictionResultsProps) {
+export function PredictionResults({ result, imageUrl, className }: PredictionResultsProps) {
   if (!result.prediction) {
     return (
       <section 
@@ -86,6 +88,13 @@ export function PredictionResults({ result, className }: PredictionResultsProps)
             {riskLevel === "High" ? "Immediate treatment recommended" : "Monitor closely"}
           </div>
         </div>
+
+        {/* Uploaded Image Preview */}
+        <UploadedImagePreview 
+          imageUrl={imageUrl} 
+          disease={disease}
+          className="transition-all duration-500 hover:-translate-y-1 delay-300" 
+        />
 
         {/* AI Summary */}
         {aiSummary && (

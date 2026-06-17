@@ -697,13 +697,13 @@ Build diagnosis experience.
 
 ## TASK 7.2
 
-Create confidence display.
+[x] Create confidence display.
 
 ---
 
 ## TASK 7.3
 
-Create uploaded image preview.
+[x] Create uploaded image preview.
 
 ---
 
