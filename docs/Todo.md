@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Upload Workflow Complete (Phase 5)
-ML Integration In Progress (Phase 6)
+ML Integration Complete (Phase 6)
+Results Page In Progress (Phase 7)
 ```
 
 ---
@@ -647,37 +647,37 @@ Integrate trained disease model.
 
 ## TASK 6.1
 
-Create model loader service.
+[x] Create model loader service.
 
 ---
 
 ## TASK 6.2
 
-Implement image preprocessing.
+[x] Implement image preprocessing.
 
 ---
 
 ## TASK 6.3
 
-Implement prediction service.
+[x] Implement prediction service.
 
 ---
 
 ## TASK 6.4
 
-Return confidence score.
+[x] Return confidence score.
 
 ---
 
 ## TASK 6.5
 
-Connect Flask API to model.
+[x] Connect Flask API to model.
 
 ---
 
 ## TASK 6.6
 
-Handle unsupported predictions.
+[x] Handle unsupported predictions.
 
 ---
 

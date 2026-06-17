@@ -18,6 +18,9 @@ export interface ScanResponse {
     riskLevel?: "Low" | "Medium" | "High";
     aiSummary?: string;
     treatmentPlans?: TreatmentPlan[];
+    prediction_index?: number | null;
+    label?: string | null;
+    is_supported?: boolean;
   };
 }
 
@@ -77,7 +80,10 @@ export const scanService = {
           pathogen: undefined,
           riskLevel: undefined,
           aiSummary: undefined,
-          treatmentPlans: []
+          treatmentPlans: [],
+          prediction_index: backendData.prediction_index !== undefined ? backendData.prediction_index : null,
+          label: backendData.label !== undefined ? backendData.label : null,
+          is_supported: backendData.is_supported !== undefined ? backendData.is_supported : true
         }
       };
       return data;

@@ -1,6 +1,7 @@
 import { ScanResponse } from "@/services/scan";
 import { ConfidenceIndicator } from "./ConfidenceIndicator";
 import { RecommendationList } from "./RecommendationList";
+import { DiseaseResultCard } from "./DiseaseResultCard";
 import { cn } from "@/lib/utils";
 
 export interface PredictionResultsProps {
@@ -32,7 +33,9 @@ export function PredictionResults({ result, className }: PredictionResultsProps)
     pathogen,
     riskLevel,
     aiSummary,
-    treatmentPlans
+    treatmentPlans,
+    label,
+    is_supported
   } = result.prediction;
 
   return (
@@ -53,19 +56,16 @@ export function PredictionResults({ result, className }: PredictionResultsProps)
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {/* Detected Disease */}
-        <div className="glass-card p-8 transition-all duration-500 hover:-translate-y-1">
-          <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-white/35 mb-3">
-            Detected Disease
-          </h3>
-          <div className="font-heading text-[1.6rem] font-extrabold tracking-[-0.02em] text-[#86efac]">
-            {disease}
-          </div>
-          {(crop || pathogen) && (
-            <div className="mt-2 text-[0.8rem] text-white/35 font-mono">
-              {[crop, pathogen].filter(Boolean).join(" · ")}
-            </div>
-          )}
-        </div>
+        <DiseaseResultCard 
+          prediction={{
+            disease,
+            confidence,
+            crop,
+            label,
+            is_supported
+          }}
+          className="transition-all duration-500 hover:-translate-y-1"
+        />
 
         {/* Confidence Score */}
         <ConfidenceIndicator 
