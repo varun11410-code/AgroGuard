@@ -715,7 +715,7 @@ Build diagnosis experience.
 
 ## TASK 7.5
 
-Create treatment plan cards.
+[x] Create treatment plan cards.
 
 ### Plans
 

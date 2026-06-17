@@ -1,6 +1,6 @@
 import { ScanResponse } from "@/services/scan";
 import { ConfidenceDisplay } from "./ConfidenceDisplay";
-import { RecommendationList } from "./RecommendationList";
+import { TreatmentPlanCards } from "./TreatmentPlanCards";
 import { DiseaseResultCard } from "./DiseaseResultCard";
 import { UploadedImagePreview } from "./UploadedImagePreview";
 import { AISummarySection } from "./AISummarySection";
@@ -104,9 +104,7 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         />
 
         {/* Recommendations */}
-        {treatmentPlans && treatmentPlans.length > 0 && (
-          <RecommendationList plans={treatmentPlans} />
-        )}
+        <TreatmentPlanCards plans={treatmentPlans} />
       </div>
     </section>
   );

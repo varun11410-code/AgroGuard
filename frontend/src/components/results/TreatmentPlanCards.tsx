@@ -1,0 +1,143 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { TreatmentPlan } from "@/services/scan";
+
+export interface TreatmentPlanCardsProps {
+  plans?: TreatmentPlan[];
+  className?: string;
+}
+
+export function TreatmentPlanCards({
+  plans,
+  className,
+}: TreatmentPlanCardsProps) {
+  const hasLivePlans = plans && plans.length > 0;
+
+  // Render Live Plans Mode
+  if (hasLivePlans) {
+    return (
+      <div
+        className={cn(
+          "col-span-1 sm:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2",
+          className
+        )}
+        role="list"
+        aria-label="Treatment Recommendations"
+      >
+        {plans.map((plan, i) => {
+          const isBudget = plan.tier === "budget";
+          const isStandard = plan.tier === "standard";
+          const isPremium = plan.tier === "premium";
+
+          return (
+            <article
+              key={i}
+              role="listitem"
+              aria-labelledby={`plan-heading-${plan.tier}`}
+              className="p-7 rounded-[var(--radius-sm,12px)] border border-white/[0.07] bg-white/[0.03] transition-all duration-300 hover:border-[#22c55e]/20 hover:-translate-y-1"
+            >
+              <div
+                className={cn(
+                  "inline-flex items-center gap-[6px] font-mono text-[0.68rem] tracking-[0.1em] uppercase px-[12px] py-[5px] rounded-full mb-4",
+                  isBudget && "bg-[#22c55e]/[0.08] text-[#86efac] border border-[#22c55e]/15",
+                  isStandard && "bg-blue-500/[0.08] text-blue-300 border border-blue-500/15",
+                  isPremium && "bg-purple-500/[0.08] text-purple-300 border border-purple-500/15"
+                )}
+              >
+                <span aria-hidden="true">
+                  {isBudget && "💰"}
+                  {isStandard && "🌿"}
+                  {isPremium && "⭐"}
+                </span>
+                <span>
+                  {isBudget && "Budget Plan"}
+                  {isStandard && "Standard Plan"}
+                  {isPremium && "Premium Plan"}
+                </span>
+              </div>
+
+              <h4 id={`plan-heading-${plan.tier}`} className="font-heading text-[1.1rem] font-bold mb-[10px] text-white">
+                {plan.title}
+              </h4>
+              <p className="text-[0.85rem] text-white/45 leading-[1.7]">{plan.description}</p>
+
+              <div
+                className={cn(
+                  "mt-[14px] font-mono text-[0.78rem]",
+                  isBudget && "text-[#22c55e]/60",
+                  isStandard && "text-blue-300/60",
+                  isPremium && "text-purple-300/60"
+                )}
+              >
+                {plan.estimatedCost}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Render Placeholder Mode
+  const placeholderTiers = [
+    {
+      tier: "budget",
+      emoji: "💰",
+      label: "Budget Plan",
+      title: "Budget",
+      badgeStyle: "bg-[#22c55e]/[0.08] text-[#86efac] border border-[#22c55e]/15",
+    },
+    {
+      tier: "standard",
+      emoji: "🌿",
+      label: "Standard Plan",
+      title: "Standard",
+      badgeStyle: "bg-blue-500/[0.08] text-blue-300 border border-blue-500/15",
+    },
+    {
+      tier: "premium",
+      emoji: "⭐",
+      label: "Premium Plan",
+      title: "Premium",
+      badgeStyle: "bg-purple-500/[0.08] text-purple-300 border border-purple-500/15",
+    },
+  ];
+
+  return (
+    <div
+      className={cn(
+        "col-span-1 sm:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2",
+        className
+      )}
+      role="list"
+      aria-label="Treatment Recommendations (AI Pending)"
+    >
+      {placeholderTiers.map((tierInfo) => (
+        <article
+          key={tierInfo.tier}
+          role="listitem"
+          aria-labelledby={`plan-heading-${tierInfo.tier}`}
+          className="p-7 rounded-[var(--radius-sm,12px)] border border-white/[0.07] bg-white/[0.03] transition-all duration-300 hover:border-[#22c55e]/20 hover:-translate-y-1"
+        >
+          <div
+            className={cn(
+              "inline-flex items-center gap-[6px] font-mono text-[0.68rem] tracking-[0.1em] uppercase px-[12px] py-[5px] rounded-full mb-4",
+              tierInfo.badgeStyle
+            )}
+          >
+            <span aria-hidden="true">{tierInfo.emoji}</span>
+            <span>{tierInfo.label}</span>
+          </div>
+
+          <h4 id={`plan-heading-${tierInfo.tier}`} className="font-heading text-[1.1rem] font-bold mb-[10px] text-white">
+            {tierInfo.title}
+          </h4>
+          <p className="text-[0.85rem] text-white/45 leading-[1.7] font-sans">
+            Treatment recommendations for this plan tier will become available once AI recommendation services are enabled. The diagnosis was completed successfully.
+          </p>
+        </article>
+      ))}
+    </div>
+  );
+}
