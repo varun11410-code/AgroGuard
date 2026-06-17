@@ -727,7 +727,7 @@ Build diagnosis experience.
 
 ## TASK 7.6
 
-Implement plan selection.
+[x] Implement plan selection.
 
 ---
 

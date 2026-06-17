@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { ScanResponse } from "@/services/scan";
 import { ConfidenceDisplay } from "./ConfidenceDisplay";
-import { TreatmentPlanCards } from "./TreatmentPlanCards";
+import { TreatmentPlanCards, PlanTier } from "./TreatmentPlanCards";
 import { DiseaseResultCard } from "./DiseaseResultCard";
 import { UploadedImagePreview } from "./UploadedImagePreview";
 import { AISummarySection } from "./AISummarySection";
@@ -13,6 +14,8 @@ export interface PredictionResultsProps {
 }
 
 export function PredictionResults({ result, imageUrl, className }: PredictionResultsProps) {
+  const [selectedPlan, setSelectedPlan] = useState<PlanTier | null>(null);
+
   if (!result.prediction) {
     return (
       <section 
@@ -104,7 +107,11 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         />
 
         {/* Recommendations */}
-        <TreatmentPlanCards plans={treatmentPlans} />
+        <TreatmentPlanCards 
+          plans={treatmentPlans} 
+          selectedPlan={selectedPlan}
+          onPlanSelect={setSelectedPlan}
+        />
       </div>
     </section>
   );
