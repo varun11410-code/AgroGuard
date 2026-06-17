@@ -8,7 +8,6 @@ import logging
 
 from app.reports.pdf_template import create_report_template
 from app.schemas.report_contract import ReportData
-from app.utils.exceptions import ReportGenerationError
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +24,7 @@ def generate_report(data: ReportData) -> io.BytesIO:
     Returns:
         io.BytesIO: The in-memory buffer containing the compiled PDF bytes.
         
-    Raises:
-        ReportGenerationError: If the underlying ReportLab generation fails critically.
+        Exception: If the underlying ReportLab generation fails.
     """
     buffer = io.BytesIO()
     
@@ -43,4 +41,4 @@ def generate_report(data: ReportData) -> io.BytesIO:
         
     except Exception as e:
         logger.error(f"Failed to generate PDF report: {str(e)}", exc_info=True)
-        raise ReportGenerationError(f"Critical failure during PDF compilation: {str(e)}") from e
+        raise Exception(f"Critical failure during PDF compilation: {str(e)}") from e
