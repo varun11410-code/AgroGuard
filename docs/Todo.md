@@ -753,7 +753,7 @@ Generate downloadable reports.
 
 ## TASK 8.2
 
-Create report generation service.
+[x] Create report generation service.
 
 ---
 

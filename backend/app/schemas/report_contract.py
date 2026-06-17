@@ -4,7 +4,7 @@ AgroGuard Backend - Report Contract Schemas
 Defines validation schemas for PDF report payloads.
 """
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Any
 from datetime import datetime, timezone
 
 class ReportData(BaseModel):
@@ -12,7 +12,7 @@ class ReportData(BaseModel):
     disease: str = Field(..., description="Predicted disease name")
     confidence: float = Field(..., description="Confidence score from the ML model")
     selected_plan: Optional[str] = Field(None, description="The user's selected treatment plan (Budget, Standard, Premium)")
-    image_path: Optional[str] = Field(None, description="Path or URL to the leaf image")
+    image_stream: Optional[Any] = Field(None, description="Path string or BytesIO stream to the leaf image")
     
     # AI Enrichment fields (Phase 9)
     ai_summary: Optional[str] = Field(None, description="AI-generated summary of the diagnosis")

@@ -4,6 +4,7 @@ AgroGuard Backend - PDF Template Definition
 Defines the report layout and styling using ReportLab.
 """
 import os
+import io
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -93,10 +94,12 @@ def build_report_story(data: ReportData) -> list:
     
     # Image Section
     story.append(Paragraph("2. Scanned Image", styles['SectionHeader']))
-    if data.image_path and os.path.exists(data.image_path):
-        # The image processor in Task 8.2 will pass a valid local path or stream.
-        # We define the container layout here.
-        story.append(Image(data.image_path, width=250, height=250, kind='proportional'))
+    if data.image_stream:
+        # Check if it's a file path string and exists, or if it's a file-like object
+        if (isinstance(data.image_stream, str) and os.path.exists(data.image_stream)) or isinstance(data.image_stream, io.BytesIO):
+            story.append(Image(data.image_stream, width=250, height=250, kind='proportional'))
+        else:
+            story.append(Paragraph("Image stream invalid.", styles['PlaceholderText']))
     else:
         story.append(Paragraph("No image provided.", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
