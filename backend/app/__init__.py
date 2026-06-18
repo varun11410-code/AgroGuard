@@ -116,6 +116,10 @@ def _register_extensions(app: Flask) -> None:
         supports_credentials=True,
     )
 
+    # AI Configuration
+    from app.ai.setup import setup_gemini
+    setup_gemini(app)
+
 
 def _register_blueprints(app: Flask) -> None:
     """Register all route blueprints on the application."""

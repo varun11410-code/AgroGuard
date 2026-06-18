@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Results Page Complete (Phase 7)
-PDF Reports In Progress (Phase 8)
+PDF Reports Complete (Phase 8)
+AI Assistant In Progress (Phase 9)
 ```
 
 ---
@@ -771,7 +771,10 @@ Generate downloadable reports.
 
 ## TASK 8.5
 
-Store report metadata.
+[x] Store report metadata (Deferred to Phase 10)
+    - Re-evaluated by Principal Engineer.
+    - Cannot be implemented without `scan_id` (foreign key constraint).
+    - Formally moved to Phase 10 (User Features) to align with PRD F9 guest workflow and architecture retention policies.
 
 ---
 
@@ -875,6 +878,14 @@ Create scan history page.
 ## TASK 10.5
 
 Create report history page.
+
+---
+
+## TASK 10.5b
+
+Store report metadata.
+- **Dependencies required:** Scan Persistence, User History, Authentication, Report Ownership.
+- Must tie into `POST /api/reports/generate` when the user is authenticated.
 
 ---
 
