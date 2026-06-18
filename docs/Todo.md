@@ -806,7 +806,7 @@ Implement context-aware chatbot.
 
 ## TASK 9.4
 
-Create chat message service.
+[x] Create chat message service.
 
 ---
 
