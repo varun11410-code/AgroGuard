@@ -788,19 +788,19 @@ Implement context-aware chatbot.
 
 ## TASK 9.1
 
-Configure Gemini API.
+[x] Configure Gemini API.
 
 ---
 
 ## TASK 9.2
 
-Create AI provider service.
+[x] Create AI provider service.
 
 ---
 
 ## TASK 9.3
 
-Create chat session service.
+[x] Create chat session service.
 
 ---
 

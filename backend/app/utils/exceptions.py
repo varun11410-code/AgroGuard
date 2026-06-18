@@ -11,3 +11,7 @@ class AgroGuardBaseException(Exception):
 class ReportGenerationError(AgroGuardBaseException):
     """Raised when PDF report generation fails fundamentally."""
     pass
+
+class AIProviderError(AgroGuardBaseException):
+    """Raised when the AI provider fails to generate text or returns invalid data."""
+    pass
