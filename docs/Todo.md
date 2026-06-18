@@ -827,7 +827,7 @@ Selected Plan
 
 ## TASK 9.6
 
-Build floating chat widget.
+[x] Build floating chat widget.
 
 ---
 

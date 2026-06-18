@@ -69,9 +69,9 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
       }
 
       const payload: ReportDataPayload = {
-        crop,
-        disease,
-        confidence,
+        crop: crop ?? "Unknown Crop",
+        disease: disease ?? "Unknown Disease",
+        confidence: confidence ?? 0.0,
         selected_plan: selectedPlan,
         image_stream: imageStreamData,
         ai_summary: aiSummary || null,
