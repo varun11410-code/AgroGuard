@@ -833,7 +833,7 @@ Selected Plan
 
 ## TASK 9.7
 
-Restrict chatbot to authenticated users.
+[x] Restrict chatbot to authenticated users.
 
 ---
 

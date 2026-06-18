@@ -14,7 +14,7 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ isOpen, onClose, messages, onSendMessage }: ChatWindowProps) {
-  const { user } = useAuth();
+  const { user, status } = useAuth();
 
   return (
     <div 
@@ -31,7 +31,11 @@ export default function ChatWindow({ isOpen, onClose, messages, onSendMessage }:
     >
       <ChatHeader onClose={onClose} />
       
-      {!user ? (
+      {status === "loading" ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-g2 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : !user ? (
         <>
           <ChatGuestPrompt />
           <ChatInputArea onSend={() => {}} disabled={true} />
