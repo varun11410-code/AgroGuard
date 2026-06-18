@@ -3,7 +3,7 @@ import React from "react";
 export interface MessageType {
   id: string;
   role: "user" | "assistant";
-  content: string;
+  message: string;
 }
 
 interface ChatMessageProps {
@@ -21,7 +21,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             ? "bg-white/10 text-foreground border border-white/10 rounded-2xl rounded-tl-sm" 
             : "bg-gradient-to-br from-[#166534] to-[#22c55e] text-white rounded-2xl rounded-tr-sm shadow-md"
         }`}
-        dangerouslySetInnerHTML={{ __html: message.content }}
+        dangerouslySetInnerHTML={{ __html: message.message }}
       />
     </div>
   );

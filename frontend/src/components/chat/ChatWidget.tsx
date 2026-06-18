@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 import ChatWindow from "./ChatWindow";
-import { MessageType } from "./ChatMessage";
+import { useChat } from "@/hooks/useChat";
 
 export interface ChatWidgetProps {
   mode?: "general" | "diagnosis";
@@ -12,19 +12,20 @@ export interface ChatWidgetProps {
     disease: string;
     confidence: number;
   } | null;
+  scanId?: string;
+  selectedPlan?: string;
 }
 
-export default function ChatWidget({ mode = "general", scanContext }: ChatWidgetProps) {
+export default function ChatWidget({ mode = "general", scanId, selectedPlan }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Mock messages for UI scaffolding
-  const [messages, setMessages] = useState<MessageType[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: "Hello! 👋 I'm AgroGuard AI, powered by Google Gemini.<br><br>I can help you with crop disease questions, treatment recommendations, and agricultural guidance. How can I assist you today?"
-    }
-  ]);
+  const { 
+    messages, 
+    isGenerating, 
+    sendMessage, 
+    fetchHistory,
+    hasInitialized
+  } = useChat(scanId, selectedPlan);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -36,15 +37,11 @@ export default function ChatWidget({ mode = "general", scanContext }: ChatWidget
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
-  const handleSendMessage = (content: string) => {
-    // Scaffold implementation for UI
-    const newMessage: MessageType = {
-      id: Date.now().toString(),
-      role: "user",
-      content,
-    };
-    setMessages(prev => [...prev, newMessage]);
-  };
+  useEffect(() => {
+    if (isOpen && !hasInitialized) {
+      fetchHistory();
+    }
+  }, [isOpen, hasInitialized, fetchHistory]);
 
   return (
     <>
@@ -67,7 +64,8 @@ export default function ChatWidget({ mode = "general", scanContext }: ChatWidget
         isOpen={isOpen} 
         onClose={() => setIsOpen(false)} 
         messages={messages}
-        onSendMessage={handleSendMessage}
+        onSendMessage={sendMessage}
+        isGenerating={isGenerating}
       />
     </>
   );

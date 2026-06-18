@@ -127,11 +127,13 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.auth_routes import auth_bp
     from app.routes.scan_routes import scan_bp
     from app.routes.report_routes import report_bp
+    from app.routes.chat_routes import chat_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(scan_bp, url_prefix="/api")
     app.register_blueprint(report_bp, url_prefix="/api")
+    app.register_blueprint(chat_bp, url_prefix="/api")
 
 
 

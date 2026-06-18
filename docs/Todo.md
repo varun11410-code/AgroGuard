@@ -839,7 +839,7 @@ Selected Plan
 
 ## TASK 9.8
 
-Store session messages.
+[x] Store session messages.
 
 ---
 

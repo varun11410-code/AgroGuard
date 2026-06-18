@@ -75,7 +75,7 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         selected_plan: selectedPlan,
         image_stream: imageStreamData,
         ai_summary: aiSummary || null,
-        treatment_recommendations: selectedPlan ? treatmentPlans[selectedPlan]?.treatments || [] : [],
+        treatment_recommendations: selectedPlan ? (treatmentPlans as any)?.[selectedPlan]?.treatments || [] : [],
         prevention_suggestions: [] // Defaults to empty array for now as frontend doesn't have prevention yet
       };
 

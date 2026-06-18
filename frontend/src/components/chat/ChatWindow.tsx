@@ -11,9 +11,10 @@ interface ChatWindowProps {
   onClose: () => void;
   messages: MessageType[];
   onSendMessage: (msg: string) => void;
+  isGenerating?: boolean;
 }
 
-export default function ChatWindow({ isOpen, onClose, messages, onSendMessage }: ChatWindowProps) {
+export default function ChatWindow({ isOpen, onClose, messages, onSendMessage, isGenerating }: ChatWindowProps) {
   const { user, status } = useAuth();
 
   return (
@@ -42,8 +43,18 @@ export default function ChatWindow({ isOpen, onClose, messages, onSendMessage }:
         </>
       ) : (
         <>
-          <ChatMessageList messages={messages} />
-          <ChatInputArea onSend={onSendMessage} autoFocus={isOpen} />
+          <div className="flex-1 overflow-hidden flex flex-col relative">
+            <ChatMessageList messages={messages} />
+            {isGenerating && (
+              <div className="px-5 pb-2 text-xs text-g2 flex items-center gap-1.5 animate-pulse">
+                <span className="w-1.5 h-1.5 bg-g2 rounded-full"></span>
+                <span className="w-1.5 h-1.5 bg-g2 rounded-full animation-delay-150"></span>
+                <span className="w-1.5 h-1.5 bg-g2 rounded-full animation-delay-300"></span>
+                <span className="ml-1 opacity-80">AgroGuard AI is typing...</span>
+              </div>
+            )}
+          </div>
+          <ChatInputArea onSend={onSendMessage} disabled={isGenerating} autoFocus={isOpen && !isGenerating} />
         </>
       )}
     </div>
