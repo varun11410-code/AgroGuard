@@ -812,7 +812,7 @@ Implement context-aware chatbot.
 
 ## TASK 9.5
 
-Inject disease context.
+[x] Inject disease context.
 
 ### Context
 
