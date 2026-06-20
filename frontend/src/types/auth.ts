@@ -7,6 +7,9 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  language?: string;
+  preferred_budget_tier?: string;
+  created_at?: string;
 }
 
 export interface AuthState {

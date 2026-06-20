@@ -103,7 +103,10 @@ class AuthService:
             "id": str(user.id),
             "name": user.name,
             "email": user.email,
-            "role": user.role.value
+            "role": user.role.value,
+            "language": user.language,
+            "preferred_budget_tier": user.preferred_budget_tier.value,
+            "created_at": user.created_at.isoformat() if user.created_at else None
         }
 
     @staticmethod
