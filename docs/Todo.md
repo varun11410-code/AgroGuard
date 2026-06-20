@@ -859,7 +859,7 @@ Implement user dashboard functionality.
 
 ## TASK 10.2
 
-Implement language preference.
+[x] Implement language preference.
 
 ---
 

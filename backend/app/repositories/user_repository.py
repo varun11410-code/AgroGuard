@@ -37,3 +37,13 @@ class UserRepository:
         except IntegrityError:
             db.session.rollback()
             raise ValueError("Email already exists")
+
+    @staticmethod
+    def update(user: User) -> User:
+        """Commit changes to an existing user."""
+        try:
+            db.session.commit()
+            return user
+        except Exception:
+            db.session.rollback()
+            raise

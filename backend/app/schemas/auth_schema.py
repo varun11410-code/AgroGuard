@@ -4,6 +4,7 @@ AgroGuard Backend - Auth Schemas
 Defines validation schemas for authentication endpoints.
 """
 import re
+from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 class RegisterRequestSchema(BaseModel):
@@ -56,3 +57,5 @@ class LoginRequestSchema(BaseModel):
             raise ValueError("Invalid email format")
         return v
 
+class UpdatePreferencesSchema(BaseModel):
+    language: Optional[Literal["en", "hi"]] = Field(default=None)

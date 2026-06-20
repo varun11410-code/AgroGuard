@@ -197,6 +197,65 @@ class AuthController:
             }), 500
 
     @staticmethod
+    def preferences():
+        """
+        Handle PATCH /api/auth/preferences
+        """
+        try:
+            identity = get_jwt_identity()
+            data = request.get_json(silent=True)
+            if not data or not isinstance(data, dict):
+                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+
+            from app.schemas.auth_schema import UpdatePreferencesSchema
+            validated_data = UpdatePreferencesSchema(**data)
+
+            user_data = AuthService.update_preferences(
+                user_id=identity,
+                language=validated_data.language
+            )
+
+            return jsonify({
+                "success": True,
+                "data": user_data
+            }), 200
+
+        except ValidationError as e:
+            formatted_errors = []
+            for err in e.errors():
+                loc = err.get("loc", ("unknown",))
+                field = str(loc[-1]) if loc else "unknown"
+                formatted_errors.append({"field": field, "message": err.get("msg")})
+                
+            return jsonify({
+                "success": False,
+                "errors": formatted_errors
+            }), 400
+
+        except ValueError as e:
+            if str(e) == "User not found":
+                return jsonify({
+                    "success": False,
+                    "message": "User not found"
+                }), 404
+            
+            return jsonify({
+                "success": False,
+                "message": str(e)
+            }), 400
+
+        except HTTPException as e:
+            raise e
+
+        except Exception as e:
+            import logging
+            logging.exception("Unexpected error in preferences endpoint:")
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500
+
+    @staticmethod
     def admin_test():
         """
         Handle GET /api/auth/admin-test

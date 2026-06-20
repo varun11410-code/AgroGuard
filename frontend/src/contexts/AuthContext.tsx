@@ -28,11 +28,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState({ user: null, status: "unauthenticated", error: null });
   };
 
+  const updateUser = (data: Partial<import("@/types/auth").User>) => {
+    setState((prev) => ({
+      ...prev,
+      user: prev.user ? { ...prev.user, ...data } : null,
+    }));
+  };
+
   const value = React.useMemo(
     () => ({
       ...state,
       login,
       logout,
+      updateUser,
     }),
     [state]
   );

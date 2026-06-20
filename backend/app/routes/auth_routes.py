@@ -28,6 +28,11 @@ def refresh():
 def me():
     return AuthController.me()
 
+@auth_bp.patch("/preferences")
+@jwt_required()
+def preferences():
+    return AuthController.preferences()
+
 @auth_bp.get("/admin-test")
 @admin_required()
 def admin_test():

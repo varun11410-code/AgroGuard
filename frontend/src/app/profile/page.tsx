@@ -1,12 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { authService } from "@/services/auth";
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
+  
+  const [language, setLanguage] = useState(user?.language || "en");
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<{ text: string, type: "success" | "error" } | null>(null);
+
+  useEffect(() => {
+    if (user?.language) {
+      setLanguage(user.language);
+    }
+  }, [user?.language]);
 
   // Helper to format role
   const formatRole = (role?: string) => {
@@ -25,18 +37,29 @@ export default function ProfilePage() {
     }
   };
 
-  // Helper to format language
-  const formatLanguage = (lang?: string) => {
-    if (!lang) return "Not configured";
-    if (lang.toLowerCase() === "en") return "English";
-    if (lang.toLowerCase() === "hi") return "Hindi";
-    return lang;
-  };
-
   // Helper to format budget tier
   const formatBudget = (budget?: string) => {
     if (!budget) return "Not selected";
     return budget.charAt(0).toUpperCase() + budget.slice(1).toLowerCase();
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setMessage(null);
+    try {
+      const result = await authService.updatePreferences({ language });
+      if (result.success && result.data) {
+        updateUser(result.data);
+        setMessage({ text: "Preferences saved successfully.", type: "success" });
+      } else {
+        setMessage({ text: "Failed to save preferences.", type: "error" });
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage({ text: "An error occurred while saving.", type: "error" });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -86,17 +109,40 @@ export default function ProfilePage() {
               <CardTitle>Preferences</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {message && (
+                <div className={`p-3 text-sm rounded-md ${message.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                  {message.text}
+                </div>
+              )}
+              
               <div>
                 <p className="text-xs tracking-widest uppercase font-mono text-muted-foreground mb-1">
                   Language
                 </p>
-                <p className="font-sans text-lg">{formatLanguage(user?.language)}</p>
+                <select 
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="w-full mt-1 p-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="en">English</option>
+                  <option value="hi">Hindi</option>
+                </select>
               </div>
               <div>
                 <p className="text-xs tracking-widest uppercase font-mono text-muted-foreground mb-1">
                   Preferred Budget Tier
                 </p>
                 <p className="font-sans text-lg">{formatBudget(user?.preferred_budget_tier)}</p>
+              </div>
+              
+              <div className="pt-4">
+                <Button 
+                  onClick={handleSave} 
+                  disabled={isSaving || language === user?.language}
+                  className="w-full"
+                >
+                  {isSaving ? "Saving..." : "Save Settings"}
+                </Button>
               </div>
             </CardContent>
           </Card>

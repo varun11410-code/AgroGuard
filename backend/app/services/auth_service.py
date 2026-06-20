@@ -110,6 +110,30 @@ class AuthService:
         }
 
     @staticmethod
+    def update_preferences(user_id: str, language: str | None = None) -> dict:
+        """
+        Update user preferences.
+        """
+        user = UserRepository.get_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        if language is not None:
+            user.language = language
+
+        UserRepository.update(user)
+
+        return {
+            "id": str(user.id),
+            "name": user.name,
+            "email": user.email,
+            "role": user.role.value,
+            "language": user.language,
+            "preferred_budget_tier": user.preferred_budget_tier.value,
+            "created_at": user.created_at.isoformat() if user.created_at else None
+        }
+
+    @staticmethod
     def logout_user(jti: str, expires_at: int) -> None:
         """
         Log out the user by revoking their refresh token.
