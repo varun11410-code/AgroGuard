@@ -4,7 +4,7 @@ import { User } from '../types/auth';
 
 export const authService = {
   // Authentication methods
-  updatePreferences: async (data: { language?: string }) => {
+  updatePreferences: async (data: { language?: string; preferred_budget_tier?: string }) => {
     const response = await api.patch<{ success: boolean; data: User }>('/auth/preferences', data);
     return response.data;
   }

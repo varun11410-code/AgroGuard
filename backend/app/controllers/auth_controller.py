@@ -212,7 +212,8 @@ class AuthController:
 
             user_data = AuthService.update_preferences(
                 user_id=identity,
-                language=validated_data.language
+                language=validated_data.language,
+                preferred_budget_tier=validated_data.preferred_budget_tier
             )
 
             return jsonify({

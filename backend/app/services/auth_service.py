@@ -110,7 +110,7 @@ class AuthService:
         }
 
     @staticmethod
-    def update_preferences(user_id: str, language: str | None = None) -> dict:
+    def update_preferences(user_id: str, language: str | None = None, preferred_budget_tier: str | None = None) -> dict:
         """
         Update user preferences.
         """
@@ -120,6 +120,13 @@ class AuthService:
 
         if language is not None:
             user.language = language
+
+        if preferred_budget_tier is not None:
+            from app.models.user import BudgetTier
+            try:
+                user.preferred_budget_tier = BudgetTier(preferred_budget_tier)
+            except ValueError:
+                raise ValueError("Invalid budget tier")
 
         UserRepository.update(user)
 

@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const { user, updateUser } = useAuth();
   
   const [language, setLanguage] = useState(user?.language || "en");
+  const [budget, setBudget] = useState(user?.preferred_budget_tier || "STANDARD");
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string, type: "success" | "error" } | null>(null);
 
@@ -18,7 +19,10 @@ export default function ProfilePage() {
     if (user?.language) {
       setLanguage(user.language);
     }
-  }, [user?.language]);
+    if (user?.preferred_budget_tier) {
+      setBudget(user.preferred_budget_tier);
+    }
+  }, [user?.language, user?.preferred_budget_tier]);
 
   // Helper to format role
   const formatRole = (role?: string) => {
@@ -47,7 +51,10 @@ export default function ProfilePage() {
     setIsSaving(true);
     setMessage(null);
     try {
-      const result = await authService.updatePreferences({ language });
+      const result = await authService.updatePreferences({ 
+        language, 
+        preferred_budget_tier: budget 
+      });
       if (result.success && result.data) {
         updateUser(result.data);
         setMessage({ text: "Preferences saved successfully.", type: "success" });
@@ -132,13 +139,21 @@ export default function ProfilePage() {
                 <p className="text-xs tracking-widest uppercase font-mono text-muted-foreground mb-1">
                   Preferred Budget Tier
                 </p>
-                <p className="font-sans text-lg">{formatBudget(user?.preferred_budget_tier)}</p>
+                <select 
+                  value={budget} 
+                  onChange={(e) => setBudget(e.target.value)}
+                  className="w-full mt-1 p-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="BUDGET">Budget</option>
+                  <option value="STANDARD">Standard</option>
+                  <option value="PREMIUM">Premium</option>
+                </select>
               </div>
               
               <div className="pt-4">
                 <Button 
                   onClick={handleSave} 
-                  disabled={isSaving || language === user?.language}
+                  disabled={isSaving || (language === user?.language && budget === user?.preferred_budget_tier)}
                   className="w-full"
                 >
                   {isSaving ? "Saving..." : "Save Settings"}

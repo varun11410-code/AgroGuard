@@ -59,3 +59,4 @@ class LoginRequestSchema(BaseModel):
 
 class UpdatePreferencesSchema(BaseModel):
     language: Optional[Literal["en", "hi"]] = Field(default=None)
+    preferred_budget_tier: Optional[Literal["BUDGET", "STANDARD", "PREMIUM"]] = Field(default=None)

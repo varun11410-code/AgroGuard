@@ -865,7 +865,7 @@ Implement user dashboard functionality.
 
 ## TASK 10.3
 
-Implement budget preference.
+[x] Implement budget preference.
 
 ---
 
