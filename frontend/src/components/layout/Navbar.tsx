@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: "Upload", href: "/upload" },
   { label: "Dashboard", href: "/#dashboard" },
   { label: "History", href: "/history" },
+  { label: "Reports", href: "/reports" },
 ];
 
 export default function Navbar() {

@@ -8,6 +8,7 @@ from typing import List, Optional, Any
 from datetime import datetime, timezone
 
 class ReportData(BaseModel):
+    scan_id: Optional[str] = Field(None, description="The ID of the parent scan")
     crop: str = Field(..., description="Name of the crop")
     disease: str = Field(..., description="Predicted disease name")
     confidence: float = Field(..., description="Confidence score from the ML model")

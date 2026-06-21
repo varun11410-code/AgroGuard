@@ -871,19 +871,19 @@ Implement user dashboard functionality.
 
 ## TASK 10.4
 
-Create scan history page.
+[x] Create scan history page.
 
 ---
 
 ## TASK 10.5
 
-Create report history page.
+[x] Create report history page.
 
 ---
 
 ## TASK 10.5b
 
-Store report metadata.
+[x] Store report metadata.
 - **Dependencies required:** Scan Persistence, User History, Authentication, Report Ownership.
 - Must tie into `POST /api/reports/generate` when the user is authenticated.
 

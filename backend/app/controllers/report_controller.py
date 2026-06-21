@@ -7,9 +7,11 @@ import logging
 from flask import request, jsonify, send_file
 from werkzeug.exceptions import HTTPException
 from pydantic import ValidationError
+from flask_jwt_extended import get_jwt_identity
 
 from app.schemas.report_contract import ReportData
 from app.services.report_service import generate_report
+from app.services.report_management_service import ReportManagementService
 from app.utils.image_helper import fetch_image_to_buffer
 import base64
 import io
@@ -50,12 +52,24 @@ class ReportController:
             # 4. Generate the PDF buffer
             pdf_buffer = generate_report(validated_data)
 
-            # 5. Construct safe filename
+            # 5. Save metadata if authenticated and scan_id is provided
+            user_id = get_jwt_identity()
+            if user_id and validated_data.scan_id and validated_data.ai_summary:
+                try:
+                    ReportManagementService.save_report_metadata(
+                        scan_id=validated_data.scan_id,
+                        user_id=user_id,
+                        summary=validated_data.ai_summary
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to save report metadata silently: {e}")
+
+            # 6. Construct safe filename
             crop = validated_data.crop.replace(" ", "_")
             disease = validated_data.disease.replace(" ", "_")
             filename = f"AgroGuard_{crop}_{disease}.pdf"
 
-            # 6. Stream file to client
+            # 7. Stream file to client
             return send_file(
                 pdf_buffer,
                 mimetype="application/pdf",
@@ -93,3 +107,46 @@ class ReportController:
                 "success": False,
                 "message": "An unexpected server error occurred during report generation"
             }), 500
+
+    @staticmethod
+    def get_history():
+        """
+        Handle GET /api/reports
+        """
+        try:
+            user_id = get_jwt_identity()
+            reports = ReportManagementService.get_user_history(user_id)
+            return jsonify({
+                "success": True,
+                "data": reports
+            }), 200
+        except Exception as e:
+            logger.exception("Error fetching report history:")
+            return jsonify({"success": False, "message": "Failed to fetch report history"}), 500
+
+    @staticmethod
+    def download_historical(report_id: str):
+        """
+        Handle GET /api/reports/<report_id>/download
+        """
+        try:
+            user_id = get_jwt_identity()
+            pdf_buffer = ReportManagementService.reconstruct_report(report_id, user_id)
+            
+            # Note: We use a generic filename here as crop/disease are inside the buffer's domain, 
+            # or we could fetch it from the DB again. A simple generic one suffices.
+            filename = f"AgroGuard_Historical_Report_{report_id[:8]}.pdf"
+            
+            return send_file(
+                pdf_buffer,
+                mimetype="application/pdf",
+                as_attachment=True,
+                download_name=filename
+            )
+        except ValueError as e:
+            if str(e) in ["Report not found", "Access denied"]:
+                return jsonify({"success": False, "message": str(e)}), 404 if str(e) == "Report not found" else 403
+            return jsonify({"success": False, "message": str(e)}), 400
+        except Exception as e:
+            logger.exception("Error downloading historical report:")
+            return jsonify({"success": False, "message": "Failed to download historical report"}), 500

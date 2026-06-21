@@ -2,6 +2,7 @@
 import api from './api';
 
 export interface ReportDataPayload {
+  scan_id?: string | null;
   crop: string;
   disease: string;
   confidence: number;
@@ -12,9 +13,21 @@ export interface ReportDataPayload {
   prevention_suggestions: string[];
 }
 
+export interface ReportMetadata {
+  id: string;
+  scan_id: string;
+  report_version: string;
+  generated_at: string;
+  scan: {
+    crop_name: string;
+    predicted_disease: string;
+    confidence_score: number;
+  };
+}
+
 export const reportService = {
   /**
-   * Generates and downloads a PDF report.
+   * Generates and downloads a new PDF report.
    * @param data The exactly formatted ReportData payload
    */
   downloadReport: async (data: ReportDataPayload): Promise<void> => {
@@ -52,8 +65,6 @@ export const reportService = {
       }, 100);
 
     } catch (error: any) {
-      // Axios error parsing for blob responses is tricky because the response is a blob
-      // If it's an API error, we might need to read the blob to get the JSON message
       if (error.response && error.response.data instanceof Blob) {
         try {
           const text = await error.response.data.text();
@@ -64,6 +75,69 @@ export const reportService = {
         }
       }
       throw new Error('Network error or failed to generate report');
+    }
+  },
+
+  /**
+   * Retrieves the authenticated user's explicitly generated reports.
+   */
+  getHistory: async (): Promise<ReportMetadata[]> => {
+    try {
+      const response = await api.get('/reports');
+      if (response.data.success) {
+        return response.data.data;
+      }
+      throw new Error(response.data.message || 'Failed to fetch report history');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Network error fetching report history');
+    }
+  },
+
+  /**
+   * Reconstructs and downloads a historical report.
+   */
+  downloadHistoricalReport: async (report_id: string): Promise<void> => {
+    try {
+      const response = await api.get(`/reports/${report_id}/download`, {
+        responseType: 'blob',
+      });
+
+      let filename = `AgroGuard_Historical_Report_${report_id.substring(0, 8)}.pdf`;
+      const disposition = response.headers['content-disposition'];
+      
+      if (disposition && disposition.indexOf('filename=') !== -1) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 100);
+
+    } catch (error: any) {
+      if (error.response && error.response.data instanceof Blob) {
+        try {
+          const text = await error.response.data.text();
+          const json = JSON.parse(text);
+          throw new Error(json.message || 'Failed to download report');
+        } catch (e) {
+          throw new Error('Failed to download report due to a server error');
+        }
+      }
+      throw new Error('Network error or failed to download report');
     }
   }
 };
