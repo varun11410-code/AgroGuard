@@ -41,3 +41,27 @@ class ScanRepository:
             return list(db.session.execute(query).scalars().all())
         except ValueError:
             return []
+
+    @staticmethod
+    def get_by_id(scan_id: str) -> Scan | None:
+        """
+        Fetch a single scan by its UUID.
+        """
+        import uuid
+        try:
+            uid = uuid.UUID(scan_id)
+            return db.session.execute(db.select(Scan).where(Scan.id == uid)).scalar_one_or_none()
+        except ValueError:
+            return None
+
+    @staticmethod
+    def delete(scan: Scan) -> None:
+        """
+        Deletes a scan record.
+        """
+        try:
+            db.session.delete(scan)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

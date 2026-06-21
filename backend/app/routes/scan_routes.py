@@ -24,3 +24,11 @@ def get_scan_history():
     Retrieves the authenticated user's scan history.
     """
     return ScanController.get_history()
+
+@scan_bp.delete("/scans/<scan_id>")
+@jwt_required()
+def delete_scan(scan_id):
+    """
+    Deletes a specific scan record.
+    """
+    return ScanController.delete(scan_id)

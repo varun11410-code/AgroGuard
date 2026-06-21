@@ -144,3 +144,28 @@ class ScanController:
                 "success": False,
                 "message": "An unexpected server error occurred"
             }), 500
+
+    @staticmethod
+    def delete(scan_id: str):
+        """
+        Handle DELETE /api/scans/<scan_id>
+        """
+        try:
+            user_id = get_jwt_identity()
+            ScanService.delete_scan(scan_id, user_id)
+            return jsonify({
+                "success": True,
+                "message": "Scan deleted successfully"
+            }), 200
+        except ValueError as e:
+            if str(e) == "Scan not found":
+                return jsonify({"success": False, "message": str(e)}), 404
+            elif str(e) == "Access denied":
+                return jsonify({"success": False, "message": str(e)}), 403
+            return jsonify({"success": False, "message": str(e)}), 400
+        except Exception as e:
+            logger.exception("Unexpected error occurred in delete scan endpoint")
+            return jsonify({
+                "success": False,
+                "message": "An unexpected server error occurred"
+            }), 500

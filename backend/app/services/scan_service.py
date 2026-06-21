@@ -56,3 +56,18 @@ class ScanService:
         Returns a list of scans securely isolated to the authenticated user.
         """
         return ScanRepository.get_user_scans(user_id)
+
+    @staticmethod
+    def delete_scan(scan_id: str, user_id: str) -> None:
+        """
+        Deletes a scan securely after verifying ownership.
+        Raises ValueError if scan is not found or access is denied.
+        """
+        scan = ScanRepository.get_by_id(scan_id)
+        if not scan:
+            raise ValueError("Scan not found")
+            
+        if str(scan.user_id) != user_id:
+            raise ValueError("Access denied")
+            
+        ScanRepository.delete(scan)

@@ -147,5 +147,47 @@ export const scanService = {
       console.error("Error fetching scan history:", error);
       throw error;
     }
+  },
+
+  async deleteScan(scanId: string): Promise<void> {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
+    const endpoint = cleanBaseUrl.endsWith("/api")
+      ? `${cleanBaseUrl}/scans/${scanId}`
+      : `${cleanBaseUrl}/api/scans/${scanId}`;
+
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      throw new Error("Unauthorized");
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to delete scan.";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const responseData = await response.json();
+      if (!responseData.success) {
+        throw new Error(responseData.message || "Failed to delete scan");
+      }
+    } catch (error) {
+      console.error("Error deleting scan:", error);
+      throw error;
+    }
   }
 };

@@ -158,6 +158,25 @@ export default function HistoryPage() {
                     >
                       {isDownloading ? "Generating..." : "View Report"}
                     </button>
+                    <button 
+                      onClick={async () => {
+                        if (!window.confirm("Are you sure you want to delete this scan? This action cannot be undone.")) return;
+                        
+                        // Optimistic update
+                        const previousScans = [...scans];
+                        setScans(scans.filter(s => s.id !== scan.id));
+                        
+                        try {
+                          await scanService.deleteScan(scan.id);
+                        } catch (err) {
+                          setScans(previousScans);
+                          alert("Failed to delete scan. Please try again.");
+                        }
+                      }}
+                      className="hist-btn danger p-[8px_16px] rounded-[8px] text-[0.8rem] font-semibold cursor-pointer transition-all duration-200 font-sans border bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               );
