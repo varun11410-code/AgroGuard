@@ -5,6 +5,14 @@ export interface TreatmentPlan {
   estimatedCost: string;
 }
 
+export interface HistoryScan {
+  id: string;
+  crop_name: string;
+  predicted_disease: string;
+  confidence_score: number;
+  created_at: string;
+}
+
 export interface ScanResponse {
   scanId: string;
   status: string;
@@ -45,9 +53,16 @@ export const scanService = {
     formData.append("image", file);
     formData.append("crop", cropId);
 
+    const headers: HeadersInit = {};
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
+        headers,
         body: formData,
       });
 
@@ -94,6 +109,43 @@ export const scanService = {
       throw new ScanUploadError(
         error instanceof Error ? error.message : "A network error occurred while uploading."
       );
+    }
+  },
+
+  async getHistory(): Promise<HistoryScan[]> {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
+    const endpoint = cleanBaseUrl.endsWith("/api")
+      ? `${cleanBaseUrl}/scans`
+      : `${cleanBaseUrl}/api/scans`;
+
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      return [];
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch scan history");
+      }
+
+      const responseData = await response.json();
+      if (!responseData.success) {
+        throw new Error(responseData.message || "Failed to fetch scan history");
+      }
+
+      return responseData.data as HistoryScan[];
+    } catch (error) {
+      console.error("Error fetching scan history:", error);
+      throw error;
     }
   }
 };
