@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Eye, EyeOff } from "lucide-react"
 import { authService } from "@/services/auth"
@@ -11,6 +12,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
 export default function RegisterPage() {
+  const router = useRouter()
+  
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -32,11 +35,8 @@ export default function RegisterPage() {
     setIsSubmitting(true)
     
     try {
-      const response = await authService.register({ name, email, password })
-      console.log("Registration successful (Task 9C integration complete):", response)
-      // TODO: Task 9D - AuthContext Integration
-      // TODO: Task 9E - Session Persistence
-      // TODO: Task 9F - Navigation state and redirects
+      await authService.register({ name, email, password })
+      router.push("/login")
     } catch (err: any) {
       setError(err.message || "Registration failed")
     } finally {

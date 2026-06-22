@@ -1,26 +1,35 @@
 "use client";
 
 import * as React from "react";
-import { AuthContextType, AuthState } from "@/types/auth";
+import { AuthContextType, AuthState, LoginCredentials } from "@/types/auth";
+import { authService } from "@/services/auth";
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 const initialState: AuthState = {
   user: null,
-  status: "unauthenticated", // Mock state. Change to "authenticated" locally to test protected routes without a backend.
+  status: "loading", // Initialize as loading to prevent flicker during mount-and-check lifecycle.
   error: null,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = React.useState<AuthState>(initialState);
 
+  // Phase 9D: Immediately resolve "loading" to "unauthenticated" on mount.
+  // Phase 9E will replace this with actual token validation.
+  React.useEffect(() => {
+    if (state.status === "loading") {
+      setState((prev) => ({ ...prev, status: "unauthenticated" }));
+    }
+  }, []);
+
   // Future implementation: Fetch JWT from secure cookies or local storage,
   // validate with backend API, and populate user state.
 
-  const login = async () => {
-    console.log("Mock login triggered. Future JWT retrieval and backend auth goes here.");
-    // Example of future state update:
-    // setState({ user: mockUser, status: "authenticated", error: null });
+  const login = async (credentials: LoginCredentials) => {
+    // AuthContext owns login orchestration. The page simply awaits this function.
+    const response = await authService.login(credentials);
+    setState({ user: response.user, status: "authenticated", error: null });
   };
 
   const logout = async () => {
