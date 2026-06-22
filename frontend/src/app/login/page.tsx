@@ -4,6 +4,8 @@ import * as React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Eye, EyeOff } from "lucide-react"
+import { authService } from "@/services/auth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -11,15 +13,26 @@ import { Button } from "@/components/ui/button"
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
     setIsSubmitting(true)
-    
-    // TODO: Task 9C - Implement Auth Service Integration
-    
-    setIsSubmitting(false)
+
+    try {
+      const response = await authService.login({ email, password })
+      console.log("Login successful (Task 9C integration complete):", response)
+      // TODO: Task 9D - AuthContext Integration
+      // TODO: Task 9E - Session Persistence
+      // TODO: Task 9F - Navigation state and redirects
+    } catch (err: any) {
+      setError(err.message || "Login failed")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -30,17 +43,17 @@ export default function LoginPage() {
         <div className="aurora aurora-2"></div>
         <div className="aurora aurora-3"></div>
       </div>
-      
+
       {/* Animated Particles */}
       {Array.from({ length: 15 }).map((_, i) => (
-        <div 
-          key={i} 
-          className="particle" 
-          style={{ 
+        <div
+          key={i}
+          className="particle"
+          style={{
             left: `${Math.random() * 100}%`,
             animationDelay: `${Math.random() * 5}s`,
             animationDuration: `${10 + Math.random() * 10}s`
-          }} 
+          }}
         />
       ))}
 
@@ -56,16 +69,21 @@ export default function LoginPage() {
             Enter your credentials to access AgroGuard
           </CardDescription>
         </CardHeader>
-        
+
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-5">
+            {error && (
+              <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive/90 rounded-md">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-white/90">Email</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="name@example.com" 
-                required 
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -73,23 +91,36 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-white/90">Password</Label>
-                <Link href="#" className="text-sm font-medium text-primary hover:underline">
+                {/*<Link href="#" className="text-sm font-medium text-primary hover:underline">
                   Forgot password?
-                </Link>
+                </Link>*/}
               </div>
-              <Input 
-                id="password" 
-                type="password" 
-                required 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-2">
-            <Button 
-              type="submit" 
-              className="w-full text-base h-12" 
+            <Button
+              type="submit"
+              className="w-full text-base h-12"
               disabled={isSubmitting}
             >
               Sign In

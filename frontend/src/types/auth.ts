@@ -23,3 +23,31 @@ export interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   updateUser: (data: Partial<User>) => void;
 }
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  user: User;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  data: User;
+}
+
+export interface ApiErrorResponse {
+  success: boolean;
+  message?: string;
+  errors?: Array<{ field: string; message: string }>;
+}
