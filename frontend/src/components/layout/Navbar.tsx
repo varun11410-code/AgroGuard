@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: "Dashboard", href: "/#dashboard" },
   { label: "History", href: "/history" },
   { label: "Reports", href: "/reports" },
+  { label: "Profile", href: "/profile" },
 ];
 
 export default function Navbar() {
@@ -74,11 +75,11 @@ export default function Navbar() {
           ))}
 
           <div className="flex items-center gap-2 ml-2">
-            <Button variant="outline" className="text-[1.1rem]">
-              Login
+            <Button variant="outline" className="text-[1.1rem]" asChild>
+              <Link href="/login">Login</Link>
             </Button>
-            <Button className="text-[1.1rem]">
-              Sign Up
+            <Button className="text-[1.1rem]" asChild>
+              <Link href="/signup">Sign Up</Link>
             </Button>
           </div>
         </div>
@@ -125,8 +126,9 @@ export default function Navbar() {
           variant="default"
           size="lg"
           onClick={() => setIsMobileMenuOpen(false)}
+          asChild
         >
-          Login
+          <Link href="/login">Login</Link>
         </Button>
       </div>
     </>

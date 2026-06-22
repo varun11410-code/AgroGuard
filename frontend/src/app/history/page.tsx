@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { scanService, HistoryScan } from "@/services/scan";
 import { reportService, ReportDataPayload } from "@/services/report";
 import { useAuth } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { cn } from "@/lib/utils";
 
 const CROP_EMOJIS: Record<string, string> = {
@@ -14,33 +15,28 @@ const CROP_EMOJIS: Record<string, string> = {
 
 export default function HistoryPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { status: authStatus } = useAuth();
   const [scans, setScans] = useState<HistoryScan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authStatus === "authenticated") {
+      const fetchHistory = async () => {
+        try {
+          const data = await scanService.getHistory();
+          setScans(data);
+        } catch (err: unknown) {
+          setError(err instanceof Error ? err.message : "Failed to load history");
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    if (!user) {
-      router.push("/auth");
-      return;
+      fetchHistory();
     }
-
-    const fetchHistory = async () => {
-      try {
-        const data = await scanService.getHistory();
-        setScans(data);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load history");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, [user, authLoading, router]);
+  }, [authStatus]);
 
   const handleViewReport = async (scan: HistoryScan) => {
     if (downloadingId) return;
@@ -67,24 +63,23 @@ export default function HistoryPage() {
     }
   };
 
-  if (authLoading || loading) {
+  if (authStatus === "loading" || loading) {
     return (
-      <main className="pt-[140px] pb-[80px] min-h-screen relative">
-        <div className="container max-w-[800px]">
-          <div className="text-center">
-            <h1 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-              Scan History
-            </h1>
-            <p className="text-muted-foreground text-lg mb-10">
-              Loading your past diagnoses...
-            </p>
+      <ProtectedRoute>
+        <main className="pt-[140px] pb-[80px] min-h-screen flex items-center justify-center">
+          <div className="w-full max-w-4xl px-6">
+            <div className="flex flex-col items-center justify-center p-12 glass rounded-2xl">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-muted-foreground">Loading your past diagnoses...</p>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </ProtectedRoute>
     );
   }
 
   return (
+    <ProtectedRoute>
     <main className="pt-[140px] pb-[80px] min-h-screen relative">
       <div className="container max-w-[800px]">
         
@@ -185,5 +180,6 @@ export default function HistoryPage() {
         )}
       </div>
     </main>
+    </ProtectedRoute>
   );
 }
