@@ -79,7 +79,7 @@ export default function Navbar() {
               <Link href="/login">Login</Link>
             </Button>
             <Button className="text-[1.1rem]" asChild>
-              <Link href="/signup">Sign Up</Link>
+              <Link href="/register">Sign Up</Link>
             </Button>
           </div>
         </div>

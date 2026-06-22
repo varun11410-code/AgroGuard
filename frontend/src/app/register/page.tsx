@@ -8,13 +8,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      return
+    }
+
     setIsSubmitting(true)
     
     // TODO: Task 9C - Implement Auth Service Integration
@@ -51,14 +61,32 @@ export default function LoginPage() {
               <span className="text-white font-heading font-bold text-xl">AG</span>
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
+          <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
           <CardDescription className="text-muted-foreground/80">
-            Enter your credentials to access AgroGuard
+            Join AgroGuard for AI-powered crop insights
           </CardDescription>
         </CardHeader>
         
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-4">
+            {error && (
+              <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive/90 rounded-md">
+                {error}
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-white/90">Full Name</Label>
+              <Input 
+                id="name" 
+                type="text" 
+                placeholder="John Doe" 
+                required 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            
             <div className="space-y-2">
               <Label htmlFor="email" className="text-white/90">Email</Label>
               <Input 
@@ -70,19 +98,26 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-white/90">Password</Label>
-                <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
+              <Label htmlFor="password" className="text-white/90">Password</Label>
               <Input 
                 id="password" 
                 type="password" 
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-white/90">Confirm Password</Label>
+              <Input 
+                id="confirmPassword" 
+                type="password" 
+                required 
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
           </CardContent>
@@ -92,12 +127,12 @@ export default function LoginPage() {
               className="w-full text-base h-12" 
               disabled={isSubmitting}
             >
-              Sign In
+              Sign Up
             </Button>
             <div className="text-center text-sm text-muted-foreground/80">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="font-semibold text-white hover:text-primary transition-colors">
-                Create account
+              Already have an account?{" "}
+              <Link href="/login" className="font-semibold text-white hover:text-primary transition-colors">
+                Log in
               </Link>
             </div>
           </CardFooter>
