@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     try {
       await login({ email, password })
-      router.push("/profile")
+      router.push("/upload")
     } catch (err: any) {
       setError(err.message || "Login failed")
     } finally {

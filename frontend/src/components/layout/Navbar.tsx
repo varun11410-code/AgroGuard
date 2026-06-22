@@ -2,15 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
-const NAV_LINKS = [
+const PUBLIC_LINKS = [
   { label: "Home", href: "/" },
   { label: "Crops", href: "/#crops" },
   { label: "Features", href: "/#features" },
+];
+
+const PROTECTED_LINKS = [
   { label: "Upload", href: "/upload" },
-  { label: "Dashboard", href: "/#dashboard" },
   { label: "History", href: "/history" },
   { label: "Reports", href: "/reports" },
   { label: "Profile", href: "/profile" },
@@ -19,6 +23,17 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const { status, user, logout } = useAuth();
+  const router = useRouter();
+  
+  const navLinks = status === "authenticated" ? [...PUBLIC_LINKS, ...PROTECTED_LINKS] : PUBLIC_LINKS;
+
+  const handleLogout = async () => {
+    await logout();
+    setIsMobileMenuOpen(false);
+    router.push("/login");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +79,7 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center gap-2">
-          {NAV_LINKS.map((item) => (
+          {navLinks.map((item) => (
             <Link
               key={item.label}
               href={item.href}
@@ -74,14 +89,29 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <div className="flex items-center gap-2 ml-2">
-            <Button variant="outline" className="text-[1.1rem]" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button className="text-[1.1rem]" asChild>
-              <Link href="/register">Sign Up</Link>
-            </Button>
-          </div>
+          {status !== "loading" && (
+            <div className="flex items-center gap-2 ml-2">
+              {status === "authenticated" ? (
+                <>
+                  <div className="px-4 py-2 text-[1.1rem] font-medium text-foreground">
+                    Hello, {user?.name.split(' ')[0]}
+                  </div>
+                  <Button onClick={handleLogout} variant="outline" className="text-[1.1rem]">
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="text-[1.1rem]" asChild>
+                    <Link href="/login">Login</Link>
+                  </Button>
+                  <Button className="text-[1.1rem]" asChild>
+                    <Link href="/register">Sign Up</Link>
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Hamburger Menu Button */}
@@ -112,7 +142,7 @@ export default function Navbar() {
         >
           ✕
         </button>
-        {NAV_LINKS.map((item) => (
+        {navLinks.map((item) => (
           <Link
             key={item.label}
             href={item.href}
@@ -122,14 +152,33 @@ export default function Navbar() {
             {item.label}
           </Link>
         ))}
-        <Button
-          variant="default"
-          size="lg"
-          onClick={() => setIsMobileMenuOpen(false)}
-          asChild
-        >
-          <Link href="/login">Login</Link>
-        </Button>
+        {status !== "loading" && (
+          <div className="flex flex-col items-center gap-4 mt-4">
+            {status === "authenticated" ? (
+              <>
+                <div className="font-heading text-xl text-foreground">
+                  Hello, {user?.name.split(' ')[0]}
+                </div>
+                <Button
+                  variant="default"
+                  size="lg"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="default"
+                size="lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+                asChild
+              >
+                <Link href="/login">Login</Link>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
