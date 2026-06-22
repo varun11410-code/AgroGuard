@@ -71,7 +71,7 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-4xl mx-auto py-12 px-6">
+      <main className="max-w-4xl mx-auto pt-[140px] pb-[80px] px-6 min-h-screen relative">
         <h1 className="text-3xl font-bold tracking-tight font-heading mb-8">
           User Profile
         </h1>
@@ -162,7 +162,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
     </ProtectedRoute>
   );
 }

@@ -61,7 +61,7 @@ export default function ReportsHistoryPage() {
   if (authStatus === "loading" || loading) {
     return (
       <ProtectedRoute>
-        <main className="max-w-4xl mx-auto py-12 px-6">
+        <main className="max-w-4xl mx-auto pt-[140px] pb-[80px] px-6 min-h-screen relative">
           <h1 className="text-3xl font-bold font-heading mb-8">Report History</h1>
           <div className="flex flex-col items-center justify-center p-12 glass rounded-2xl">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -74,7 +74,7 @@ export default function ReportsHistoryPage() {
 
   return (
     <ProtectedRoute>
-      <main className="max-w-4xl mx-auto py-12 px-6">
+      <main className="max-w-4xl mx-auto pt-[140px] pb-[80px] px-6 min-h-screen relative">
         <h1 className="text-3xl font-bold font-heading mb-8 flex items-center gap-3">
           <FileText className="w-8 h-8 text-primary" />
           Report History

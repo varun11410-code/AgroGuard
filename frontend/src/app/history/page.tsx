@@ -81,7 +81,7 @@ export default function HistoryPage() {
   return (
     <ProtectedRoute>
     <main className="pt-[140px] pb-[80px] min-h-screen relative">
-      <div className="container max-w-[800px]">
+      <div className="container mx-auto px-6 max-w-[800px]">
         
         <div className="text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-mono text-sm mb-4">
