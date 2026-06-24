@@ -82,25 +82,25 @@ export default function AdminDashboardPage() {
 
   return (
     <ProtectedRoute requiredRoles={["ADMIN"]}>
-      <section className="min-h-screen bg-background pt-[130px] pb-20 px-[7%]">
-        <div className="container max-w-[1400px] mx-auto space-y-12">
+      <main className="pt-[140px] pb-[80px] min-h-screen relative">
+        <div className="container mx-auto px-6 max-w-[1400px] space-y-12">
           
           {/* Header */}
           <div className="section-title">
-            <div className="inline-flex items-center gap-2 font-mono text-[0.7rem] tracking-[0.15em] uppercase text-green-500 py-2 px-4 rounded-full border border-green-500/25 bg-green-500/5 mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 font-mono text-sm mb-4">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
               Overview
             </div>
-            <h2 className="font-display text-[clamp(2.2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em] mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
               Admin Dashboard
             </h2>
-            <p className="text-white/50 text-[1.05rem] max-w-[520px] leading-[1.8]">
+            <p className="text-muted-foreground text-lg max-w-[520px] leading-[1.8]">
               Platform statistics and user activity monitoring.
             </p>
           </div>
 
           {/* Stats Grid Injection Zone */}
-          <div id="admin-stats-container" className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+          <div id="admin-stats-container" className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
             {/* Stat Card: Total Users */}
             <div className="glass-strong p-[28px_24px] relative overflow-hidden group hover:border-green-400/50 transition-colors">
               <div className="text-[1.4rem] mb-[10px] text-green-500 opacity-80">
@@ -276,7 +276,7 @@ export default function AdminDashboardPage() {
           </div>
 
         </div>
-      </section>
+      </main>
     </ProtectedRoute>
   );
 }

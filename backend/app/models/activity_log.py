@@ -179,8 +179,9 @@ class ActivityLog(db.Model):
     # ------------------------------------------------------------------
 
     def __repr__(self) -> str:  # pragma: no cover
+        activity_str = self.activity_type if isinstance(self.activity_type, str) else self.activity_type.value
         return (
             f"<ActivityLog id={self.id} "
             f"user_id={self.user_id} "
-            f"activity_type={self.activity_type.value}>"
+            f"activity_type={activity_str}>"
         )

@@ -50,7 +50,7 @@ class AdminController:
                     "id": str(log.id),
                     "user_id": str(log.user_id) if log.user_id else None,
                     "user_email": log.user.email if log.user else "Guest",
-                    "activity_type": log.activity_type.value,
+                    "activity_type": log.activity_type if isinstance(log.activity_type, str) else log.activity_type.value,
                     "details": log.details,
                     "timestamp": log.timestamp.isoformat()
                 })
