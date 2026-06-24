@@ -193,6 +193,7 @@ class User(db.Model):
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
+        index=True,
         server_default=func.now(),
         doc="UTC timestamp of account creation, set once by the database.",
     )

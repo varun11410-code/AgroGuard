@@ -92,3 +92,20 @@ class ScanRepository:
         )
         results = db.session.execute(query).all()
         return [{"disease": row[0], "count": row[1]} for row in results]
+
+    @staticmethod
+    def get_paginated_scans(page: int = 1, per_page: int = 50) -> tuple[list[Scan], int]:
+        """Fetch paginated scans, ordered by newest first."""
+        query = db.select(Scan).options(joinedload(Scan.crop)).order_by(Scan.created_at.desc())
+        total_count = db.session.scalar(db.select(db.func.count()).select_from(Scan)) or 0
+        offset = (page - 1) * per_page
+        scans = list(db.session.execute(query.limit(per_page).offset(offset)).scalars().all())
+        return scans, total_count
+
+    @staticmethod
+    def count_by_date_range(start_date, end_date) -> int:
+        """Count scans created within a specific date range."""
+        return db.session.scalar(
+            db.select(db.func.count(Scan.id))
+            .where(Scan.created_at >= start_date, Scan.created_at <= end_date)
+        ) or 0

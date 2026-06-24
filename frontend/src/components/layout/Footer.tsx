@@ -12,7 +12,7 @@ const FOOTER_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="pt-[60px] pb-10 px-[7%] w-full mt-auto">
+    <footer id="global-footer" className="pt-[60px] pb-10 px-[7%] w-full mt-auto">
       <div className="container mx-auto glass-card p-[50px] grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 items-center">
 
         {/* Brand Area */}

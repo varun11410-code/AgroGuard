@@ -71,3 +71,12 @@ class ReportRepository:
                 .order_by(Report.generated_at.desc())
             ).scalars().all()
         )
+
+    @staticmethod
+    def get_paginated_reports(page: int = 1, per_page: int = 50) -> tuple[list[Report], int]:
+        """Fetch paginated reports, ordered by newest first."""
+        query = db.select(Report).options(joinedload(Report.scan)).order_by(Report.generated_at.desc())
+        total_count = db.session.scalar(db.select(db.func.count()).select_from(Report)) or 0
+        offset = (page - 1) * per_page
+        reports = list(db.session.execute(query.limit(per_page).offset(offset)).scalars().all())
+        return reports, total_count

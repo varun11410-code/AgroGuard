@@ -46,3 +46,11 @@ class ActivityLogRepository:
         
         logs = list(db.session.execute(query).scalars().all())
         return logs, total_count
+
+    @staticmethod
+    def count_active_users_by_date_range(start_date, end_date) -> int:
+        """Count distinct active users within a specific date range."""
+        return db.session.scalar(
+            db.select(db.func.count(db.distinct(ActivityLog.user_id)))
+            .where(ActivityLog.timestamp >= start_date, ActivityLog.timestamp <= end_date, ActivityLog.user_id.isnot(None))
+        ) or 0

@@ -54,3 +54,20 @@ class UserRepository:
         Get the total number of registered users.
         """
         return db.session.scalar(db.select(db.func.count()).select_from(User)) or 0
+
+    @staticmethod
+    def get_paginated_users(page: int = 1, per_page: int = 50) -> tuple[list[User], int]:
+        """Fetch paginated users, ordered by newest first."""
+        query = db.select(User).order_by(User.created_at.desc())
+        total_count = db.session.scalar(db.select(db.func.count()).select_from(User)) or 0
+        offset = (page - 1) * per_page
+        users = list(db.session.execute(query.limit(per_page).offset(offset)).scalars().all())
+        return users, total_count
+
+    @staticmethod
+    def count_by_date_range(start_date, end_date) -> int:
+        """Count users created within a specific date range."""
+        return db.session.scalar(
+            db.select(db.func.count(User.id))
+            .where(User.created_at >= start_date, User.created_at <= end_date)
+        ) or 0

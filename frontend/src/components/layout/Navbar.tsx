@@ -55,6 +55,7 @@ export default function Navbar() {
   return (
     <>
       <nav
+        id="global-navbar"
         className={cn(
           "fixed top-5 left-1/2 -translate-x-1/2 w-[92%] max-w-[1400px] py-4 px-7 flex items-center justify-between z-[900] transition-all duration-400 ease-out",
           isScrolled

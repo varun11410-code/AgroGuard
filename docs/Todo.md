@@ -939,6 +939,139 @@ Implement administration features.
 
 ---
 
+# PHASE 11.A — Admin Portal Expansion
+
+Goal:
+Transform the basic Admin Dashboard into a full administrative portal with analytics, management modules, and advanced monitoring capabilities.
+
+---
+
+## TASK 11.A.1
+
+### Goal
+
+[x] Create Shared Admin Layout
+
+Implement:
+
+* Dedicated admin layout
+* Sidebar navigation
+* Admin topbar
+* Persistent navigation between admin modules
+* Hide public layout elements where appropriate
+
+---
+
+## TASK 11.A.2
+
+### Goal
+
+[x] Backend Analytics Infrastructure
+
+Implement:
+
+* User growth aggregations
+* Scan growth aggregations
+* Activity metrics
+* Time-series repository queries
+* Admin analytics DTOs
+* Extended AdminService orchestration
+
+---
+
+## TASK 11.A.3
+
+### Goal
+
+[x] Enhanced Dashboard Metrics
+
+Implement:
+
+* Growth percentages
+* KPI cards
+* Trend indicators
+* Analytics payload integration
+* Dashboard metric refactor
+
+---
+
+## TASK 11.A.4
+
+### Goal
+
+[x] Dashboard Charts & Visualizations
+
+Implement:
+
+* Scan overview charts
+* Growth trend charts
+* Time-series visualizations
+* Dashboard chart components
+* Analytics rendering layer
+
+---
+
+## TASK 11.A.5
+
+### Goal
+
+[x] User Management Module
+
+Implement:
+
+* User listing
+* Pagination
+* User statistics
+* User administration interface
+
+---
+
+## TASK 11.A.6
+
+### Goal
+
+[x] Scan Management Module
+
+Implement:
+
+* Scan listing
+* Scan history administration
+* Scan analytics integration
+* Administrative scan review
+
+---
+
+## TASK 11.A.7
+
+### Goal
+
+[x] Report Management Module
+
+Implement:
+
+* Report listing
+* Report administration
+* Report overview dashboard
+* Administrative report review
+
+---
+
+## TASK 11.A.8
+
+### Goal
+
+[x] Advanced Activity Center
+
+Implement:
+
+* Expanded activity monitoring
+* Dedicated logs page
+* Activity analytics
+* Advanced pagination
+* Administrative audit review
+
+---
+
 # PHASE 12 — Storage Layer
 
 Goal:
