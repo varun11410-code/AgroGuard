@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { authService } from "@/services/auth";
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, logout } = useAuth();
+  const router = useRouter();
   
   const [language, setLanguage] = useState(user?.language || "en");
   const [budget, setBudget] = useState(user?.preferred_budget_tier || "STANDARD");
@@ -69,12 +71,20 @@ export default function ProfilePage() {
     }
   };
 
+  const handleLogout = async () => {
+    await logout();
+    router.replace("/login");
+  };
+
   return (
     <ProtectedRoute>
       <main className="max-w-4xl mx-auto pt-[140px] pb-[80px] px-6 min-h-screen relative">
-        <h1 className="text-3xl font-bold tracking-tight font-heading mb-8">
-          User Profile
+        <h1 className="text-4xl font-bold tracking-tight font-heading mb-4">
+          Welcome back, {user?.name?.split(' ')[0] || "User"}
         </h1>
+        <p className="text-muted-foreground text-lg mb-8">
+          Manage your account preferences and settings.
+        </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Identity Card */}
@@ -161,6 +171,17 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col items-center">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="px-8 font-semibold !border-red-500/30 !text-red-400 hover:!bg-red-500/10"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </div>
       </main>
     </ProtectedRoute>

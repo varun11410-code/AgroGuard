@@ -10,11 +10,10 @@ import { useAuth } from "@/contexts/AuthContext";
 const PUBLIC_LINKS = [
   { label: "Home", href: "/" },
   { label: "Crops", href: "/#crops" },
-  { label: "Features", href: "/#features" },
+  { label: "Upload", href: "/upload" },
 ];
 
 const PROTECTED_LINKS = [
-  { label: "Upload", href: "/upload" },
   { label: "History", href: "/history" },
   { label: "Reports", href: "/reports" },
   { label: "Profile", href: "/profile" },
@@ -24,16 +23,10 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  const { status, user, logout } = useAuth();
+  const { status, user } = useAuth();
   const router = useRouter();
-  
-  const navLinks = status === "authenticated" ? [...PUBLIC_LINKS, ...PROTECTED_LINKS] : PUBLIC_LINKS;
 
-  const handleLogout = async () => {
-    await logout();
-    setIsMobileMenuOpen(false);
-    router.push("/login");
-  };
+  const navLinks = status === "authenticated" ? [...PUBLIC_LINKS, ...PROTECTED_LINKS] : PUBLIC_LINKS;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,38 +71,33 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((item) => (
             <Link
-              key={item.label}
+              key={item.href}
               href={item.href}
-              className="text-muted-foreground font-sans font-medium text-[1.1rem] py-2 px-4 rounded-full transition-all duration-300 hover:text-foreground hover:bg-secondary"
+              className="text-[1.05rem] font-sans font-medium text-foreground hover:text-green-400 transition-colors"
             >
               {item.label}
             </Link>
           ))}
+          {status === "authenticated" && user?.role === "ADMIN" && (
+            <Link
+              href="/admin"
+              className="text-[1.05rem] font-sans font-bold text-green-400 hover:text-green-300 transition-colors"
+            >
+              Admin
+            </Link>
+          )}
 
-          {status !== "loading" && (
-            <div className="flex items-center gap-2 ml-2">
-              {status === "authenticated" ? (
-                <>
-                  <div className="px-4 py-2 text-[1.1rem] font-medium text-foreground">
-                    Hello, {user?.name.split(' ')[0]}
-                  </div>
-                  <Button onClick={handleLogout} variant="outline" className="text-[1.1rem]">
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" className="text-[1.1rem]" asChild>
-                    <Link href="/login">Login</Link>
-                  </Button>
-                  <Button className="text-[1.1rem]" asChild>
-                    <Link href="/register">Sign Up</Link>
-                  </Button>
-                </>
-              )}
+          {status !== "loading" && status === "unauthenticated" && (
+            <div className="flex items-center gap-4 ml-4">
+              <Button variant="outline" className="text-[1.1rem]" asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button className="text-[1.1rem]" asChild>
+                <Link href="/register">Sign Up</Link>
+              </Button>
             </div>
           )}
         </div>
@@ -152,31 +140,25 @@ export default function Navbar() {
             {item.label}
           </Link>
         ))}
-        {status !== "loading" && (
+        {status === "authenticated" && user?.role === "ADMIN" && (
+          <Link
+            href="/admin"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="font-heading text-3xl font-bold text-green-400 no-underline transition-colors duration-200 hover:text-green-300"
+          >
+            Admin
+          </Link>
+        )}
+        {status !== "loading" && status === "unauthenticated" && (
           <div className="flex flex-col items-center gap-4 mt-4">
-            {status === "authenticated" ? (
-              <>
-                <div className="font-heading text-xl text-foreground">
-                  Hello, {user?.name.split(' ')[0]}
-                </div>
-                <Button
-                  variant="default"
-                  size="lg"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <Button
-                variant="default"
-                size="lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-                asChild
-              >
-                <Link href="/login">Login</Link>
-              </Button>
-            )}
+            <Button
+              variant="default"
+              size="lg"
+              onClick={() => setIsMobileMenuOpen(false)}
+              asChild
+            >
+              <Link href="/login">Login</Link>
+            </Button>
           </div>
         )}
       </div>

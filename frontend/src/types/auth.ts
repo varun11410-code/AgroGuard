@@ -1,6 +1,6 @@
 export type AuthStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
 
-export type UserRole = "admin" | "farmer" | "researcher";
+export type UserRole = "USER" | "ADMIN";
 
 export interface User {
   id: string;

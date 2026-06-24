@@ -7,10 +7,11 @@ import { validateImageFile } from "@/lib/validators/uploadValidation";
 
 export interface DragDropUploaderProps {
   onFileSelect?: (file: File | null) => void;
+  onClearAnalysis?: () => void;
   className?: string;
 }
 
-export function DragDropUploader({ onFileSelect, className }: DragDropUploaderProps) {
+export function DragDropUploader({ onFileSelect, onClearAnalysis, className }: DragDropUploaderProps) {
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -53,6 +54,9 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
   };
 
   const processFile = (file: File) => {
+    if (selectedFile && onClearAnalysis) {
+      onClearAnalysis();
+    }
     const validation = validateImageFile(file);
     if (!validation.isValid) {
       handleRemove(undefined, false);
@@ -76,6 +80,9 @@ export function DragDropUploader({ onFileSelect, className }: DragDropUploaderPr
   };
 
   const handleRemove = (e?: React.MouseEvent | React.KeyboardEvent, clearErrors: boolean = true) => {
+    if (onClearAnalysis) {
+      onClearAnalysis();
+    }
     if (e) {
       e.stopPropagation();
     }

@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-User Features Complete (Phase 10)
-Admin Dashboard In Progress (Phase 11)
+Admin Dashboard Complete (Phase 11)
+Storage Layer In Progress (Phase 12)
 ```
 
 ---
@@ -905,37 +905,37 @@ Implement administration features.
 
 ## TASK 11.1
 
-Create admin dashboard layout.
+[x] Create admin dashboard layout.
 
 ---
 
 ## TASK 11.2
 
-Display user count.
+[x] Display user count.
 
 ---
 
 ## TASK 11.3
 
-Display scan count.
+[x] Display scan count.
 
 ---
 
 ## TASK 11.4
 
-Display popular diseases.
+[x] Display popular diseases.
 
 ---
 
 ## TASK 11.5
 
-Display activity logs.
+[x] Display activity logs.
 
 ---
 
 ## TASK 11.6
 
-Protect admin routes.
+[x] Protect admin routes.
 
 ---
 

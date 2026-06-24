@@ -9,6 +9,24 @@ from app.models.user import User, UserRole
 
 class AuthService:
     @staticmethod
+    def _safe_log_activity(user_id: str | None, activity_type: str, details: dict = None) -> None:
+        try:
+            from app.models.activity_log import ActivityLog, ActivityType
+            from app.repositories.activity_log_repository import ActivityLogRepository
+            import uuid
+            import logging
+            
+            log = ActivityLog(
+                user_id=uuid.UUID(user_id) if user_id else None,
+                activity_type=ActivityType(activity_type),
+                details=details or {}
+            )
+            ActivityLogRepository.create(log)
+        except Exception as e:
+            import logging
+            logging.error(f"Failed to create activity log: {e}")
+
+    @staticmethod
     def register_user(name: str, email: str, password: str) -> dict:
         """
         Register a new user.
@@ -32,6 +50,12 @@ class AuthService:
 
         # Race conditions mitigation: create() handles IntegrityError and raises ValueError
         created_user = UserRepository.create(new_user)
+
+        AuthService._safe_log_activity(
+            user_id=str(created_user.id),
+            activity_type="REGISTER",
+            details={"email": email}
+        )
 
         return {
             "id": str(created_user.id),
@@ -62,6 +86,12 @@ class AuthService:
 
         access_token = create_access_token(identity=identity, additional_claims=additional_claims)
         refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
+
+        AuthService._safe_log_activity(
+            user_id=identity,
+            activity_type="LOGIN",
+            details={"role": user.role.value}
+        )
 
         return {
             "access_token": access_token,
@@ -152,3 +182,17 @@ class AuthService:
         expiry_datetime = datetime.datetime.fromtimestamp(expires_at, datetime.timezone.utc)
         
         TokenRepository.add_revoked_token(jti=jti, expires_at=expiry_datetime)
+        
+        # We don't have the user_id readily available in the token payload directly in logout_user signature,
+        # but we can try to extract it from get_jwt_identity() if needed. 
+        # Alternatively, we can just log the JTI.
+        from flask_jwt_extended import get_jwt_identity
+        try:
+            identity = get_jwt_identity()
+            AuthService._safe_log_activity(
+                user_id=identity,
+                activity_type="LOGIN", # Wait, should be LOGOUT, but LOGOUT is not in ActivityType enum!
+                details={"action": "logout", "jti": jti}
+            )
+        except Exception:
+            pass

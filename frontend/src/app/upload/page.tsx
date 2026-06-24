@@ -17,6 +17,7 @@ export default function UploadWorkflowPage() {
     error,
     scanResult,
     executeUpload,
+    reset,
   } = useScanUpload();
 
   const prediction = scanResult;
@@ -80,7 +81,10 @@ export default function UploadWorkflowPage() {
               Step 2 — Upload Image
             </h3>
             <div className={cn(isUploading && "pointer-events-none opacity-60 transition-opacity")}>
-              <DragDropUploader onFileSelect={setSelectedFile} />
+              <DragDropUploader 
+                onFileSelect={setSelectedFile} 
+                onClearAnalysis={reset} 
+              />
             </div>
           </div>
         </div>

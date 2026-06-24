@@ -47,3 +47,10 @@ class UserRepository:
         except Exception:
             db.session.rollback()
             raise
+
+    @staticmethod
+    def get_total_count() -> int:
+        """
+        Get the total number of registered users.
+        """
+        return db.session.scalar(db.select(db.func.count()).select_from(User)) or 0

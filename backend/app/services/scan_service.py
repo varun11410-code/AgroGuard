@@ -47,7 +47,22 @@ class ScanService:
             expires_at=expires_at
         )
 
-        return ScanRepository.create(scan)
+        created_scan = ScanRepository.create(scan)
+
+        # Log the activity
+        from app.services.auth_service import AuthService
+        AuthService._safe_log_activity(
+            user_id=user_id,
+            activity_type="PREDICTION",
+            details={
+                "crop_name": crop_name,
+                "disease": disease,
+                "confidence": confidence,
+                "scan_id": str(created_scan.id)
+            }
+        )
+
+        return created_scan
 
     @staticmethod
     def get_user_history(user_id: str) -> List[Scan]:

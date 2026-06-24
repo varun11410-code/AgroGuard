@@ -65,3 +65,30 @@ class ScanRepository:
         except Exception:
             db.session.rollback()
             raise
+
+    @staticmethod
+    def get_total_count() -> int:
+        """
+        Get the total number of scans.
+        """
+        return db.session.scalar(db.select(db.func.count()).select_from(Scan)) or 0
+
+    @staticmethod
+    def get_top_diseases(limit: int = 3) -> list:
+        """
+        Get the top predicted diseases.
+        Excludes None, empty strings, and 'Unsupported'.
+        """
+        query = (
+            db.select(Scan.predicted_disease, db.func.count(Scan.id).label("count"))
+            .where(
+                Scan.predicted_disease.isnot(None),
+                Scan.predicted_disease != "",
+                Scan.predicted_disease != "Unsupported"
+            )
+            .group_by(Scan.predicted_disease)
+            .order_by(db.func.count(Scan.id).desc())
+            .limit(limit)
+        )
+        results = db.session.execute(query).all()
+        return [{"disease": row[0], "count": row[1]} for row in results]
