@@ -91,7 +91,8 @@ class ScanController:
                         user_id=user_id,
                         crop_name=crop_name,
                         disease=prediction["disease"],
-                        confidence=prediction["confidence"]
+                        confidence=prediction["confidence"],
+                        image_bytes=image_bytes
                     )
                 except Exception as e:
                     logger.error(f"Failed to persist scan for user {user_id}: {str(e)}")

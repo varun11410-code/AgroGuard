@@ -12,10 +12,15 @@ from app.database import db
 from app.models.scan import Scan
 from app.models.crop import Crop
 from app.repositories.scan_repository import ScanRepository
+from app.storage import storage
+from app.storage.exceptions import StorageError
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ScanService:
     @staticmethod
-    def save_scan(user_id: str, crop_name: str, disease: str, confidence: float) -> Scan:
+    def save_scan(user_id: str, crop_name: str, disease: str, confidence: float, image_bytes: bytes = None) -> Scan:
         """
         Creates and persists a scan for an authenticated user.
         Raises ValueError if crop_name does not match any valid crop.
@@ -35,19 +40,35 @@ class ScanService:
         except ValueError:
             raise ValueError("Invalid user ID")
 
+        scan_id = uuid.uuid4()
+        image_url = None
+        if image_bytes:
+            # Uploading first. Will bubble StorageUploadError up if failed.
+            result = storage.upload_file(image_bytes, f"scans/{scan_id}")
+            image_url = result.url
+
         # Create scan with 180-day expiry
         expires_at = datetime.now(timezone.utc) + timedelta(days=180)
         
         scan = Scan(
+            id=scan_id,
             user_id=uid,
             crop_id=crop.id,
-            image_url=None, # Deferred to Phase 12
+            image_url=image_url,
             predicted_disease=disease,
             confidence_score=confidence,
             expires_at=expires_at
         )
 
-        created_scan = ScanRepository.create(scan)
+        try:
+            created_scan = ScanRepository.create(scan)
+        except Exception as db_error:
+            if image_bytes:
+                try:
+                    storage.delete_file(f"scans/{scan_id}")
+                except StorageError as cleanup_error:
+                    logger.error(f"Failed to cleanup orphaned image {scan_id}: {cleanup_error}")
+            raise db_error
 
         # Log the activity
         from app.services.auth_service import AuthService
