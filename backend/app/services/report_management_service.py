@@ -13,6 +13,7 @@ from app.repositories.report_repository import ReportRepository
 from app.repositories.scan_repository import ScanRepository
 from app.schemas.report_contract import ReportData
 from app.services.report_service import generate_report
+from app.utils.image_helper import fetch_image_to_buffer
 
 logger = logging.getLogger(__name__)
 
@@ -84,13 +85,21 @@ class ReportManagementService:
             logger.warning(f"Ownership violation: User {user_id} attempted to download report {report_id}")
             raise ValueError("Access denied")
 
+        image_stream = None
+        if report.scan.image_url:
+            try:
+                image_stream = fetch_image_to_buffer(report.scan.image_url)
+            except Exception as e:
+                logger.warning(f"Failed to fetch image for historical report {report_id}: {e}")
+
         # Map DB models into the strict Pydantic contract
         data = ReportData(
             scan_id=str(report.scan_id),
             crop=report.scan.crop.name if report.scan.crop else "Unknown Crop",
             disease=report.scan.predicted_disease,
             confidence=float(report.scan.confidence_score),
-            ai_summary=report.summary
+            ai_summary=report.summary,
+            image_stream=image_stream
         )
         
         # Call the pure compilation service

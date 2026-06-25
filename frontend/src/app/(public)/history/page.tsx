@@ -44,11 +44,12 @@ export default function HistoryPage() {
     setDownloadingId(scan.id);
     try {
       const payload: ReportDataPayload = {
+        scan_id: scan.id,
         crop: scan.crop_name,
         disease: scan.predicted_disease || "Unsupported",
         confidence: scan.confidence_score || 0.0,
         selected_plan: null,
-        image_stream: null,
+        image_stream: scan.image_url,
         ai_summary: null,
         treatment_recommendations: [],
         prevention_suggestions: []
