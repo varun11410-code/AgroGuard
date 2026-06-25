@@ -94,6 +94,19 @@ class ScanService:
         return ScanRepository.get_user_scans(user_id)
 
     @staticmethod
+    def _execute_scan_deletion(scan: Scan) -> None:
+        """
+        Executes the 'Storage First' deletion sequence.
+        Shared by manual user deletion and automated cleanup tasks.
+        """
+        # Delete storage asset first to prevent unrecoverable orphaned files.
+        # Broken DB records can be recovered by Task 12.5 cleanup.
+        if scan.image_url:
+            storage.delete_file(f"scans/{scan.id}")
+            
+        ScanRepository.delete(scan)
+
+    @staticmethod
     def delete_scan(scan_id: str, user_id: str) -> None:
         """
         Deletes a scan securely after verifying ownership.
@@ -106,9 +119,35 @@ class ScanService:
         if str(scan.user_id) != user_id:
             raise ValueError("Access denied")
             
-        # Delete storage asset first to prevent unrecoverable orphaned files.
-        # Broken DB records can be recovered by Task 12.5 cleanup.
-        if scan.image_url:
-            storage.delete_file(f"scans/{scan.id}")
+        ScanService._execute_scan_deletion(scan)
+
+    @staticmethod
+    def cleanup_expired_scans(batch_size: int = 100) -> dict:
+        """
+        Orchestrates the deletion of all expired scans.
+        Processes in batches until no expired scans remain.
+        Returns a summary dictionary with counts.
+        """
+        summary = {"found": 0, "deleted": 0, "failed": 0}
+        
+        while True:
+            scans = ScanRepository.get_expired_scans(limit=batch_size)
+            if not scans:
+                break
+                
+            summary["found"] += len(scans)
             
-        ScanRepository.delete(scan)
+            for scan in scans:
+                try:
+                    ScanService._execute_scan_deletion(scan)
+                    summary["deleted"] += 1
+                except Exception as e:
+                    logger.error(f"Failed to cleanup expired scan {scan.id}: {e}")
+                    summary["failed"] += 1
+                    
+            # If a batch entirely fails (e.g. database down), avoid infinite loop
+            if summary["failed"] >= summary["found"]:
+                logger.error("Cleanup job aborting due to 100% failure rate in batch.")
+                break
+                
+        return summary

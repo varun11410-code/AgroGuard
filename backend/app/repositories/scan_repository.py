@@ -109,3 +109,13 @@ class ScanRepository:
             db.select(db.func.count(Scan.id))
             .where(Scan.created_at >= start_date, Scan.created_at <= end_date)
         ) or 0
+
+    @staticmethod
+    def get_expired_scans(limit: int = 100) -> List[Scan]:
+        """Fetch expired scans up to a specific limit."""
+        from datetime import datetime, timezone
+        return list(db.session.execute(
+            db.select(Scan)
+            .where(Scan.expires_at < datetime.now(timezone.utc))
+            .limit(limit)
+        ).scalars().all())

@@ -38,3 +38,32 @@ def register_commands(app: Flask) -> None:
         # Import seeding logic dynamically inside function context to prevent circular/early imports
         from scripts.seed import run_seed
         run_seed(verbose=verbose)
+
+    @app.cli.command("cleanup-scans")
+    @click.option(
+        "--batch-size",
+        default=100,
+        type=int,
+        help="Number of scans to process per batch.",
+    )
+    def cleanup_scans(batch_size: int) -> None:
+        """
+        Executes the 180-day cleanup policy for expired scans.
+        Deletes both the Cloudinary asset and the database record.
+        """
+        env = app.config.get("ENV", "development")
+        click.echo(f"[{env.upper()}] Starting cleanup of expired scans (Batch size: {batch_size})...")
+
+        # Import dynamically to ensure app context is ready
+        from app.services.scan_service import ScanService
+        
+        summary = ScanService.cleanup_expired_scans(batch_size=batch_size)
+        
+        click.echo("\n--- Cleanup Summary ---")
+        click.echo(f"Found:   {summary['found']}")
+        click.echo(f"Deleted: {summary['deleted']}")
+        click.echo(f"Failed:  {summary['failed']}")
+        click.echo("-----------------------")
+        
+        if summary["failed"] > 0:
+            click.echo("WARNING: Some deletions failed. Check application logs for details.")

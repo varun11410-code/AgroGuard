@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Admin Dashboard Complete (Phase 11)
-Storage Layer In Progress (Phase 12)
+Storage Layer Complete (Phase 12)
+Security In Progress (Phase 13)
 ```
 
 ---
@@ -1106,7 +1106,7 @@ Configure Cloudinary integration.
 
 ## TASK 12.5
 
-Implement 180-day cleanup policy.
+[x] Implement 180-day cleanup policy.
 
 ---
 
