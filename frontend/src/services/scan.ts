@@ -8,6 +8,7 @@ export interface TreatmentPlan {
 export interface HistoryScan {
   id: string;
   crop_name: string;
+  image_url: string | null;
   predicted_disease: string;
   confidence_score: number;
   created_at: string;

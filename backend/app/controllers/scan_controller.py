@@ -129,6 +129,7 @@ class ScanController:
                 data.append({
                     "id": str(scan.id),
                     "crop_name": scan.crop.name,
+                    "image_url": scan.image_url,
                     "predicted_disease": scan.predicted_disease,
                     "confidence_score": scan.confidence_score,
                     "created_at": scan.created_at.isoformat()

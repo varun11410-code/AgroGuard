@@ -1082,19 +1082,19 @@ Configure Cloudinary integration.
 
 ## TASK 12.1
 
-Create Cloudinary service.
+[x] Create Cloudinary service.
 
 ---
 
 ## TASK 12.2
 
-Upload scan images.
+[x] Upload scan images.
 
 ---
 
 ## TASK 12.3
 
-Retrieve image URLs.
+[x] Retrieve image URLs.
 
 ---
 
