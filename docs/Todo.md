@@ -1100,7 +1100,7 @@ Configure Cloudinary integration.
 
 ## TASK 12.4
 
-Implement image deletion.
+[x] Implement image deletion.
 
 ---
 

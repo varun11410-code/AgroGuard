@@ -106,4 +106,9 @@ class ScanService:
         if str(scan.user_id) != user_id:
             raise ValueError("Access denied")
             
+        # Delete storage asset first to prevent unrecoverable orphaned files.
+        # Broken DB records can be recovered by Task 12.5 cleanup.
+        if scan.image_url:
+            storage.delete_file(f"scans/{scan.id}")
+            
         ScanRepository.delete(scan)
