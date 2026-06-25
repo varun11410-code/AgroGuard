@@ -86,6 +86,10 @@ def _register_extensions(app: Flask) -> None:
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Storage
+    from app.storage import storage
+    storage.init_app(app)
+
     # Import all models so Alembic/Flask-Migrate can auto-detect the full
     # schema when generating migrations.  Uses an alias to avoid shadowing
     # the `app` Flask-instance parameter with the `app` Python package.
