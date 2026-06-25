@@ -25,6 +25,7 @@ class ScanService:
         Creates and persists a scan for an authenticated user.
         Raises ValueError if crop_name does not match any valid crop.
         """
+        logger.warning(f"FORENSIC: 4. Entered ScanService.save_scan (crop_name='{crop_name}')")
         if not crop_name:
             raise ValueError("Crop name is required")
             
@@ -43,9 +44,16 @@ class ScanService:
         scan_id = uuid.uuid4()
         image_url = None
         if image_bytes:
-            # Uploading first. Will bubble StorageUploadError up if failed.
-            result = storage.upload_file(image_bytes, f"scans/{scan_id}")
-            image_url = result.url
+            logger.warning("FORENSIC: 5. About to call storage.upload_file")
+            try:
+                # Uploading first. Will bubble StorageUploadError up if failed.
+                result = storage.upload_file(image_bytes, f"scans/{scan_id}")
+                image_url = result.url
+                logger.warning("FORENSIC: 6. storage.upload_file success")
+            except Exception as e:
+                logger.error(f"FORENSIC: 6. storage.upload_file failure")
+                logger.error(f"FORENSIC: 7. Exact exception message if upload fails: {str(e)}")
+                raise
 
         # Create scan with 180-day expiry
         expires_at = datetime.now(timezone.utc) + timedelta(days=180)
@@ -61,8 +69,13 @@ class ScanService:
         )
 
         try:
+            logger.warning("FORENSIC: 8. About to call ScanRepository.create")
             created_scan = ScanRepository.create(scan)
+            logger.warning("FORENSIC: 9. ScanRepository.create success")
+            logger.warning("FORENSIC: 10. db.session.commit success")
+            logger.warning(f"FORENSIC: 11. Final scan_id created: {scan_id}")
         except Exception as db_error:
+            logger.error(f"FORENSIC: 9/10. ScanRepository.create or db.session.commit failure: {str(db_error)}")
             if image_bytes:
                 try:
                     storage.delete_file(f"scans/{scan_id}")

@@ -1,3 +1,5 @@
+import api from './api';
+
 export interface TreatmentPlan {
   tier: "budget" | "standard" | "premium";
   title: string;
@@ -42,43 +44,18 @@ export class ScanUploadError extends Error {
 
 export const scanService = {
   async uploadScan(file: File, cropId: string): Promise<ScanResponse> {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
-    const endpoint = cleanBaseUrl.endsWith("/api")
-      ? `${cleanBaseUrl}/scans`
-      : `${cleanBaseUrl}/api/scans`;
-
-    console.log("Upload endpoint:", endpoint);
-
     const formData = new FormData();
     formData.append("image", file);
     formData.append("crop", cropId);
 
-    const headers: HeadersInit = {};
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers,
-        body: formData,
+      const response = await api.post('/scans', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
-      if (!response.ok) {
-        let errorMessage = "Failed to upload scan.";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new ScanUploadError(errorMessage, response.status);
-      }
-
-      const responseData = await response.json();
+      const responseData = response.data;
       console.log("API Response:", responseData);
 
       if (!responseData.success || !responseData.data) {
@@ -103,9 +80,15 @@ export const scanService = {
         }
       };
       return data;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof ScanUploadError) {
         throw error;
+      }
+      if (error.response) {
+        throw new ScanUploadError(
+          error.response.data?.message || "Failed to upload scan.",
+          error.response.status
+        );
       }
       throw new ScanUploadError(
         error instanceof Error ? error.message : "A network error occurred while uploading."
@@ -114,80 +97,37 @@ export const scanService = {
   },
 
   async getHistory(): Promise<HistoryScan[]> {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
-    const endpoint = cleanBaseUrl.endsWith("/api")
-      ? `${cleanBaseUrl}/scans`
-      : `${cleanBaseUrl}/api/scans`;
-
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      return [];
-    }
-
     try {
-      const response = await fetch(endpoint, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await api.get('/scans');
+      const responseData = response.data;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch scan history");
-      }
-
-      const responseData = await response.json();
       if (!responseData.success) {
         throw new Error(responseData.message || "Failed to fetch scan history");
       }
 
       return responseData.data as HistoryScan[];
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching scan history:", error);
+      if (error.response) {
+        throw new Error(error.response.data?.message || "Failed to fetch scan history");
+      }
       throw error;
     }
   },
 
   async deleteScan(scanId: string): Promise<void> {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-    const cleanBaseUrl = API_BASE_URL.replace(/\/$/, "");
-    const endpoint = cleanBaseUrl.endsWith("/api")
-      ? `${cleanBaseUrl}/scans/${scanId}`
-      : `${cleanBaseUrl}/api/scans/${scanId}`;
-
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      throw new Error("Unauthorized");
-    }
-
     try {
-      const response = await fetch(endpoint, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await api.delete(`/scans/${scanId}`);
+      const responseData = response.data;
 
-      if (!response.ok) {
-        let errorMessage = "Failed to delete scan.";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const responseData = await response.json();
       if (!responseData.success) {
         throw new Error(responseData.message || "Failed to delete scan");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting scan:", error);
+      if (error.response) {
+        throw new Error(error.response.data?.message || "Failed to delete scan.");
+      }
       throw error;
     }
   }

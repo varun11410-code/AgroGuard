@@ -17,6 +17,7 @@ class ScanController:
         Handle POST /api/scans
         """
         try:
+            logger.warning("FORENSIC: 1. Entered ScanController.predict")
             crop_name = request.form.get("crop")
             if not crop_name:
                 logger.warning("Prediction request rejected: Missing crop parameter.")
@@ -85,8 +86,10 @@ class ScanController:
 
             # 7. Persist scan for authenticated users
             user_id = get_jwt_identity()
+            logger.warning(f"FORENSIC: 2. user_id value = {user_id}")
             if user_id:
                 try:
+                    logger.warning("FORENSIC: 3. About to call ScanService.save_scan")
                     ScanService.save_scan(
                         user_id=user_id,
                         crop_name=crop_name,
@@ -95,7 +98,7 @@ class ScanController:
                         image_bytes=image_bytes
                     )
                 except Exception as e:
-                    logger.error(f"Failed to persist scan for user {user_id}: {str(e)}")
+                    logger.error(f"FORENSIC: ScanService.save_scan failed: {str(e)}")
                     # Proceed to return success even if persistence fails
 
             # 8. Return structured success JSON response
