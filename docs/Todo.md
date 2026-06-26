@@ -1110,6 +1110,101 @@ Configure Cloudinary integration.
 
 ---
 
+# Phase 12.A — AI Infrastructure Migration & Core Feature Stabilization
+
+Goal: Strengthen the AI architecture by migrating to a provider-agnostic design, stabilize all AI-powered workflows, and resolve integration issues discovered during end-to-end system testing before entering the final production phases.
+
+---
+
+## TASK 12.A.1 — Audit AI Provider Architecture
+ 
+ Review current AI abstraction layer.
+ Audit Gemini dependencies.
+ Verify provider interface consistency.
+ Identify vendor-specific code.
+
+---
+
+## TASK 12.A.2 — Implement Provider-Agnostic AI Layer
+ 
+ Create AIProviderFactory.
+ Support provider selection through environment variables.
+ Establish dedicated prompt layer (separate prompts from transport).
+ Define unified AI response contract for normalized output.
+ Maintain backward compatibility.
+ Document provider registration.
+
+---
+
+## TASK 12.A.3 — Implement Groq Provider
+ 
+ Create GroqProvider.
+ Match existing provider interface.
+ Handle structured JSON responses matching unified contract.
+ Implement provider timeout and retry strategies.
+ Handle provider-specific errors with unified exception handling and graceful degradation.
+
+---
+
+## TASK 12.A.4 — Migrate AI Features
+ Migrate AI Enrichment.
+ Migrate Chatbot.
+ Verify fallback behaviour.
+ Remove hard dependency on Gemini.
+
+---
+
+## TASK 12.A.5 — Restore AI Diagnosis Workflow
+ Verify enrichment after scan.
+ Verify AI Summary.
+ Verify Treatment Plans.
+ Verify persistence.
+
+---
+
+## TASK 12.A.6 — Restore Report Workflow
+ Verify report metadata persistence.
+ Verify Report History.
+ Verify historical reconstruction.
+ Verify PDF image rendering.
+
+---
+
+## TASK 12.A.7 — Improve Prediction UX
+ Calculate Risk Level from confidence score.
+ Improve risk colour mapping.
+ Improve unsupported prediction messaging.
+
+---
+
+## TASK 12.A.8 — Validate Storage Pipeline
+ Verify Cloudinary upload.
+ Verify retrieval.
+ Verify deletion.
+ Verify cleanup compatibility.
+
+---
+
+## TASK 12.A.9 — End-to-End Regression Testing
+ Authentication
+ Upload
+ AI Enrichment
+ Results
+ Scan History
+ Reports
+ Chatbot
+ Cleanup
+ Report Downloads
+
+---
+
+## TASK 12.A.10 — Documentation & Architecture Updates
+ Update Architecture.md.
+ Update PRD if necessary.
+ Document provider architecture.
+ Document environment variables.
+ Record migration decisions.
+
 # PHASE 13 — Security
 
 Goal:

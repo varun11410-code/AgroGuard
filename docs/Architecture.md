@@ -46,7 +46,7 @@ into a single web application.
        ▼     ▼
 ┌──────────┐ ┌──────────┐
 │ML Engine │ │ AI Layer │
-│Detection │ │ Gemini   │
+│Detection │ │AIProvider│
 └────┬─────┘ └────┬─────┘
      │            │
      ▼            ▼
@@ -138,7 +138,13 @@ ReportLab
 
 ### Provider
 
-Google Gemini API
+Groq (Default) / Google Gemini API (Supported)
+
+### Components
+
+* AIProviderFactory (Dynamic provider resolution)
+* AIProvider (Interface for transport)
+* Prompts (Dedicated prompt engineering layer)
 
 ### Purpose
 
@@ -331,6 +337,16 @@ app/
 ├── utils/
 │
 ├── ai/
+│   ├── providers/
+│   │   ├── base.py
+│   │   ├── gemini_provider.py
+│   │   └── groq_provider.py
+│   ├── prompts/
+│   │   ├── diagnosis_prompt.py
+│   │   └── chatbot_prompt.py
+│   ├── provider_factory.py
+│   ├── interfaces.py
+│   └── exceptions.py
 │
 ├── ml/
 │
@@ -386,7 +402,7 @@ No business logic.
 
 ### AI Module
 
-Gemini integration.
+Provider-agnostic AI integration (Groq, Gemini).
 
 ---
 
@@ -641,6 +657,28 @@ Responsibilities:
 ---
 
 # 9. AI Architecture
+
+## Provider Architecture
+
+AgroGuard uses a provider-agnostic AI architecture. Business logic must never depend directly on a concrete provider.
+
+### Components
+
+* **AIProvider Interface:** Defines the standard contract for all AI integrations.
+* **AIProviderFactory:** The single entry point for obtaining AI providers. Instantiates the correct provider based on environment configuration. No controller or service may instantiate providers directly.
+* **Concrete Providers:** (e.g., `GroqProvider`, `GeminiProvider`) Contain transport logic only. They do not build prompts.
+* **Prompt Templates (Prompt Layer):** Dedicated layer containing prompt engineering only. Kept strictly separate from transport logic.
+* **Response Normalization:** Providers must normalize their output into a single internal unified response contract before returning it to the application. The rest of AgroGuard does not know which provider produced the response.
+
+## AI Error Handling
+
+The AI layer implements a robust error handling strategy focusing on:
+* **Provider Timeout Strategy:** Explicit timeouts for external AI provider calls.
+* **Retry Strategy:** Configurable retries for transient provider failures.
+* **Unified Exception Handling:** Translating provider-specific errors into unified application exceptions.
+* **Graceful Degradation:** Fallbacks and user-friendly messaging when AI services are unavailable.
+
+---
 
 ## Context-Aware Assistant
 
@@ -932,7 +970,15 @@ DATABASE_URL=
 
 JWT_SECRET_KEY=
 
+AI_PROVIDER=
+
+GROQ_API_KEY=
+
+GROQ_MODEL=
+
 GEMINI_API_KEY=
+
+GEMINI_MODEL=
 
 CLOUDINARY_CLOUD_NAME=
 
@@ -952,7 +998,7 @@ Future expansions:
 * New Crops
 * New Diseases
 * New Models
-* Additional AI Providers
+* Additional AI Providers (Adding a new provider requires: Implementing the `AIProvider` interface, Registering the provider in the factory, Configuring environment variables. No business logic changes are needed.)
 * Mobile Application
 
 The current architecture should require only configuration and module additions rather than structural rewrites.
