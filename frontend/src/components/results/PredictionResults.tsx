@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ScanResponse } from "@/services/scan";
-import { reportService, ReportDataPayload } from "@/services/report";
+import { reportService, buildReportPayload } from "@/services/report";
 import { ConfidenceDisplay } from "./ConfidenceDisplay";
 import { TreatmentPlanCards, PlanTier } from "./TreatmentPlanCards";
 import { DiseaseResultCard } from "./DiseaseResultCard";
@@ -68,16 +68,17 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         imageStreamData = await urlToBase64(imageUrl);
       }
 
-      const payload: ReportDataPayload = {
-        crop: crop ?? "Unknown Crop",
-        disease: disease ?? "Unknown Disease",
-        confidence: confidence ?? 0.0,
+      const payload = buildReportPayload({
+        scan_id: result.scanId,
+        crop_name: crop ?? "Unknown Crop",
+        predicted_disease: disease ?? "Unknown Disease",
+        confidence_score: confidence ?? 0.0,
         selected_plan: selectedPlan,
-        image_stream: imageStreamData,
-        ai_summary: aiSummary || null,
-        treatment_recommendations: selectedPlan ? (treatmentPlans as any)?.[selectedPlan]?.treatments || [] : [],
-        prevention_suggestions: [] // Defaults to empty array for now as frontend doesn't have prevention yet
-      };
+        image_url: imageStreamData,
+        ai_summary: aiSummary,
+        risk_level: riskLevel,
+        treatment_plans: treatmentPlans
+      });
 
       await reportService.downloadReport(payload);
     } catch (error: any) {

@@ -37,3 +37,4 @@ opencv-python==4.8.1.78
 PyWavelets==1.4.1
 
 
+groq>=0.13.0

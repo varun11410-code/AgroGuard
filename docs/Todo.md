@@ -1163,10 +1163,10 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.6 — Restore Report Workflow
- Verify report metadata persistence.
- Verify Report History.
- Verify historical reconstruction.
- Verify PDF image rendering.
+ [x] Verify report metadata persistence.
+ [x] Verify Report History.
+ [x] Verify historical reconstruction.
+ [x] Verify PDF image rendering.
 
 ---
 

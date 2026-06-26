@@ -15,9 +15,13 @@ class ReportData(BaseModel):
     selected_plan: Optional[str] = Field(None, description="The user's selected treatment plan (Budget, Standard, Premium)")
     image_stream: Optional[Any] = Field(None, description="Path string or BytesIO stream to the leaf image")
     
-    # AI Enrichment fields (Phase 9)
+    # AI Enrichment fields
     ai_summary: Optional[str] = Field(None, description="AI-generated summary of the diagnosis")
-    treatment_recommendations: List[str] = Field(default_factory=list, description="AI-generated treatment recommendations")
-    prevention_suggestions: List[str] = Field(default_factory=list, description="AI-generated prevention suggestions")
+    risk_level: Optional[str] = Field(None, description="AI-assessed risk level")
+    treatment_plans: Optional[List[dict]] = Field(None, description="Tiered JSON containing Budget, Standard, and Premium plans")
+    
+    # Legacy fields (Phase 9)
+    treatment_recommendations: List[str] = Field(default_factory=list, description="Legacy AI-generated treatment recommendations")
+    prevention_suggestions: List[str] = Field(default_factory=list, description="Legacy AI-generated prevention suggestions")
     
     generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Timestamp of report generation")

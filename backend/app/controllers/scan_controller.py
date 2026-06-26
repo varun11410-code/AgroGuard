@@ -6,6 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 
 from app.ml import preprocess_image, predict_disease, ImagePreprocessingError, PredictionError
 from app.services.scan_service import ScanService
+from app.services.ai_enrichment_service import AIEnrichmentService
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -84,19 +85,36 @@ class ScanController:
                     "message": str(e)
                 }), 422
 
+            # 6.5 Run AI Enrichment
+            try:
+                enrichment_data = AIEnrichmentService.enrich_prediction(
+                    crop=crop_name,
+                    disease=prediction["disease"],
+                    confidence=prediction["confidence"]
+                )
+                prediction.update(enrichment_data)
+            except Exception as e:
+                logger.error(f"Enrichment service failed to return data: {e}")
+
             # 7. Persist scan for authenticated users
             user_id = get_jwt_identity()
             logger.warning(f"FORENSIC: 2. user_id value = {user_id}")
             if user_id:
                 try:
                     logger.warning("FORENSIC: 3. About to call ScanService.save_scan")
-                    ScanService.save_scan(
+                    created_scan = ScanService.save_scan(
                         user_id=user_id,
                         crop_name=crop_name,
                         disease=prediction["disease"],
                         confidence=prediction["confidence"],
-                        image_bytes=image_bytes
+                        image_bytes=image_bytes,
+                        ai_summary=prediction.get("ai_summary"),
+                        treatment_plans=prediction.get("treatment_plans"),
+                        risk_level=prediction.get("risk_level")
                     )
+                    prediction["scan_id"] = str(created_scan.id)
+                    if created_scan.image_url:
+                        prediction["image_url"] = created_scan.image_url
                 except Exception as e:
                     logger.error(f"FORENSIC: ScanService.save_scan failed: {str(e)}")
                     # Proceed to return success even if persistence fails
@@ -135,6 +153,9 @@ class ScanController:
                     "image_url": scan.image_url,
                     "predicted_disease": scan.predicted_disease,
                     "confidence_score": scan.confidence_score,
+                    "ai_summary": scan.ai_summary,
+                    "treatment_plans": scan.treatment_plans,
+                    "risk_level": scan.risk_level,
                     "created_at": scan.created_at.isoformat()
                 })
                 

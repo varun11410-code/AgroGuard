@@ -1,5 +1,6 @@
 // Report service
 import api from './api';
+import { TreatmentPlan } from './scan';
 
 export interface ReportDataPayload {
   scan_id?: string | null;
@@ -9,9 +10,42 @@ export interface ReportDataPayload {
   selected_plan: string | null;
   image_stream: string | null;
   ai_summary: string | null;
+  risk_level: string | null;
+  treatment_plans: TreatmentPlan[];
   treatment_recommendations: string[];
   prevention_suggestions: string[];
 }
+
+/**
+ * Shared payload builder to ensure active generation and historical generation use the exact same schema.
+ */
+export const buildReportPayload = (
+  data: {
+    scan_id?: string | null;
+    crop_name: string;
+    predicted_disease?: string | null;
+    confidence_score?: number | null;
+    selected_plan?: string | null;
+    image_url?: string | null;
+    ai_summary?: string | null;
+    risk_level?: string | null;
+    treatment_plans?: TreatmentPlan[] | null;
+  }
+): ReportDataPayload => {
+  return {
+    scan_id: data.scan_id || null,
+    crop: data.crop_name || "Unknown Crop",
+    disease: data.predicted_disease || "Unknown Disease",
+    confidence: data.confidence_score || 0.0,
+    selected_plan: data.selected_plan || null,
+    image_stream: data.image_url || null,
+    ai_summary: data.ai_summary || null,
+    risk_level: data.risk_level || null,
+    treatment_plans: data.treatment_plans || [],
+    treatment_recommendations: [],
+    prevention_suggestions: []
+  };
+};
 
 export interface ReportMetadata {
   id: string;

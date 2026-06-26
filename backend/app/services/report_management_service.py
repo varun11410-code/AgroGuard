@@ -99,6 +99,9 @@ class ReportManagementService:
             disease=report.scan.predicted_disease,
             confidence=float(report.scan.confidence_score),
             ai_summary=report.summary,
+            risk_level=report.scan.risk_level,
+            treatment_plans=report.scan.treatment_plans,
+            selected_plan=report.scan.selected_plan if report.scan.selected_plan else None,
             image_stream=image_stream
         )
         

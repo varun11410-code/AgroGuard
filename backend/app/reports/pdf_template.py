@@ -79,8 +79,10 @@ def build_report_story(data: ReportData) -> list:
         ["Confidence Score:", f"{data.confidence * 100:.2f}%"]
     ]
     
+    if data.risk_level:
+        diagnosis_data.append(["Risk Level:", data.risk_level])
     if data.selected_plan:
-        diagnosis_data.append(["Selected Plan:", data.selected_plan])
+        diagnosis_data.append(["Selected Plan:", data.selected_plan.title()])
         
     t = Table(diagnosis_data, colWidths=[150, 300])
     t.setStyle(TableStyle([
@@ -99,7 +101,7 @@ def build_report_story(data: ReportData) -> list:
         if (isinstance(data.image_stream, str) and os.path.exists(data.image_stream)) or isinstance(data.image_stream, io.BytesIO):
             story.append(Image(data.image_stream, width=250, height=250, kind='proportional'))
         else:
-            story.append(Paragraph("Image stream invalid.", styles['PlaceholderText']))
+            story.append(Paragraph("Image no longer available (Cloudinary fetch failed or expired).", styles['PlaceholderText']))
     else:
         story.append(Paragraph("No image provided.", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
@@ -109,25 +111,38 @@ def build_report_story(data: ReportData) -> list:
     if data.ai_summary:
         story.append(Paragraph(data.ai_summary, styles['AgroGuardBody']))
     else:
-        story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
+        story.append(Paragraph("No diagnostic summary available for this scan.", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
     
     # Treatment Recommendations Section
     story.append(Paragraph("4. Treatment Recommendations", styles['SectionHeader']))
-    if data.treatment_recommendations:
+    
+    if data.treatment_plans:
+        # Phase 12.A Modern Format
+        for plan in data.treatment_plans:
+            tier = plan.get('tier', 'Unknown').title()
+            title = plan.get('title', '')
+            desc = plan.get('description', '')
+            cost = plan.get('estimatedCost', '')
+            
+            story.append(Paragraph(f"<b>{tier} Tier: {title}</b> ({cost})", styles['AgroGuardBody']))
+            story.append(Paragraph(f"{desc}", styles['AgroGuardBody']))
+            story.append(Spacer(1, 5))
+    elif data.treatment_recommendations:
+        # Phase 9 Legacy Format
         for rec in data.treatment_recommendations:
             story.append(Paragraph(f"• {rec}", styles['AgroGuardBody']))
     else:
-        story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
+        story.append(Paragraph("No treatment recommendations available for this diagnosis.", styles['PlaceholderText']))
     story.append(Spacer(1, 20))
         
-    # Prevention Suggestions Section
+    # Prevention Suggestions Section (Legacy Only)
     story.append(Paragraph("5. Prevention Suggestions", styles['SectionHeader']))
     if data.prevention_suggestions:
         for prev in data.prevention_suggestions:
             story.append(Paragraph(f"• {prev}", styles['AgroGuardBody']))
     else:
-        story.append(Paragraph("Available after AI enrichment (Phase 9).", styles['PlaceholderText']))
+        story.append(Paragraph("No preventive suggestions available for this diagnosis.", styles['PlaceholderText']))
         
     return story
 

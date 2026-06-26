@@ -13,6 +13,9 @@ export interface HistoryScan {
   image_url: string | null;
   predicted_disease: string;
   confidence_score: number;
+  ai_summary?: string | null;
+  treatment_plans?: TreatmentPlan[] | null;
+  risk_level?: string | null;
   created_at: string;
 }
 
@@ -64,16 +67,16 @@ export const scanService = {
 
       const backendData = responseData.data;
       const data: ScanResponse = {
-        scanId: `scan_${Date.now()}`,
+        scanId: backendData.scan_id || `scan_${Date.now()}`,
         status: "completed",
         prediction: {
           disease: backendData.disease,
           confidence: backendData.confidence,
           crop: backendData.crop,
           pathogen: undefined,
-          riskLevel: undefined,
-          aiSummary: undefined,
-          treatmentPlans: [],
+          riskLevel: backendData.risk_level,
+          aiSummary: backendData.ai_summary,
+          treatmentPlans: backendData.treatment_plans || [],
           prediction_index: backendData.prediction_index !== undefined ? backendData.prediction_index : null,
           label: backendData.label !== undefined ? backendData.label : null,
           is_supported: backendData.is_supported !== undefined ? backendData.is_supported : true

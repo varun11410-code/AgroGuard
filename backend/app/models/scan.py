@@ -66,7 +66,7 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import Float, ForeignKey, String, Text, func
+from sqlalchemy import Float, ForeignKey, String, Text, func, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.sqltypes import DateTime
@@ -171,6 +171,28 @@ class Scan(db.Model):
             "Model confidence score in the range [0.0, 1.0].  "
             "NULL until inference completes."
         ),
+    )
+
+    # ------------------------------------------------------------------
+    # AI Enrichment
+    # ------------------------------------------------------------------
+
+    ai_summary: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+        doc="AI-generated summary and explanation of the disease.",
+    )
+
+    treatment_plans: Mapped[list | None] = mapped_column(
+        JSON,
+        nullable=True,
+        doc="Structured JSON array containing Budget, Standard, and Premium treatment plans.",
+    )
+
+    risk_level: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+        doc="AI-assessed risk level (e.g., 'Low', 'Medium', 'High').",
     )
 
     # ------------------------------------------------------------------

@@ -51,8 +51,11 @@ class Config:
     # Server
     PORT: int = int(os.getenv("PORT") or 5001)
 
-    # AI (Google Gemini)
+    # AI configuration
+    AI_PROVIDER: str = os.getenv("AI_PROVIDER") or "gemini"
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY") or ""
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY") or ""
+    GROQ_MODEL: str = os.getenv("GROQ_MODEL") or "llama-3.1-8b-instant"
 
     # Storage (Cloudinary)
     CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME") or ""

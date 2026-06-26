@@ -54,7 +54,7 @@ class AIProviderFactory:
         if not provider_name:
             raise AIProviderConfigurationError("AI_PROVIDER is not set in the configuration.")
             
-        provider_name = provider_name.lower()
+        provider_name = provider_name.strip().lower()
         
         # Check cache first for efficiency
         if provider_name in cls._instances:

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class ScanService:
     @staticmethod
-    def save_scan(user_id: str, crop_name: str, disease: str, confidence: float, image_bytes: bytes = None) -> Scan:
+    def save_scan(user_id: str, crop_name: str, disease: str, confidence: float, image_bytes: bytes = None, ai_summary: str = None, treatment_plans: dict = None, risk_level: str = None) -> Scan:
         """
         Creates and persists a scan for an authenticated user.
         Raises ValueError if crop_name does not match any valid crop.
@@ -65,6 +65,9 @@ class ScanService:
             image_url=image_url,
             predicted_disease=disease,
             confidence_score=confidence,
+            ai_summary=ai_summary,
+            treatment_plans=treatment_plans,
+            risk_level=risk_level,
             expires_at=expires_at
         )
 
