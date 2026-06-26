@@ -16,7 +16,6 @@ def build_enrichment_prompt(crop: str, disease: str, confidence: float) -> str:
         "Return EXACTLY a JSON object with the following structure (do NOT include Markdown backticks like ```json):\n"
         "{\n"
         '  "ai_summary": "A 2-3 sentence explanation of the disease and its impact.",\n'
-        '  "risk_level": "Low" | "Medium" | "High",\n'
         '  "treatment_plans": [\n'
         '    {\n'
         '      "tier": "budget",\n'

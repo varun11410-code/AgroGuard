@@ -34,13 +34,9 @@ class AIEnrichmentService:
             if not treatment_plans or not isinstance(treatment_plans, list) or len(treatment_plans) == 0:
                 raise ValueError("Missing or invalid 'treatment_plans' in provider response.")
                 
-            if not data.get("risk_level") or not isinstance(data.get("risk_level"), str):
-                raise ValueError("Missing or invalid 'risk_level' in provider response.")
-                
             return {
                 "ai_summary": data["ai_summary"],
-                "treatment_plans": data["treatment_plans"],
-                "risk_level": data["risk_level"]
+                "treatment_plans": data["treatment_plans"]
             }
             
         except (AIProviderError, ValueError, Exception) as e:
@@ -57,7 +53,6 @@ class AIEnrichmentService:
         if is_healthy:
             return {
                 "ai_summary": f"Your {crop} appears to be completely healthy based on the visual analysis.",
-                "risk_level": "Low",
                 "treatment_plans": [
                     {
                         "tier": "budget",
@@ -82,7 +77,6 @@ class AIEnrichmentService:
         else:
             return {
                 "ai_summary": f"Your {crop} shows signs of {disease}. Immediate action is recommended to prevent spreading.",
-                "risk_level": "High",
                 "treatment_plans": [
                     {
                         "tier": "budget",

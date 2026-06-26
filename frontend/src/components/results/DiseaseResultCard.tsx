@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { normalizeConfidence, getConfidenceTheme } from "@/lib/theme";
 
 export interface DiseaseResultCardProps {
   prediction: {
@@ -31,14 +32,13 @@ export function DiseaseResultCard({ prediction, className }: DiseaseResultCardPr
   const isSupported = prediction.is_supported !== false;
 
   if (!isSupported) {
-    const formattedConfidence = prediction.confidence !== undefined
-      ? (prediction.confidence <= 1 ? prediction.confidence * 100 : prediction.confidence)
-      : null;
+    const formattedConfidence = normalizeConfidence(prediction.confidence);
+    const theme = getConfidenceTheme(prediction.confidence);
 
     return (
       <article
         role="region"
-        aria-label="Unsupported Prediction Alert"
+        aria-label="Image Not Recognized Alert"
         className={cn(
           "glass-card p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(239,68,68,0.08)] border border-red-500/10 bg-red-500/[0.02] flex flex-col justify-between h-full min-h-[180px]",
           className
@@ -47,14 +47,19 @@ export function DiseaseResultCard({ prediction, className }: DiseaseResultCardPr
         <div>
           <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-red-400/50 mb-3 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            AI Diagnosis
+            Analysis Incomplete
           </h3>
           <h4 className="font-heading text-[1.6rem] font-extrabold tracking-[-0.02em] text-red-400 mb-2">
-            Unsupported Prediction
+            Image Not Recognized
           </h4>
-          <p className="text-[0.85rem] text-white/60 leading-[1.6]">
-            This image appears to be outside AgroGuard&apos;s currently supported crop disease categories.
+          <p className="text-[0.85rem] text-white/60 leading-[1.6] mb-4">
+            We couldn't confidently identify a leaf in this image. For the best results, please:
           </p>
+          <ul className="text-[0.8rem] text-white/50 list-disc pl-4 space-y-1">
+            <li>Upload a clear, close-up image of a leaf.</li>
+            <li>Ensure good lighting and focus.</li>
+            <li>Capture one leaf at a time.</li>
+          </ul>
         </div>
         {formattedConfidence !== null && (
           <div className="mt-4 pt-3 border-t border-white/[0.05] text-[0.8rem] text-white/35 font-mono">

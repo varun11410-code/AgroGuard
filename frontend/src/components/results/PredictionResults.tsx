@@ -6,6 +6,7 @@ import { TreatmentPlanCards, PlanTier } from "./TreatmentPlanCards";
 import { DiseaseResultCard } from "./DiseaseResultCard";
 import { UploadedImagePreview } from "./UploadedImagePreview";
 import { AISummarySection } from "./AISummarySection";
+import { getRiskTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 export interface PredictionResultsProps {
@@ -46,6 +47,10 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
     label,
     is_supported
   } = result.prediction;
+  
+  const isSupported = is_supported !== false;
+  const isHealthy = disease?.toLowerCase() === "healthy";
+  const riskTheme = getRiskTheme(riskLevel);
 
   const urlToBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
@@ -152,11 +157,11 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
           <h3 className="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-white/35 mb-3">
             Risk Level
           </h3>
-          <div className="font-heading text-[1.6rem] font-extrabold tracking-[-0.02em] text-red-500">
+          <div className={cn("font-heading text-[1.6rem] font-extrabold tracking-[-0.02em]", riskTheme.text)}>
             {riskLevel || "Unknown"} <span aria-hidden="true">⚠</span>
           </div>
-          <div className="mt-3 text-[0.8rem] text-red-500/60">
-            {riskLevel === "High" ? "Immediate treatment recommended" : "Monitor closely"}
+          <div className={cn("mt-3 text-[0.8rem]", riskTheme.text, "opacity-60")}>
+            {riskTheme.message}
           </div>
         </div>
 
@@ -168,17 +173,28 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         />
 
         {/* AI Summary */}
-        <AISummarySection 
-          summary={aiSummary} 
-          className="col-span-1 sm:col-span-2 lg:col-span-3 transition-all duration-500 font-sans" 
-        />
+        {isSupported && (
+          <AISummarySection 
+            summary={aiSummary} 
+            className="col-span-1 sm:col-span-2 lg:col-span-3 transition-all duration-500 font-sans" 
+          />
+        )}
 
         {/* Recommendations */}
-        <TreatmentPlanCards 
-          plans={treatmentPlans} 
-          selectedPlan={selectedPlan}
-          onPlanSelect={setSelectedPlan}
-        />
+        {isSupported && !isHealthy && (
+          <TreatmentPlanCards 
+            plans={treatmentPlans} 
+            selectedPlan={selectedPlan}
+            onPlanSelect={setSelectedPlan}
+          />
+        )}
+        
+        {isSupported && isHealthy && (
+          <div className="col-span-1 sm:col-span-2 lg:col-span-3 glass-card p-8 text-center border-t-4 border-[#22c55e]">
+            <h3 className="font-heading text-xl font-bold text-[#22c55e] mb-2">No Treatment Required</h3>
+            <p className="text-white/60">Your plant is healthy. Continue regular watering and maintenance to preserve its optimal condition.</p>
+          </div>
+        )}
       </div>
     </section>
   );

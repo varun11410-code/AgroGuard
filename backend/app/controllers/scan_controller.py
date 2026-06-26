@@ -7,6 +7,7 @@ from flask_jwt_extended import get_jwt_identity
 from app.ml import preprocess_image, predict_disease, ImagePreprocessingError, PredictionError
 from app.services.scan_service import ScanService
 from app.services.ai_enrichment_service import AIEnrichmentService
+from app.utils.risk_calculator import calculate_risk
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -85,16 +86,25 @@ class ScanController:
                     "message": str(e)
                 }), 422
 
-            # 6.5 Run AI Enrichment
-            try:
-                enrichment_data = AIEnrichmentService.enrich_prediction(
-                    crop=crop_name,
-                    disease=prediction["disease"],
-                    confidence=prediction["confidence"]
-                )
-                prediction.update(enrichment_data)
-            except Exception as e:
-                logger.error(f"Enrichment service failed to return data: {e}")
+            # 6.5 Calculate Risk
+            risk_level = calculate_risk(
+                disease=prediction["disease"],
+                confidence=prediction["confidence"],
+                is_supported=prediction.get("is_supported", True)
+            )
+            prediction["risk_level"] = risk_level
+
+            # 6.6 Run AI Enrichment
+            if prediction.get("is_supported", True):
+                try:
+                    enrichment_data = AIEnrichmentService.enrich_prediction(
+                        crop=crop_name,
+                        disease=prediction["disease"],
+                        confidence=prediction["confidence"]
+                    )
+                    prediction.update(enrichment_data)
+                except Exception as e:
+                    logger.error(f"Enrichment service failed to return data: {e}")
 
             # 7. Persist scan for authenticated users
             user_id = get_jwt_identity()

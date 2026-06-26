@@ -9,25 +9,7 @@ export interface ConfidenceDisplayProps {
   className?: string;
 }
 
-function normalizeConfidence(confidence?: number) {
-  if (
-    confidence === undefined ||
-    confidence === null ||
-    Number.isNaN(confidence)
-  ) {
-    return null;
-  }
-
-  const percentage =
-    confidence <= 1
-      ? confidence * 100
-      : confidence;
-
-  return Math.min(
-    Math.max(percentage, 0),
-    100
-  );
-}
+import { normalizeConfidence, getConfidenceTheme } from "@/lib/theme";
 
 export function ConfidenceDisplay({
   confidence,
@@ -37,6 +19,7 @@ export function ConfidenceDisplay({
   const [width, setWidth] = useState(0);
 
   const normalized = normalizeConfidence(confidence);
+  const theme = getConfidenceTheme(confidence);
 
   useEffect(() => {
     if (normalized !== null) {
@@ -74,7 +57,7 @@ export function ConfidenceDisplay({
         ) : (
           <>
             <div
-              className="font-heading text-[1.6rem] font-extrabold tracking-[-0.02em] bg-gradient-to-br from-[#22c55e] to-[#86efac] bg-clip-text text-transparent w-fit"
+              className={`font-heading text-[1.6rem] font-extrabold tracking-[-0.02em] bg-gradient-to-br ${theme.text} bg-clip-text text-transparent w-fit`}
               aria-hidden="true"
             >
               {normalized.toFixed(1)}%
@@ -91,7 +74,7 @@ export function ConfidenceDisplay({
                 aria-label={`Prediction confidence ${normalized.toFixed(1)}%`}
               >
                 <div
-                  className="conf-fill h-full bg-gradient-to-r from-[#166534] to-[#22c55e] rounded-full transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  className={`conf-fill h-full bg-gradient-to-r ${theme.bar} rounded-full transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)]`}
                   style={{ width: `${width}%` }}
                 />
               </div>
