@@ -1127,12 +1127,12 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 
 ## TASK 12.A.2 — Implement Provider-Agnostic AI Layer
  
- Create AIProviderFactory.
- Support provider selection through environment variables.
- Establish dedicated prompt layer (separate prompts from transport).
- Define unified AI response contract for normalized output.
- Maintain backward compatibility.
- Document provider registration.
+ [x] Create AIProviderFactory.
+ [x] Support provider selection through environment variables.
+ [x] Establish dedicated prompt layer (separate prompts from transport).
+ [x] Define unified AI response contract for normalized output.
+ [x] Maintain backward compatibility.
+ [x] Document provider registration.
 
 ---
 
