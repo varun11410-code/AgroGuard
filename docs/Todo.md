@@ -1155,10 +1155,10 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.5 — Restore AI Diagnosis Workflow
- Verify enrichment after scan.
- Verify AI Summary.
- Verify Treatment Plans.
- Verify persistence.
+ [x] Verify enrichment after scan.
+ [x] Verify AI Summary.
+ [x] Verify Treatment Plans.
+ [x] Verify persistence.
 
 ---
 
@@ -1186,15 +1186,15 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.9 — End-to-End Regression Testing
- Authentication
- Upload
- AI Enrichment
- Results
- Scan History
- Reports
- Chatbot
- Cleanup
- Report Downloads
+ Real Authentication
+ Real Upload
+ Real AI Enrichment
+ Real Results
+ Real Scan History
+ Real Reports
+ Real Chatbot
+ Real Cleanup
+ Real Report Downloads
 
 ---
 
