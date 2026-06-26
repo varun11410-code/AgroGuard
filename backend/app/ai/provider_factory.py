@@ -13,6 +13,7 @@ To add a new provider:
 from typing import Dict, Type, Any
 from app.ai.interfaces import AIProvider
 from app.ai.exceptions import AIProviderConfigurationError
+from app.ai.providers.groq_provider import GroqProvider
 
 class AIProviderFactory:
     """
@@ -20,7 +21,9 @@ class AIProviderFactory:
     """
     
     # Centralized registry mapping configuration strings to provider classes
-    _REGISTRY: Dict[str, Type[AIProvider]] = {}
+    _REGISTRY: Dict[str, Type[AIProvider]] = {
+        "groq": GroqProvider
+    }
     
     @classmethod
     def register_provider(cls, name: str, provider_cls: Type[AIProvider]) -> None:
