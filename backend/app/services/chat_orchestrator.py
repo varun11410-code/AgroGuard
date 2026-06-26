@@ -2,19 +2,20 @@
 AgroGuard Backend - Chat Orchestrator
 
 Coordinates the complex sequence of session creation, context injection,
-Gemini execution, and message persistence without acting as a God-Service.
+AI execution, and message persistence without acting as a God-Service.
 """
 import logging
-import uuid
 from typing import Dict, Any, Optional
+from flask import current_app
 from werkzeug.exceptions import ServiceUnavailable
 
 from app.services.chat_session_service import ChatSessionService
 from app.services.chat_message_service import ChatMessageService
 from app.models.chat_message import MessageRole
-from app.ai.gemini_provider import GeminiProvider
+from app.ai.provider_factory import AIProviderFactory
+from app.ai.prompts.chatbot_prompt import build_chatbot_system_instruction
 from app.ai.context_builder import ContextBuilder
-from app.utils.exceptions import AIProviderError
+from app.ai.exceptions import AIProviderError
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class ChatOrchestrator:
         2. Validate ownership.
         3. Persist user message to prevent data loss on AI timeout.
         4. Construct disease context prompt (if scan_id exists).
-        5. Query Gemini provider.
+        5. Query AI provider.
         6. Persist assistant message.
         7. Return response.
         """
@@ -42,7 +43,7 @@ class ChatOrchestrator:
                 logger.error(f"Failed to create session: {e}", exc_info=True)
                 raise
 
-        # 2. Persist User Message FIRST (guarantees no data loss if Gemini fails)
+        # 2. Persist User Message FIRST (guarantees no data loss if AI fails)
         try:
             ChatMessageService.save_message(
                 session_id=session_id,
@@ -63,14 +64,7 @@ class ChatOrchestrator:
                 scan = Scan.query.filter_by(id=scan_id, user_id=user_id).first()
                 if scan:
                     context_dict = ContextBuilder.build_disease_context(scan, selected_plan)
-                    system_instruction = (
-                        f"You are an agricultural AI assistant. The user is asking about a crop diagnosis.\n"
-                        f"Crop: {context_dict['crop']}\n"
-                        f"Disease: {context_dict['disease']}\n"
-                        f"Confidence: {context_dict['confidence']:.2f}\n"
-                        f"Selected Plan: {context_dict.get('selected_plan') or 'None'}\n"
-                        f"Provide brief, helpful advice related to this context."
-                    )
+                    system_instruction = build_chatbot_system_instruction(context_dict)
             except Exception as e:
                 # We log but do not fail the chat if context injection fails
                 logger.warning(f"Failed to build disease context: {e}", exc_info=True)
@@ -79,27 +73,26 @@ class ChatOrchestrator:
         try:
             history = ChatMessageService.get_session_history(session_id, user_id)
             # Build a prompt that includes previous history
-            # Gemini generates purely from the provided prompt string, so we append history
+            # We append history text manually for compatibility with standard prompt signatures
             history_text = "\n".join([f"{msg['role'].capitalize()}: {msg['message']}" for msg in history[-10:]]) # Limit history
             full_prompt = f"{history_text}\nAssistant:" if history else message
-            
-            # Since history already has the current message (saved in step 2), 
-            # we just pass the history as the prompt.
         except Exception as e:
-            logger.error(f"Failed to fetch history for Gemini prompt: {e}", exc_info=True)
+            logger.error(f"Failed to fetch history for AI prompt: {e}", exc_info=True)
             raise
 
-        # 5. Execute Gemini Call
+        # 5. Execute AI Call
         try:
-            ai_response_text = GeminiProvider.generate_text(
+            provider = AIProviderFactory.get_provider(current_app.config)
+            ai_response_text = provider.generate_text(
                 prompt=full_prompt,
                 system_instruction=system_instruction
             )
         except AIProviderError as e:
-            # Gemini failed. User message is safe. We abort before saving a broken AI message.
+            # AI failed. User message is safe. We abort before saving a broken AI message.
+            # We raise ServiceUnavailable to preserve legacy HTTP behavior.
             raise ServiceUnavailable(description=str(e))
         except Exception as e:
-            logger.error(f"Unexpected Gemini failure: {e}", exc_info=True)
+            logger.error(f"Unexpected AI failure: {e}", exc_info=True)
             raise ServiceUnavailable(description="AI Provider is temporarily unavailable.")
 
         # 6. Persist Assistant Response

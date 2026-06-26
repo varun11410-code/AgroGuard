@@ -14,16 +14,21 @@ from typing import Dict, Type, Any
 from app.ai.interfaces import AIProvider
 from app.ai.exceptions import AIProviderConfigurationError
 from app.ai.providers.groq_provider import GroqProvider
+from app.ai.gemini_provider import GeminiProvider
 
 class AIProviderFactory:
     """
-    Factory for instantiating the correct AIProvider based on configuration.
+    Factory for instantiating and caching the active AIProvider based on configuration.
     """
     
     # Centralized registry mapping configuration strings to provider classes
     _REGISTRY: Dict[str, Type[AIProvider]] = {
-        "groq": GroqProvider
+        "groq": GroqProvider,
+        "gemini": GeminiProvider
     }
+    
+    # Cache mapping provider names to instantiated, stateful provider singletons
+    _instances: Dict[str, AIProvider] = {}
     
     @classmethod
     def register_provider(cls, name: str, provider_cls: Type[AIProvider]) -> None:
@@ -33,14 +38,14 @@ class AIProviderFactory:
     @classmethod
     def get_provider(cls, config: Dict[str, Any]) -> AIProvider:
         """
-        Resolves and instantiates the active provider based on the provided configuration dictionary.
+        Resolves, instantiates (or retrieves from cache), and returns the active provider.
         
         Args:
             config: The application configuration dictionary containing AI_PROVIDER 
                     and any requisite API keys.
                     
         Returns:
-            An instantiated AIProvider ready for execution.
+            An AIProvider instance ready for execution.
             
         Raises:
             AIProviderConfigurationError: If the requested provider is unsupported or missing.
@@ -50,6 +55,11 @@ class AIProviderFactory:
             raise AIProviderConfigurationError("AI_PROVIDER is not set in the configuration.")
             
         provider_name = provider_name.lower()
+        
+        # Check cache first for efficiency
+        if provider_name in cls._instances:
+            return cls._instances[provider_name]
+            
         provider_cls = cls._REGISTRY.get(provider_name)
         
         if not provider_cls:
@@ -58,9 +68,10 @@ class AIProviderFactory:
                 f"Must be one of {list(cls._REGISTRY.keys())}"
             )
             
-        # The provider class itself will handle validating its own specific 
-        # required config keys (like GROQ_API_KEY) during __init__.
+        # The provider class itself handles validating its own specific config keys
         try:
-            return provider_cls(config)
+            instance = provider_cls(config)
+            cls._instances[provider_name] = instance
+            return instance
         except Exception as e:
              raise AIProviderConfigurationError(f"Failed to initialize AI provider '{provider_name}': {str(e)}")

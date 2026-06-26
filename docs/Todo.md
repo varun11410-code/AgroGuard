@@ -1147,10 +1147,10 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.4 — Migrate AI Features
- Migrate AI Enrichment.
- Migrate Chatbot.
- Verify fallback behaviour.
- Remove hard dependency on Gemini.
+ [x] Migrate AI Enrichment.
+ [x] Migrate Chatbot.
+ [x] Verify fallback behaviour.
+ [x] Remove hard dependency on Gemini.
 
 ---
 
