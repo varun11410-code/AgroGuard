@@ -92,16 +92,19 @@ class ScanService:
             raise db_error
 
         # Log the activity
-        from app.services.auth_service import AuthService
-        AuthService._safe_log_activity(
-            user_id=user_id,
-            activity_type="PREDICTION",
-            details={
-                "crop_name": crop_name,
-                "disease": disease,
-                "confidence": confidence,
-                "scan_id": str(created_scan.id)
-            }
+        from app.services.activity_log_service import ActivityLogService
+        uid_obj = None
+        if user_id:
+            try:
+                uid_obj = uuid.UUID(user_id)
+            except ValueError:
+                pass
+        ActivityLogService.log_scan_completed(
+            user_id=uid_obj,
+            crop=crop_name,
+            disease=disease,
+            confidence_score=confidence,
+            scan_id=created_scan.id
         )
 
         return created_scan

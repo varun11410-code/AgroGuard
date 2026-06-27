@@ -15,23 +15,7 @@ from app.repositories.user_repository import UserRepository
 from app.models.user import User, UserRole
 
 class AuthService:
-    @staticmethod
-    def _safe_log_activity(user_id: str | None, activity_type: str, details: dict = None) -> None:
-        try:
-            from app.models.activity_log import ActivityLog, ActivityType
-            from app.repositories.activity_log_repository import ActivityLogRepository
-            import uuid
-            import logging
-            
-            log = ActivityLog(
-                user_id=uuid.UUID(user_id) if user_id else None,
-                activity_type=ActivityType(activity_type),
-                details=details or {}
-            )
-            ActivityLogRepository.create(log)
-        except Exception as e:
-            import logging
-            logging.error(f"Failed to create activity log: {e}")
+
 
     @staticmethod
     def register_user(name: str, email: str, password: str) -> dict:
@@ -58,11 +42,8 @@ class AuthService:
         # Race conditions mitigation: create() handles IntegrityError and raises ValueError
         created_user = UserRepository.create(new_user)
 
-        AuthService._safe_log_activity(
-            user_id=str(created_user.id),
-            activity_type="REGISTER",
-            details={"email": email}
-        )
+        from app.services.activity_log_service import ActivityLogService
+        ActivityLogService.log_user_registered(user_id=created_user.id)
 
         return {
             "id": str(created_user.id),
@@ -77,12 +58,18 @@ class AuthService:
         Authenticate a user and return JWT tokens.
         Raises UnauthorizedException if credentials are invalid.
         """
+        from flask import request
+        user_agent = request.headers.get("User-Agent", "unknown") if request else "unknown"
+        from app.services.activity_log_service import ActivityLogService
+
         user = UserRepository.get_by_email(email)
         if not user:
+            ActivityLogService.log_user_login_failed(attempted_email=email, user_agent=user_agent)
             raise UnauthorizedException("Invalid email or password", error_code="AUTH_INVALID_CREDENTIALS")
 
         # Verify bcrypt password
         if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
+            ActivityLogService.log_user_login_failed(attempted_email=email, user_agent=user_agent)
             raise UnauthorizedException("Invalid email or password", error_code="AUTH_INVALID_CREDENTIALS")
 
         # Import JWT functions locally or at the top of the file
@@ -94,10 +81,9 @@ class AuthService:
         access_token = create_access_token(identity=identity, additional_claims=additional_claims)
         refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
 
-        AuthService._safe_log_activity(
-            user_id=identity,
-            activity_type="LOGIN",
-            details={"role": user.role.value}
+        ActivityLogService.log_user_login_success(
+            user_id=user.id,
+            user_agent=user_agent
         )
 
         return {
@@ -196,10 +182,5 @@ class AuthService:
         from flask_jwt_extended import get_jwt_identity
         try:
             identity = get_jwt_identity()
-            AuthService._safe_log_activity(
-                user_id=identity,
-                activity_type="LOGIN", # Wait, should be LOGOUT, but LOGOUT is not in ActivityType enum!
-                details={"action": "logout", "jti": jti}
-            )
         except Exception:
             pass

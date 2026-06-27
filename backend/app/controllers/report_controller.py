@@ -67,6 +67,19 @@ class ReportController:
             disease = validated_data.disease.replace(" ", "_")
             filename = f"AgroGuard_{crop}_{disease}.pdf"
 
+            from app.services.activity_log_service import ActivityLogService
+            import uuid
+            uid_obj = None
+            if user_id:
+                try: uid_obj = uuid.UUID(user_id)
+                except ValueError: pass
+            
+            ActivityLogService.log_report_downloaded(
+                user_id=uid_obj,
+                report_version="1.0",
+                scan_id=uuid.UUID(validated_data.scan_id) if validated_data.scan_id else None
+            )
+
             # 7. Stream file to client
             return send_file(
                 pdf_buffer,
@@ -124,6 +137,19 @@ class ReportController:
             # or we could fetch it from the DB again. A simple generic one suffices.
             filename = f"AgroGuard_Historical_Report_{report_id[:8]}.pdf"
             
+            from app.services.activity_log_service import ActivityLogService
+            import uuid
+            uid_obj = None
+            if user_id:
+                try: uid_obj = uuid.UUID(user_id)
+                except ValueError: pass
+
+            ActivityLogService.log_report_downloaded(
+                user_id=uid_obj,
+                report_version="1.0",
+                report_id=uuid.UUID(report_id)
+            )
+
             return send_file(
                 pdf_buffer,
                 mimetype="application/pdf",

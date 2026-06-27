@@ -34,6 +34,13 @@ class AIEnrichmentService:
             if not treatment_plans or not isinstance(treatment_plans, list) or len(treatment_plans) == 0:
                 raise AIProviderError("Missing or invalid 'treatment_plans' in provider response.", error_code="AI_MISSING_TREATMENT_PLANS")
                 
+            from app.services.activity_log_service import ActivityLogService
+            ActivityLogService.log_ai_interaction(
+                user_id=None,
+                provider=current_app.config.get("AI_PROVIDER", "groq"),
+                interaction_type="diagnosis_enrichment"
+            )
+
             return {
                 "ai_summary": data["ai_summary"],
                 "treatment_plans": data["treatment_plans"]

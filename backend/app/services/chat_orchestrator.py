@@ -95,6 +95,22 @@ class ChatOrchestrator:
             logger.error(f"Unexpected AI failure: {e}", exc_info=True)
             raise ServiceUnavailable(description="AI Provider is temporarily unavailable.")
 
+        from app.services.activity_log_service import ActivityLogService
+        import uuid
+        uid_obj = None
+        if user_id:
+            try:
+                uid_obj = uuid.UUID(user_id)
+            except ValueError:
+                pass
+        ActivityLogService.log_ai_interaction(
+            user_id=uid_obj,
+            session_id=uuid.UUID(session_id),
+            provider=current_app.config.get("AI_PROVIDER", "groq"),
+            interaction_type="chat",
+            scan_id=uuid.UUID(scan_id) if scan_id else None
+        )
+
         # 6. Persist Assistant Response
         try:
             ai_message_dict = ChatMessageService.save_message(

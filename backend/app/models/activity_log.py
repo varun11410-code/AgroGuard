@@ -66,14 +66,13 @@ class ActivityType(str, enum.Enum):
     Log event types as defined in Architecture.md §13.
     """
 
-    LOGIN = "LOGIN"
-    REGISTER = "REGISTER"
-    UPLOAD = "UPLOAD"
-    PREDICTION = "PREDICTION"
-    REPORT_GENERATION = "REPORT_GENERATION"
-    REPORT_DOWNLOAD = "REPORT_DOWNLOAD"
-    CHAT_MESSAGE = "CHAT_MESSAGE"
-    ERROR = "ERROR"
+    USER_REGISTERED = "USER_REGISTERED"
+    USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS"
+    USER_LOGIN_FAILED = "USER_LOGIN_FAILED"
+    SCAN_COMPLETED = "SCAN_COMPLETED"
+    REPORT_DOWNLOADED = "REPORT_DOWNLOADED"
+    AI_INTERACTION = "AI_INTERACTION"
+    SYSTEM_ERROR = "SYSTEM_ERROR"
 
 
 # ---------------------------------------------------------------------------

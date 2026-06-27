@@ -88,6 +88,26 @@ def register_error_handlers(app: Flask) -> None:
         """
         logger.critical("An unexpected internal server error occurred.", exc_info=True)
         
+        from app.services.activity_log_service import ActivityLogService
+        from flask import request
+        from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+        import uuid
+        
+        user_id = None
+        try:
+            verify_jwt_in_request(optional=True)
+            identity = get_jwt_identity()
+            if identity:
+                user_id = uuid.UUID(identity)
+        except Exception:
+            pass
+
+        ActivityLogService.log_system_error(
+            error_category=e.__class__.__name__,
+            endpoint=request.path,
+            request_method=request.method,
+            user_id=user_id
+        )
         return jsonify({
             "success": False,
             "message": "An unexpected internal server error occurred."

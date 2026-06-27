@@ -1259,43 +1259,43 @@ Activity monitoring.
 
 ## TASK 14.1
 
-Log registrations.
+[x] Log registrations.
 
 ---
 
 ## TASK 14.2
 
-Log logins.
+[x] Log logins.
 
 ---
 
 ## TASK 14.3
 
-Log uploads.
+[x] Log uploads.
 
 ---
 
 ## TASK 14.4
 
-Log predictions.
+[x] Log predictions.
 
 ---
 
 ## TASK 14.5
 
-Log report downloads.
+[x] Log report downloads.
 
 ---
 
 ## TASK 14.6
 
-Log AI interactions.
+[x] Log AI interactions.
 
 ---
 
 ## TASK 14.7
 
-Log application errors.
+[x] Log application errors.
 
 ---
 
