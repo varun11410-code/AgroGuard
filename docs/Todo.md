@@ -1178,10 +1178,10 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.8 — Validate Storage Pipeline
- Verify Cloudinary upload.
- Verify retrieval.
- Verify deletion.
- Verify cleanup compatibility.
+ [x] Verify Cloudinary upload.
+ [x] Verify retrieval.
+ [x] Verify deletion.
+ [x] Verify cleanup compatibility.
 
 ---
 
