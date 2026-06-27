@@ -1186,15 +1186,15 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.9 — End-to-End Regression Testing
- Real Authentication
- Real Upload
- Real AI Enrichment
- Real Results
- Real Scan History
- Real Reports
- Real Chatbot
- Real Cleanup
- Real Report Downloads
+ [x] Real Authentication
+ [x] Real Upload
+ [x] Real AI Enrichment
+ [x] Real Results
+ [x] Real Scan History
+ [x] Real Reports
+ [x] Real Chatbot
+ [x] Real Cleanup
+ [x] Real Report Downloads
 
 ---
 
