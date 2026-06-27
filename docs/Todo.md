@@ -1221,7 +1221,7 @@ Production-grade security.
 
 ## TASK 13.2
 
-Implement upload security checks.
+[x] Implement upload security checks.
 
 ---
 

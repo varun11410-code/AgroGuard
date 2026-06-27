@@ -17,6 +17,7 @@ export function DragDropUploader({ onFileSelect, onClearAnalysis, className }: D
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Cleanup object URLs to avoid memory leaks
   useEffect(() => {
@@ -140,13 +141,23 @@ export function DragDropUploader({ onFileSelect, onClearAnalysis, className }: D
         aria-label={selectedFile ? "Selected file preview area" : "Upload image area"}
       >
         <input
+          id="file-input"
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
           accept="image/*"
           className="hidden"
           aria-hidden="true"
-          tabIndex={-1}
+        />
+        <input
+          id="camera-input"
+          type="file"
+          ref={cameraInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          aria-hidden="true"
         />
 
         {!selectedFile ? (
@@ -158,17 +169,40 @@ export function DragDropUploader({ onFileSelect, onClearAnalysis, className }: D
             <p className="text-[0.85rem] text-white/40 mb-[24px] font-sans">
               JPG, PNG, WEBP · Max 10MB
             </p>
-            <button
-              type="button"
-              className={cn(btnGhostClass, "relative z-10 pointer-events-auto")}
-              onClick={(e) => {
-                e.stopPropagation();
-                fileInputRef.current?.click();
-              }}
-              tabIndex={-1} // The outer div handles keyboard focus to simplify a11y
-            >
-              Browse Files
-            </button>
+            <div className="flex flex-wrap justify-center gap-3 relative z-10 pointer-events-auto mt-2">
+              <label
+                htmlFor="camera-input"
+                className={cn(btnGhostClass, "cursor-pointer select-none")}
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Take photo using camera"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    cameraInputRef.current?.click();
+                  }
+                }}
+              >
+                📷 Take Photo
+              </label>
+              <label
+                htmlFor="file-input"
+                className={cn(btnGhostClass, "cursor-pointer select-none")}
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Browse files"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
+              >
+                Browse Files
+              </label>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center">
