@@ -1239,7 +1239,7 @@ Production-grade security.
 
 ## TASK 13.5
 
-Hide sensitive environment variables.
+[x] Hide sensitive environment variables.
 
 ---
 
