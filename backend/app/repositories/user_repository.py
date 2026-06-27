@@ -7,6 +7,7 @@ from typing import Optional
 from sqlalchemy.exc import IntegrityError
 from app.database import db
 from app.models.user import User
+from app.core.exceptions import DatabaseError
 
 class UserRepository:
     @staticmethod
@@ -34,9 +35,9 @@ class UserRepository:
             db.session.add(user)
             db.session.commit()
             return user
-        except IntegrityError:
+        except IntegrityError as e:
             db.session.rollback()
-            raise ValueError("Email already exists")
+            raise DatabaseError("Database integrity error during user creation", error_code="DB_INTEGRITY_ERROR") from e
 
     @staticmethod
     def update(user: User) -> User:
@@ -44,9 +45,9 @@ class UserRepository:
         try:
             db.session.commit()
             return user
-        except Exception:
+        except Exception as e:
             db.session.rollback()
-            raise
+            raise DatabaseError("Failed to update user", error_code="DB_UPDATE_ERROR") from e
 
     @staticmethod
     def get_total_count() -> int:

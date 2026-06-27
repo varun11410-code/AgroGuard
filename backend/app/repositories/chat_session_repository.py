@@ -8,6 +8,7 @@ import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from app.database import db
 from app.models.chat_session import ChatSession
+from app.core.exceptions import DatabaseError
 
 class ChatSessionRepository:
     @staticmethod
@@ -20,9 +21,9 @@ class ChatSessionRepository:
             db.session.add(session)
             db.session.commit()
             return session
-        except SQLAlchemyError as e:
+        except Exception as e:
             db.session.rollback()
-            raise ValueError(f"Failed to create chat session: {str(e)}")
+            raise DatabaseError(f"Failed to create chat session: {str(e)}", error_code="DB_CREATE_SESSION_ERROR") from e
 
     @staticmethod
     def get_by_id_and_user(session_id: str, user_id: str) -> Optional[ChatSession]:

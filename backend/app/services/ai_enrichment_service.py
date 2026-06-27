@@ -28,11 +28,11 @@ class AIEnrichmentService:
             # 3. Business Logic Validation
             # Ensure required keys exist and contain non-empty, valid values.
             if not data.get("ai_summary") or not isinstance(data.get("ai_summary"), str):
-                raise ValueError("Missing or invalid 'ai_summary' in provider response.")
+                raise AIProviderError("Missing or invalid 'ai_summary' in provider response.", error_code="AI_MISSING_SUMMARY")
                 
             treatment_plans = data.get("treatment_plans")
             if not treatment_plans or not isinstance(treatment_plans, list) or len(treatment_plans) == 0:
-                raise ValueError("Missing or invalid 'treatment_plans' in provider response.")
+                raise AIProviderError("Missing or invalid 'treatment_plans' in provider response.", error_code="AI_MISSING_TREATMENT_PLANS")
                 
             return {
                 "ai_summary": data["ai_summary"],

@@ -6,6 +6,9 @@ by the Gemini AI layer.
 """
 from typing import Dict, Any, Optional
 from app.models.scan import Scan
+from app.models.user import User
+from app.core.exceptions import BadRequestException
+import json
 
 class ContextBuilder:
     @staticmethod
@@ -24,16 +27,16 @@ class ContextBuilder:
             ValueError: If the scan is invalid, missing crops, pending, or has out-of-bounds confidence.
         """
         if not scan:
-            raise ValueError("Scan cannot be None.")
+            raise BadRequestException("Scan cannot be None.", error_code="CONTEXT_SCAN_NONE")
             
         if not scan.crop:
-            raise ValueError("Scan is missing required crop association.")
+            raise BadRequestException("Scan is missing required crop association.", error_code="CONTEXT_MISSING_CROP")
             
         if scan.predicted_disease is None:
-            raise ValueError("Prediction is pending or missing.")
+            raise BadRequestException("Prediction is pending or missing.", error_code="CONTEXT_MISSING_PREDICTION")
             
         if scan.confidence_score is None or not (0.0 <= scan.confidence_score <= 1.0):
-            raise ValueError("Confidence score out of bounds or missing.")
+            raise BadRequestException("Confidence score out of bounds or missing.", error_code="CONTEXT_INVALID_CONFIDENCE")
             
         return {
             "crop": scan.crop.name,

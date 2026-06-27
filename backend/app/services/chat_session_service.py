@@ -6,7 +6,10 @@ Business logic for managing AI chat sessions.
 import uuid
 from typing import List, Dict, Any, Optional
 from app.models.chat_session import ChatSession
+from app.models.chat_message import ChatMessage
 from app.repositories.chat_session_repository import ChatSessionRepository
+from app.repositories.scan_repository import ScanRepository
+from app.core.exceptions import BadRequestException, NotFoundException
 
 class ChatSessionService:
     @staticmethod
@@ -20,7 +23,7 @@ class ChatSessionService:
             uid = uuid.UUID(user_id)
             sid = uuid.UUID(scan_id) if scan_id else None
         except ValueError:
-            raise ValueError("Invalid user_id or scan_id format.")
+            raise BadRequestException("Invalid user_id or scan_id format.", error_code="CHAT_INVALID_FORMAT")
 
         session = ChatSession(
             user_id=uid,
@@ -39,7 +42,7 @@ class ChatSessionService:
         """
         session = ChatSessionRepository.get_by_id_and_user(session_id, user_id)
         if not session:
-            raise ValueError("Session not found or unauthorized access.")
+            raise NotFoundException("Session not found or unauthorized access.", error_code="CHAT_SESSION_NOT_FOUND")
         
         return ChatSessionService._serialize(session)
 

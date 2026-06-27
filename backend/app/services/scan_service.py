@@ -13,6 +13,11 @@ from app.models.scan import Scan
 from app.models.crop import Crop
 from app.repositories.scan_repository import ScanRepository
 from app.storage import storage
+from app.core.exceptions import (
+    BadRequestException,
+    NotFoundException,
+    ForbiddenException
+)
 from app.storage.exceptions import StorageError
 import logging
 
@@ -27,19 +32,19 @@ class ScanService:
         """
         logger.warning(f"FORENSIC: 4. Entered ScanService.save_scan (crop_name='{crop_name}')")
         if not crop_name:
-            raise ValueError("Crop name is required")
+            raise BadRequestException("Crop name is required", error_code="SCAN_MISSING_CROP")
             
         crop = db.session.execute(
             db.select(Crop).where(func.lower(Crop.name) == crop_name.lower())
         ).scalar_one_or_none()
 
         if not crop:
-            raise ValueError("Invalid crop type specified")
+            raise BadRequestException("Invalid crop type specified", error_code="SCAN_INVALID_CROP")
 
         try:
             uid = uuid.UUID(user_id)
         except ValueError:
-            raise ValueError("Invalid user ID")
+            raise BadRequestException("Invalid user ID", error_code="SCAN_INVALID_USER_ID")
 
         scan_id = uuid.uuid4()
         image_url = None
@@ -130,10 +135,10 @@ class ScanService:
         """
         scan = ScanRepository.get_by_id(scan_id)
         if not scan:
-            raise ValueError("Scan not found")
+            raise NotFoundException("Scan not found", error_code="SCAN_NOT_FOUND")
             
         if str(scan.user_id) != user_id:
-            raise ValueError("Access denied")
+            raise ForbiddenException("Access denied", error_code="SCAN_ACCESS_DENIED")
             
         ScanService._execute_scan_deletion(scan)
 

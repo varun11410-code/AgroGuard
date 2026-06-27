@@ -7,6 +7,7 @@ from typing import List
 from sqlalchemy.orm import joinedload
 from app.database import db
 from app.models.scan import Scan
+from app.core.exceptions import DatabaseError
 
 class ScanRepository:
     @staticmethod
@@ -19,9 +20,9 @@ class ScanRepository:
             db.session.add(scan)
             db.session.commit()
             return scan
-        except Exception:
+        except Exception as e:
             db.session.rollback()
-            raise
+            raise DatabaseError("Failed to create scan", error_code="DB_CREATE_ERROR") from e
 
     @staticmethod
     def get_user_scans(user_id: str) -> List[Scan]:
@@ -62,9 +63,9 @@ class ScanRepository:
         try:
             db.session.delete(scan)
             db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
-            raise
+            raise DatabaseError("Failed to delete scan", error_code="DB_DELETE_ERROR") from e
 
     @staticmethod
     def get_total_count() -> int:

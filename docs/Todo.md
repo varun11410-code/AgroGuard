@@ -1245,7 +1245,7 @@ Production-grade security.
 
 ## TASK 13.6
 
-Implement secure error handling.
+[x] Implement secure error handling.
 
 ---
 

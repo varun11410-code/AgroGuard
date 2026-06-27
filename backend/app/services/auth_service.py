@@ -4,6 +4,13 @@ AgroGuard Backend - Auth Service
 Business logic for authentication.
 """
 import bcrypt
+import logging
+from app.core.exceptions import (
+    ConflictException,
+    UnauthorizedException,
+    NotFoundException,
+    BadRequestException
+)
 from app.repositories.user_repository import UserRepository
 from app.models.user import User, UserRole
 
@@ -35,7 +42,7 @@ class AuthService:
         # Pre-check if email exists
         existing_user = UserRepository.get_by_email(email)
         if existing_user:
-            raise ValueError("Email already exists")
+            raise ConflictException("Email already exists", error_code="AUTH_EMAIL_EXISTS")
 
         # Hash password using bcrypt
         salt = bcrypt.gensalt()
@@ -68,15 +75,15 @@ class AuthService:
     def login_user(email: str, password: str) -> dict:
         """
         Authenticate a user and return JWT tokens.
-        Raises ValueError if credentials are invalid.
+        Raises UnauthorizedException if credentials are invalid.
         """
         user = UserRepository.get_by_email(email)
         if not user:
-            raise ValueError("Invalid email or password")
+            raise UnauthorizedException("Invalid email or password", error_code="AUTH_INVALID_CREDENTIALS")
 
         # Verify bcrypt password
         if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
-            raise ValueError("Invalid email or password")
+            raise UnauthorizedException("Invalid email or password", error_code="AUTH_INVALID_CREDENTIALS")
 
         # Import JWT functions locally or at the top of the file
         from flask_jwt_extended import create_access_token, create_refresh_token
@@ -127,7 +134,7 @@ class AuthService:
         """
         user = UserRepository.get_by_id(user_id)
         if not user:
-            raise ValueError("User not found")
+            raise NotFoundException("User not found", error_code="AUTH_USER_NOT_FOUND")
 
         return {
             "id": str(user.id),
@@ -146,7 +153,7 @@ class AuthService:
         """
         user = UserRepository.get_by_id(user_id)
         if not user:
-            raise ValueError("User not found")
+            raise NotFoundException("User not found", error_code="AUTH_USER_NOT_FOUND")
 
         if language is not None:
             user.language = language
@@ -156,7 +163,7 @@ class AuthService:
             try:
                 user.preferred_budget_tier = BudgetTier(preferred_budget_tier)
             except ValueError:
-                raise ValueError("Invalid budget tier")
+                raise BadRequestException("Invalid budget tier", error_code="AUTH_INVALID_BUDGET")
 
         UserRepository.update(user)
 

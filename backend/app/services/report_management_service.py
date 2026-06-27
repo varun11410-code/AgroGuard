@@ -11,6 +11,7 @@ from typing import List
 from app.models.report import Report
 from app.repositories.report_repository import ReportRepository
 from app.repositories.scan_repository import ScanRepository
+from app.core.exceptions import NotFoundException, ForbiddenException
 from app.schemas.report_contract import ReportData
 from app.services.report_service import generate_report
 from app.utils.image_helper import fetch_image_to_buffer
@@ -79,11 +80,11 @@ class ReportManagementService:
         """
         report = ReportRepository.get_by_id(report_id)
         if not report:
-            raise ValueError("Report not found")
+            raise NotFoundException("Report not found", error_code="REPORT_NOT_FOUND")
             
         if str(report.scan.user_id) != user_id:
             logger.warning(f"Ownership violation: User {user_id} attempted to download report {report_id}")
-            raise ValueError("Access denied")
+            raise ForbiddenException("Access denied", error_code="REPORT_ACCESS_DENIED")
 
         image_stream = None
         if report.scan.image_url:

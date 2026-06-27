@@ -4,6 +4,10 @@ AgroGuard Backend - Reusable Validators
 Provides custom Pydantic validators and general validation utilities
 used across various schemas to ensure DRY principles.
 """
+import re
+import uuid
+from typing import Any
+from app.core.exceptions import BadRequestException
 from uuid import UUID
 
 def validate_uuid4(v: str) -> str:
@@ -14,7 +18,7 @@ def validate_uuid4(v: str) -> str:
         val = UUID(v, version=4)
         return str(val)
     except ValueError:
-        raise ValueError("Invalid UUID format")
+        raise BadRequestException("Invalid UUID format", error_code="INVALID_UUID")
 
 def sanitize_string(v: str) -> str:
     """

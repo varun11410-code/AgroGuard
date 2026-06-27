@@ -8,6 +8,7 @@ import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from app.database import db
 from app.models.chat_message import ChatMessage
+from app.core.exceptions import DatabaseError
 
 class ChatMessageRepository:
     @staticmethod
@@ -19,9 +20,9 @@ class ChatMessageRepository:
             db.session.add(message)
             db.session.commit()
             return message
-        except SQLAlchemyError as e:
+        except Exception as e:
             db.session.rollback()
-            raise ValueError(f"Failed to create chat message: {str(e)}")
+            raise DatabaseError(f"Failed to create chat message: {str(e)}", error_code="DB_CREATE_MESSAGE_ERROR") from e
 
     @staticmethod
     def get_by_session(session_id: str) -> List[ChatMessage]:

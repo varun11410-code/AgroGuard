@@ -1,0 +1,3 @@
+"""
+AgroGuard Backend - Core Module
+"""

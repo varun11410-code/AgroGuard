@@ -8,6 +8,7 @@ from typing import List, Dict, Any
 from app.models.chat_message import ChatMessage, MessageRole
 from app.repositories.chat_message_repository import ChatMessageRepository
 from app.services.chat_session_service import ChatSessionService
+from app.core.exceptions import BadRequestException
 
 class ChatMessageService:
     @staticmethod
@@ -17,7 +18,7 @@ class ChatMessageService:
         Validates session ownership before allowing the insertion.
         """
         if not message or not message.strip():
-            raise ValueError("Message cannot be empty or whitespace.")
+            raise BadRequestException("Message cannot be empty or whitespace.", error_code="CHAT_EMPTY_MESSAGE")
 
         # Validate session ownership. Raises ValueError if session is not found or unauthorized.
         ChatSessionService.get_session(session_id, user_id)
@@ -25,7 +26,7 @@ class ChatMessageService:
         try:
             sid = uuid.UUID(session_id)
         except ValueError:
-            raise ValueError("Invalid session_id format.")
+            raise BadRequestException("Invalid session_id format.", error_code="CHAT_INVALID_SESSION_ID")
 
         new_message = ChatMessage(
             session_id=sid,
