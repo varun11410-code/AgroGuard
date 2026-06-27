@@ -20,13 +20,9 @@ class ScanController:
         """
         try:
             logger.warning("FORENSIC: 1. Entered ScanController.predict")
-            crop_name = request.form.get("crop")
-            if not crop_name:
-                logger.warning("Prediction request rejected: Missing crop parameter.")
-                return jsonify({
-                    "success": False,
-                    "message": "Missing crop parameter"
-                }), 400
+            from app.schemas.scan_schema import ScanPredictionFormSchema
+            form_data = ScanPredictionFormSchema(**request.form.to_dict())
+            crop_name = form_data.crop
 
             # 1. Validate uploaded image field exists
             if "image" not in request.files:

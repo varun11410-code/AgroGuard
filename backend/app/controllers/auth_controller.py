@@ -19,10 +19,8 @@ class AuthController:
         Handle POST /api/auth/register
         """
         try:
-            # 1. Parse JSON payload (silent=True prevents Flask from automatically raising BadRequest)
-            data = request.get_json(silent=True)
-            if not data or not isinstance(data, dict):
-                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+            # 1. Parse JSON payload
+            data = request.get_json() or {}
 
             # 2. Validate using Pydantic
             validated_data = RegisterRequestSchema(**data)
@@ -40,18 +38,7 @@ class AuthController:
                 "data": user_data
             }), 201
 
-        except ValidationError as e:
-            # Return 400 Validation errors with specific field messages
-            formatted_errors = []
-            for err in e.errors():
-                loc = err.get("loc", ("unknown",))
-                field = str(loc[-1]) if loc else "unknown"
-                formatted_errors.append({"field": field, "message": err.get("msg")})
-                
-            return jsonify({
-                "success": False,
-                "errors": formatted_errors
-            }), 400
+
 
         except ValueError as e:
             # Return 409 Conflict if email exists
@@ -87,9 +74,7 @@ class AuthController:
         Handle POST /api/auth/login
         """
         try:
-            data = request.get_json(silent=True)
-            if not data or not isinstance(data, dict):
-                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+            data = request.get_json() or {}
 
             validated_data = LoginRequestSchema(**data)
 
@@ -100,17 +85,7 @@ class AuthController:
 
             return jsonify(response_data), 200
 
-        except ValidationError as e:
-            formatted_errors = []
-            for err in e.errors():
-                loc = err.get("loc", ("unknown",))
-                field = str(loc[-1]) if loc else "unknown"
-                formatted_errors.append({"field": field, "message": err.get("msg")})
-                
-            return jsonify({
-                "success": False,
-                "errors": formatted_errors
-            }), 400
+
 
         except ValueError as e:
             if str(e) == "Invalid email or password":
@@ -203,9 +178,7 @@ class AuthController:
         """
         try:
             identity = get_jwt_identity()
-            data = request.get_json(silent=True)
-            if not data or not isinstance(data, dict):
-                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+            data = request.get_json() or {}
 
             from app.schemas.auth_schema import UpdatePreferencesSchema
             validated_data = UpdatePreferencesSchema(**data)
@@ -221,17 +194,7 @@ class AuthController:
                 "data": user_data
             }), 200
 
-        except ValidationError as e:
-            formatted_errors = []
-            for err in e.errors():
-                loc = err.get("loc", ("unknown",))
-                field = str(loc[-1]) if loc else "unknown"
-                formatted_errors.append({"field": field, "message": err.get("msg")})
-                
-            return jsonify({
-                "success": False,
-                "errors": formatted_errors
-            }), 400
+
 
         except ValueError as e:
             if str(e) == "User not found":

@@ -6,11 +6,17 @@ Defines validation schemas for authentication endpoints.
 import re
 from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator
+from app.utils.validators import sanitize_string
 
 class RegisterRequestSchema(BaseModel):
     name: str = Field(..., min_length=1, max_length=120)
     email: str = Field(..., min_length=5, max_length=255)
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=128)
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def apply_sanitization(cls, v: str) -> str:
+        return sanitize_string(v)
 
     @field_validator("email", mode="before")
     @classmethod

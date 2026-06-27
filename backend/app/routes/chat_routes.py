@@ -28,9 +28,7 @@ def send_message():
     user_id = get_jwt_identity()
     
     try:
-        data = request.get_json(silent=True)
-        if not data or not isinstance(data, dict):
-            return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+        data = request.get_json() or {}
 
         validated_data = ChatRequestSchema(**data)
         
@@ -48,9 +46,7 @@ def send_message():
             "message": result["message"]
         }), 200
 
-    except ValidationError as e:
-        formatted_errors = [{"field": str(err.get("loc", ("unknown",))[-1]), "message": err.get("msg")} for err in e.errors()]
-        return jsonify({"success": False, "errors": formatted_errors}), 400
+
     except ValueError as e:
         return jsonify({"success": False, "message": str(e)}), 400
     except HTTPException as e:
@@ -69,7 +65,9 @@ def get_session_history():
     Otherwise fetches the most recent general session.
     """
     user_id = get_jwt_identity()
-    scan_id = request.args.get("scan_id")
+    from app.schemas.common_schema import ChatSessionQuerySchema
+    query_data = ChatSessionQuerySchema(**request.args.to_dict())
+    scan_id = query_data.scan_id
 
     try:
         sessions = ChatSessionService.get_user_sessions(user_id)

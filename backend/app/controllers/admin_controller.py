@@ -34,12 +34,9 @@ class AdminController:
         Returns paginated activity logs.
         """
         try:
-            page = request.args.get("page", 1, type=int)
-            limit = request.args.get("limit", 20, type=int)
-            
-            # Enforce maximum limit to prevent abuse
-            if limit > 100:
-                limit = 100
+            from app.schemas.common_schema import PaginationQuerySchema
+            query = PaginationQuerySchema(**request.args.to_dict())
+            page, limit = query.page, query.limit
                 
             logs, total = AdminService.get_activity_logs(page, limit)
             
@@ -86,9 +83,10 @@ class AdminController:
     @staticmethod
     def get_users():
         try:
-            page = request.args.get("page", 1, type=int)
-            limit = request.args.get("limit", 20, type=int)
-            users, total = AdminService.get_users(page, min(limit, 100))
+            from app.schemas.common_schema import PaginationQuerySchema
+            query = PaginationQuerySchema(**request.args.to_dict())
+            page, limit = query.page, query.limit
+            users, total = AdminService.get_users(page, limit)
             
             data = [{
                 "id": str(u.id),
@@ -115,9 +113,10 @@ class AdminController:
     @staticmethod
     def get_scans():
         try:
-            page = request.args.get("page", 1, type=int)
-            limit = request.args.get("limit", 20, type=int)
-            scans, total = AdminService.get_scans(page, min(limit, 100))
+            from app.schemas.common_schema import PaginationQuerySchema
+            query = PaginationQuerySchema(**request.args.to_dict())
+            page, limit = query.page, query.limit
+            scans, total = AdminService.get_scans(page, limit)
             
             data = [{
                 "id": str(s.id),
@@ -145,9 +144,10 @@ class AdminController:
     @staticmethod
     def get_reports():
         try:
-            page = request.args.get("page", 1, type=int)
-            limit = request.args.get("limit", 20, type=int)
-            reports, total = AdminService.get_reports(page, min(limit, 100))
+            from app.schemas.common_schema import PaginationQuerySchema
+            query = PaginationQuerySchema(**request.args.to_dict())
+            page, limit = query.page, query.limit
+            reports, total = AdminService.get_reports(page, limit)
             
             data = [{
                 "id": str(r.id),

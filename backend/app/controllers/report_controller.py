@@ -26,9 +26,7 @@ class ReportController:
         """
         try:
             # 1. Parse JSON payload
-            data = request.get_json(silent=True)
-            if not data or not isinstance(data, dict):
-                return jsonify({"success": False, "message": "Missing or invalid JSON payload"}), 400
+            data = request.get_json() or {}
 
             # 2. Validate using Pydantic
             validated_data = ReportData(**data)
@@ -77,18 +75,7 @@ class ReportController:
                 download_name=filename
             )
 
-        except ValidationError as e:
-            # Return 400 Validation errors
-            formatted_errors = []
-            for err in e.errors():
-                loc = err.get("loc", ("unknown",))
-                field = str(loc[-1]) if loc else "unknown"
-                formatted_errors.append({"field": field, "message": err.get("msg")})
-                
-            return jsonify({
-                "success": False,
-                "errors": formatted_errors
-            }), 400
+
 
         except ValueError as e:
             return jsonify({

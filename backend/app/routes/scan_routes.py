@@ -25,7 +25,7 @@ def get_scan_history():
     """
     return ScanController.get_history()
 
-@scan_bp.delete("/scans/<scan_id>")
+@scan_bp.delete("/scans/<uuid:scan_id>")
 @jwt_required()
 def delete_scan(scan_id):
     """

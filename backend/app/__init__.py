@@ -59,6 +59,12 @@ def create_app(env: str | None = None) -> Flask:
     _register_extensions(app)
 
     # ------------------------------------------------------------------ #
+    # Middleware / Error Handlers                                          #
+    # ------------------------------------------------------------------ #
+    from app.middleware.error_handler import register_error_handlers
+    register_error_handlers(app)
+
+    # ------------------------------------------------------------------ #
     # Blueprints                                                           #
     # ------------------------------------------------------------------ #
     _register_blueprints(app)

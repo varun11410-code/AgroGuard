@@ -26,7 +26,7 @@ def get_reports():
     """
     return ReportController.get_history()
 
-@report_bp.get("/reports/<report_id>/download")
+@report_bp.get("/reports/<uuid:report_id>/download")
 @jwt_required()
 def download_historical_report(report_id):
     """
