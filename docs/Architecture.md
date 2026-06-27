@@ -602,26 +602,30 @@ Access:
 ## Flow
 
 ```text
-Upload Image
+Image Upload
       │
       ▼
-Validate File
+ML Prediction
       │
       ▼
-Cloudinary Upload
+Support Detection
       │
       ▼
-Preprocessing
+Deterministic Risk Calculator
       │
       ▼
-Model Inference
+AI Enrichment (supported predictions only)
       │
       ▼
-Prediction
+Persistence
       │
       ▼
-Results
+Frontend
 ```
+
+Risk Level is calculated deterministically by backend business logic based on the model's confidence score.
+The AI Provider never generates the Risk Level.
+Unsupported predictions bypass AI enrichment entirely to prevent hallucinated disease explanations.
 
 ---
 
@@ -662,13 +666,24 @@ Responsibilities:
 
 AgroGuard uses a provider-agnostic AI architecture. Business logic must never depend directly on a concrete provider.
 
+```text
+AIProvider (Interface)
+      │
+      ▼
+AIProviderFactory (Singleton cache & resolver)
+      │
+      ▼
+GroqProvider (Concrete implementation)
+```
+
 ### Components
 
-* **AIProvider Interface:** Defines the standard contract for all AI integrations.
-* **AIProviderFactory:** The single entry point for obtaining AI providers. Instantiates the correct provider based on environment configuration. No controller or service may instantiate providers directly.
-* **Concrete Providers:** (e.g., `GroqProvider`, `GeminiProvider`) Contain transport logic only. They do not build prompts.
-* **Prompt Templates (Prompt Layer):** Dedicated layer containing prompt engineering only. Kept strictly separate from transport logic.
-* **Response Normalization:** Providers must normalize their output into a single internal unified response contract before returning it to the application. The rest of AgroGuard does not know which provider produced the response.
+* **Provider Abstraction:** `AIProvider` interface defines the standard contract for all AI integrations.
+* **Singleton Provider Caching & Registration:** `AIProviderFactory` serves as the single entry point. It instantiates the requested provider based on environment variables, caching it as a singleton to reuse client sessions. 
+* **Concrete Providers:** (e.g., `GroqProvider`). Contain transport logic only. They do not build prompts. Gemini is available as an optional legacy provider but is not tightly coupled.
+* **Prompt Builders:** A dedicated layer containing prompt engineering to inject contextual disease data safely. Kept strictly separate from transport logic.
+* **Structured JSON Contract:** Providers must normalize their output into a single internal unified JSON contract before returning it. The rest of AgroGuard (e.g., `AIEnrichmentService`, `ChatOrchestrator`) does not know which provider produced the response.
+* **Future Provider Extensibility:** Adding a new provider requires only implementing the `AIProvider` interface and registering it in the factory. No business logic changes are needed.
 
 ## AI Error Handling
 
@@ -734,17 +749,56 @@ Assistant must:
 
 ---
 
-# 10. Report Generation Architecture
+# 10. Storage & Report Architecture
 
-## Generation Trigger
+## Storage Architecture (Metadata-Only)
+
+AgroGuard uses a strictly metadata-only persistence strategy for images and reports. 
+
+### Authenticated Users
+```text
+Image → Cloudinary → image_url → PostgreSQL
+```
+The raw binary is sent to Cloudinary, and only the secure URL is saved in the database.
+Includes **Rollback Protection** (if DB commit fails, the Cloudinary asset is automatically orphaned and cleaned up).
+
+### Guest Users
+```text
+Image → Browser Memory → Base64 → PDF
+```
+No Cloudinary upload. No Database record. The image stays in browser memory as a Base64 string and is streamed directly to the PDF generator.
+
+---
+
+## Report Generation Architecture
+
+### Active Report Generation
 
 ```text
-Result Page
+Prediction
       │
-Download Report
-      │
+      ▼
 Generate PDF
       │
+      ▼
+Persist Report Metadata
+```
+
+### Historical Report Generation
+
+```text
+Report Metadata
+      │
+      ▼
+Scan Metadata
+      │
+      ▼
+Cloudinary Retrieval
+      │
+      ▼
+PDF Regeneration
+      │
+      ▼
 Download
 ```
 
@@ -757,19 +811,18 @@ Download
 * Disease
 * Confidence
 * AI Summary
-* Treatment Plans
+* Treatment Plans (modern structure support)
 * Prevention Measures
 * Timestamp
 
 ---
 
-## Storage Strategy
+## Storage Strategy Details
 
-Store metadata only.
-
-PDF generated dynamically.
-
-No permanent PDF storage.
+* **Metadata-Only Persistence:** We store metadata (disease, summary, treatment JSON) in PostgreSQL. PDF binaries are never permanently stored.
+* **Historical Reconstruction:** Reports are reconstructed dynamically from metadata upon download request.
+* **Image Placeholders:** If a Cloudinary image is deleted or expired, the PDF generator gracefully falls back to an image placeholder without crashing.
+* **Legacy Compatibility:** Handles both legacy string-based recommendations and modern structured treatment plans.
 
 ---
 
@@ -777,27 +830,16 @@ No permanent PDF storage.
 
 ## Guest Users
 
-```text
-Upload
-↓
-Predict
-↓
-Delete Image
-```
+* **Browser-only:** Images are loaded directly into browser memory (Base64).
+* **Never uploaded:** Images never touch Cloudinary or PostgreSQL.
 
 ---
 
 ## Registered Users
 
-```text
-Upload
-↓
-Store Image
-↓
-Store Scan
-↓
-Auto Delete After Retention Period
-```
+* **Cloudinary:** Uploaded securely to isolated folders.
+* **Cleanup & Scheduled Deletion:** Automated lifecycle rules periodically purge expired scans (180 days).
+* **Graceful Degradation:** If an image is deleted (via manual user deletion or scheduled cleanup), historical scans and reports still render properly utilizing graceful fallbacks.
 
 ---
 
@@ -953,39 +995,34 @@ ERROR
 
 ---
 
-# 14. Environment Variables
+# 14. Environment Configuration
 
 ## Frontend
 
 ```env
-NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_API_URL= # Required: Points to the Flask backend URL.
 ```
 
 ---
 
 ## Backend
 
-```env
-DATABASE_URL=
+Every environment variable required for production orchestration.
 
-JWT_SECRET_KEY=
+### Required Variables
+* `AI_PROVIDER`: Defines the active provider (e.g., `groq`). Determines provider selection at runtime.
+* `GROQ_API_KEY`: Required for Groq AI enrichment and chatbot.
+* `JWT_SECRET_KEY`: Used for authentication and session management.
+* `DATABASE_URL`: Connection string for PostgreSQL (Supabase).
+* `CLOUDINARY_CLOUD_NAME`: Target cloud environment.
+* `CLOUDINARY_API_KEY`: Storage upload authentication.
+* `CLOUDINARY_API_SECRET`: Storage API access token.
 
-AI_PROVIDER=
+### Optional Variables
+* `GEMINI_API_KEY`: Included for backward compatibility if fallback/legacy provider is needed.
+* `GROQ_MODEL` / `GEMINI_MODEL`: Specifies the target LLM model.
 
-GROQ_API_KEY=
-
-GROQ_MODEL=
-
-GEMINI_API_KEY=
-
-GEMINI_MODEL=
-
-CLOUDINARY_CLOUD_NAME=
-
-CLOUDINARY_API_KEY=
-
-CLOUDINARY_API_SECRET=
-```
+This configuration architecture allows seamless future extensibility by simply injecting new provider keys without redeploying code logic.
 
 ---
 
@@ -1017,3 +1054,55 @@ The current architecture should require only configuration and module additions 
 8. Minimal Vendor Lock-In
 9. Maintainable Folder Structure
 10. Production-Oriented Development
+
+---
+
+# 17. Phase 12 & 12.A Migration Decisions
+
+This section records major architectural migrations to serve as a historical reference for future maintainers.
+
+## Phase 12
+
+* **Metadata-only persistence:** 
+  * *Previous:* Binary blobs stored directly or tightly coupled local files.
+  * *New:* Raw binaries are hosted externally; database only records `image_url`.
+  * *Reason & Benefits:* Offloads bandwidth, reduces DB footprint, improves query speeds.
+* **Cloudinary integration:** 
+  * *Previous:* Local file storage.
+  * *New:* Direct stream uploads to Cloudinary.
+  * *Reason & Benefits:* Professional CDN delivery and automatic image optimization.
+* **Guest image isolation:** 
+  * *Previous:* Guest uploads saved locally.
+  * *New:* Guest uploads are kept entirely in Base64 browser memory.
+  * *Reason & Benefits:* Prevents tenant storage exhaustion and eliminates orphaned guest files.
+* **Cleanup strategy:** 
+  * *Previous:* Manual DB cleanup without external syncing.
+  * *New:* Cascading deletion that proactively deletes Cloudinary assets before purging DB records, including rollback safeguards.
+  * *Reason & Benefits:* Zero orphaned data.
+
+## Phase 12.A
+
+* **AIProvider abstraction:**
+  * *Previous:* Hardcoded Gemini SDK calls scattered across services.
+  * *New:* `AIProvider` interface and `ProviderFactory` singleton.
+  * *Reason & Benefits:* True vendor independence and zero-downtime provider swapping.
+* **Prompt builder extraction:**
+  * *Previous:* Prompts built directly inside controllers/services.
+  * *New:* Dedicated `prompts/` module.
+  * *Reason & Benefits:* Separation of concerns; easier tuning of LLM behavior.
+* **Groq migration:**
+  * *Previous:* Gemini as sole provider.
+  * *New:* Groq `llama-3.1-8b-instant` as default provider.
+  * *Reason & Benefits:* Dramatically faster response times for real-time AI UX.
+* **Deterministic Risk Calculator:**
+  * *Previous:* LLM asked to guess Risk Level.
+  * *New:* Backend utility calculates Risk deterministically based on ML confidence.
+  * *Reason & Benefits:* Eliminates AI hallucination and ensures mathematical consistency.
+* **Unified Report Payload:**
+  * *Previous:* Ad-hoc schema with legacy string-based recommendations.
+  * *New:* Structured JSON contract (`treatment_plans` array) universally mapped.
+  * *Reason & Benefits:* Predictable PDF rendering and UI cards.
+* **Prediction UX improvements:**
+  * *Previous:* Unsupported inputs threw ambiguous errors or triggered confused LLM responses.
+  * *New:* Unsupported inputs bypass AI completely and return clean fallback UI.
+  * *Reason & Benefits:* Vastly improves user trust and interface stability.

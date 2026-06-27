@@ -1199,11 +1199,11 @@ Goal: Strengthen the AI architecture by migrating to a provider-agnostic design,
 ---
 
 ## TASK 12.A.10 — Documentation & Architecture Updates
- Update Architecture.md.
- Update PRD if necessary.
- Document provider architecture.
- Document environment variables.
- Record migration decisions.
+ [x] Update Architecture.md.
+ [x] Update PRD if necessary.
+ [x] Document provider architecture.
+ [x] Document environment variables.
+ [x] Record migration decisions.
 
 # PHASE 13 — Security
 
