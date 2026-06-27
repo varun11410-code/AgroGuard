@@ -62,7 +62,10 @@ def create_app(env: str | None = None) -> Flask:
     # Middleware / Error Handlers                                          #
     # ------------------------------------------------------------------ #
     from app.middleware.error_handler import register_error_handlers
+    from app.middleware.rate_limit_middleware import register_rate_limit_middleware
+    
     register_error_handlers(app)
+    register_rate_limit_middleware(app)
 
     # ------------------------------------------------------------------ #
     # Blueprints                                                           #
