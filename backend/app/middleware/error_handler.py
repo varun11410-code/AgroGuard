@@ -39,6 +39,17 @@ def register_error_handlers(app: Flask) -> None:
             "message": "Missing or invalid JSON payload"
         }), 400
 
+    from werkzeug.exceptions import RequestEntityTooLarge
+    @app.errorhandler(RequestEntityTooLarge)
+    def handle_entity_too_large(e: RequestEntityTooLarge):
+        """
+        Catches file uploads exceeding MAX_CONTENT_LENGTH.
+        """
+        return jsonify({
+            "success": False,
+            "message": "File exceeds maximum allowed size"
+        }), 413
+
     @app.errorhandler(ValueError)
     def handle_value_error(e: ValueError):
         """

@@ -24,43 +24,74 @@ class ScanController:
             form_data = ScanPredictionFormSchema(**request.form.to_dict())
             crop_name = form_data.crop
 
+            from app.utils.upload_validators import validate_extension, validate_mimetype, validate_magic_number, validate_dimensions
+
             # 1. Validate uploaded image field exists
             if "image" not in request.files:
                 logger.warning("Prediction request rejected: Missing image field in files payload.")
-                return jsonify({
-                    "success": False,
-                    "message": "Missing image field"
-                }), 400
+                return jsonify({"success": False, "message": "Missing image field"}), 400
 
             file = request.files["image"]
 
-            # 2. Validate file is not empty
+            # 2. UX & Advisory Checks (Extension and MIME)
             if file.filename == "":
                 logger.warning("Prediction request rejected: Uploaded file filename is empty.")
-                return jsonify({
-                    "success": False,
-                    "message": "Empty upload"
-                }), 400
+                return jsonify({"success": False, "message": "Empty upload"}), 400
+                
+            if not validate_extension(file.filename):
+                logger.warning(f"Prediction request rejected: Invalid extension '{file.filename}'")
+                return jsonify({"success": False, "message": "Unsupported or invalid image file"}), 400
+                
+            if not validate_mimetype(file.mimetype):
+                logger.warning(f"Prediction request rejected: Invalid mimetype '{file.mimetype}'")
+                return jsonify({"success": False, "message": "Unsupported or invalid image file"}), 400
 
-            # 3. Read raw bytes and decode the image using OpenCV
+            # 3. Authoritative Check (Magic Number) via Chunked Reading
+            header = file.read(16)
+            detected_format = validate_magic_number(header)
+            if not detected_format:
+                logger.warning("Prediction request rejected: Invalid magic number signature")
+                return jsonify({"success": False, "message": "Unsupported or invalid image file"}), 400
+                
+            # Seek back to beginning before reading full payload
+            file.seek(0)
+
+            # 4. Read full payload and decode via OpenCV
             try:
                 image_bytes = file.read()
                 np_arr = np.frombuffer(image_bytes, np.uint8)
+                # IMREAD_COLOR normalizes RGBA/Grayscale to 3-channel BGR safely
                 img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             except Exception as e:
-                logger.warning(f"Prediction request rejected: Failed to read file bytes: {str(e)}")
-                return jsonify({
-                    "success": False,
-                    "message": "Invalid/corrupted image file"
-                }), 400
+                logger.warning(f"Prediction request rejected: Failed to read/decode file bytes: {str(e)}")
+                return jsonify({"success": False, "message": "Unsupported or invalid image file"}), 400
 
-            # 4. Validate that decoding succeeded
+            # 5. Structural Validation (Decode Success & Dimensions)
             if img is None or img.shape[0] == 0 or img.shape[1] == 0:
-                logger.warning("Prediction request rejected: OpenCV image decoding returned None or empty array.")
-                return jsonify({
-                    "success": False,
-                    "message": "Invalid/corrupted image file"
-                }), 400
+                logger.warning("Prediction request rejected: OpenCV image decoding returned None.")
+                return jsonify({"success": False, "message": "Unsupported or invalid image file"}), 400
+                
+            height, width = img.shape[:2]
+            if not validate_dimensions(width, height):
+                logger.warning(f"Prediction request rejected: Dimensions {width}x{height} exceed total pixel limit")
+                return jsonify({"success": False, "message": "Image dimensions exceed limits"}), 400
+
+            # 6. Sanitize by Re-encoding into the Original Validated Format (Defense-in-depth)
+            try:
+                # Map detected magic number format to cv2 encode ext
+                ext_map = {"jpeg": ".jpg", "png": ".png"}
+                encode_ext = ext_map.get(detected_format, ".jpg")
+                
+                success, encoded_img = cv2.imencode(encode_ext, img)
+                if not success:
+                    raise Exception("cv2.imencode failed")
+                sanitized_bytes = encoded_img.tobytes()
+            except Exception as e:
+                logger.warning(f"Prediction request rejected: Failed to re-encode image: {str(e)}")
+                return jsonify({"success": False, "message": "Failed to process image"}), 500
+
+            # Use sanitized bytes for persistence
+            image_bytes = sanitized_bytes
 
             # 5. Run preprocessing
             try:

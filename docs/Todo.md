@@ -1215,7 +1215,7 @@ Production-grade security.
 
 ## TASK 13.1
 
-Validate all API inputs.
+[x] Validate all API inputs.
 
 ---
 

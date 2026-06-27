@@ -23,6 +23,7 @@ class Config:
 
     # Flask
     SECRET_KEY: str = os.getenv("SECRET_KEY") or "change-me-in-production"
+    MAX_CONTENT_LENGTH: int = 5 * 1024 * 1024  # 5 MB upload limit
 
     # SQLAlchemy — falls back to local SQLite when DATABASE_URL is unset or blank
     SQLALCHEMY_DATABASE_URI: str = (
