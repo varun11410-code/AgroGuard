@@ -6,7 +6,9 @@ import { DragDropUploader } from "@/components/upload/DragDropUploader";
 import { AnalysisLoading } from "@/components/upload/AnalysisLoading";
 import { PredictionResults } from "@/components/results/PredictionResults";
 import { useScanUpload } from "@/hooks/useScanUpload";
+import { useGuestQuota } from "@/hooks/useGuestQuota";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function UploadWorkflowPage() {
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
@@ -19,6 +21,8 @@ export default function UploadWorkflowPage() {
     executeUpload,
     reset,
   } = useScanUpload();
+
+  const { remaining, isExhausted } = useGuestQuota();
 
   const prediction = scanResult;
   console.log("Page Prediction:", prediction);
@@ -70,8 +74,13 @@ export default function UploadWorkflowPage() {
         {/* Upload Workflow Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
           <div>
-            <h3 className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white/35 mb-[14px]">
-              Step 1 — Select Crop
+            <h3 className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white/35 mb-[14px] flex items-center justify-between">
+              <span>Step 1 — Select Crop</span>
+              {remaining > 0 && remaining < 3 && (
+                <span className="text-[#22c55e] bg-[#22c55e]/10 px-2 py-0.5 rounded-full border border-[#22c55e]/20">
+                  {remaining} free scan{remaining !== 1 ? 's' : ''} left
+                </span>
+              )}
             </h3>
             <CropSelectionCards onSelect={setSelectedCrop} />
           </div>
@@ -80,12 +89,30 @@ export default function UploadWorkflowPage() {
             <h3 className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white/35 mb-[14px]">
               Step 2 — Upload Image
             </h3>
-            <div className={cn(isUploading && "pointer-events-none opacity-60 transition-opacity")}>
-              <DragDropUploader 
-                onFileSelect={setSelectedFile} 
-                onClearAnalysis={reset} 
-              />
-            </div>
+            {isExhausted ? (
+              <div className="glass-card relative overflow-hidden p-[60px_40px] text-center border-2 border-dashed border-[#22c55e]/30 bg-[#22c55e]/[0.02]">
+                <span className="text-[48px] mb-[20px] block opacity-80 leading-none" aria-hidden="true">🔒</span>
+                <h3 className="font-heading text-[1.2rem] font-bold mb-[10px] text-foreground">
+                  Free Limit Reached
+                </h3>
+                <p className="text-[0.9rem] text-white/60 mb-[24px] font-sans max-w-sm mx-auto leading-relaxed">
+                  You've used all your free guest scans. Create a free account to save your history and unlock unlimited analysis.
+                </p>
+                <Link 
+                  href="/register"
+                  className="inline-block font-heading px-[32px] py-[12px] text-[0.95rem] font-bold text-white rounded-full bg-[#22c55e] hover:bg-[#16a34a] transition-colors shadow-lg shadow-[#22c55e]/20"
+                >
+                  Create Free Account
+                </Link>
+              </div>
+            ) : (
+              <div className={cn(isUploading && "pointer-events-none opacity-60 transition-opacity")}>
+                <DragDropUploader 
+                  onFileSelect={setSelectedFile} 
+                  onClearAnalysis={reset} 
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -100,7 +127,7 @@ export default function UploadWorkflowPage() {
         )}
 
         {/* Analyze Button and Loading Sequence */}
-        {!scanResult && (
+        {!scanResult && !isExhausted && (
           <div className="mt-[24px] text-center">
             <button
               onClick={handleAnalyze}

@@ -1227,13 +1227,13 @@ Production-grade security.
 
 ## TASK 13.3
 
-Implement rate limiting.
+[x] Implement rate limiting.
 
 ---
 
 ## TASK 13.4
 
-Implement guest scan limits.
+[x] Implement guest scan limits.
 
 ---
 

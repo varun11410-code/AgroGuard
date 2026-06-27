@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { scanService, ScanResponse, ScanUploadError } from "@/services/scan";
+import { useGuestQuota } from "@/hooks/useGuestQuota";
 import { validateImageFile } from "@/lib/validators/uploadValidation";
 
 export interface UseScanUploadResult {
@@ -14,6 +15,7 @@ export function useScanUpload(): UseScanUploadResult {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<ScanResponse | null>(null);
+  const { incrementQuota } = useGuestQuota();
 
   const reset = () => {
     setIsUploading(false);
@@ -45,6 +47,8 @@ export function useScanUpload(): UseScanUploadResult {
       const result = await scanService.uploadScan(file, cropId);
       console.log("Hook Result:", result);
       setScanResult(result);
+      // Only increment guest quota on a completely successful scan
+      incrementQuota();
     } catch (err) {
       if (err instanceof ScanUploadError) {
         setError(err.message);
