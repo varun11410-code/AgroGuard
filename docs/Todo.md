@@ -1315,7 +1315,7 @@ Deploy production version.
 
 ## TASK 15.2
 
-[x] Deploy backend to Render.
+[x] Deploy backend to Hugging Face Spaces (Docker).
 
 ---
 
