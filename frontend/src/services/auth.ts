@@ -1,7 +1,7 @@
 // Auth service
 import api from './api';
 import { User, LoginCredentials, RegisterData, LoginResponse, RegisterResponse, ApiErrorResponse } from '../types/auth';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 /**
  * Normalizes backend error responses into a safe, displayable error string.

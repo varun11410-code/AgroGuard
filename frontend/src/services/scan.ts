@@ -59,7 +59,6 @@ export const scanService = {
       });
 
       const responseData = response.data;
-      console.log("API Response:", responseData);
 
       if (!responseData.success || !responseData.data) {
         throw new ScanUploadError(responseData.message || "Failed to retrieve prediction results.");

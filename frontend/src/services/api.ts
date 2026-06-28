@@ -56,7 +56,7 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         }
-      } catch (refreshError) {
+      } catch {
         // Refresh token invalid or expired
         localStorage.removeItem('agroguard_access_token');
         localStorage.removeItem('agroguard_refresh_token');

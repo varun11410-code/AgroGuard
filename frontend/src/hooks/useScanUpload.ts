@@ -45,7 +45,6 @@ export function useScanUpload(): UseScanUploadResult {
     setIsUploading(true);
     try {
       const result = await scanService.uploadScan(file, cropId);
-      console.log("Hook Result:", result);
       setScanResult(result);
       // Only increment guest quota on a completely successful scan
       incrementQuota();

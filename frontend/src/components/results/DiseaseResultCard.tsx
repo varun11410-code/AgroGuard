@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { normalizeConfidence, getConfidenceTheme } from "@/lib/theme";
+import { normalizeConfidence } from "@/lib/theme";
 
 export interface DiseaseResultCardProps {
   prediction: {
@@ -33,7 +33,6 @@ export function DiseaseResultCard({ prediction, className }: DiseaseResultCardPr
 
   if (!isSupported) {
     const formattedConfidence = normalizeConfidence(prediction.confidence);
-    const theme = getConfidenceTheme(prediction.confidence);
 
     return (
       <article
@@ -53,7 +52,7 @@ export function DiseaseResultCard({ prediction, className }: DiseaseResultCardPr
             Image Not Recognized
           </h4>
           <p className="text-[0.85rem] text-white/60 leading-[1.6] mb-4">
-            We couldn't confidently identify a leaf in this image. For the best results, please:
+            We couldn&apos;t confidently identify a leaf in this image. For the best results, please:
           </p>
           <ul className="text-[0.8rem] text-white/50 list-disc pl-4 space-y-1">
             <li>Upload a clear, close-up image of a leaf.</li>

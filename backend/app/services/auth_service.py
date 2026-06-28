@@ -163,6 +163,7 @@ class AuthService:
             "created_at": user.created_at.isoformat() if user.created_at else None
         }
 
+
     @staticmethod
     def logout_user(jti: str, expires_at: int) -> None:
         """
@@ -175,12 +176,4 @@ class AuthService:
         expiry_datetime = datetime.datetime.fromtimestamp(expires_at, datetime.timezone.utc)
         
         TokenRepository.add_revoked_token(jti=jti, expires_at=expiry_datetime)
-        
-        # We don't have the user_id readily available in the token payload directly in logout_user signature,
-        # but we can try to extract it from get_jwt_identity() if needed. 
-        # Alternatively, we can just log the JTI.
-        from flask_jwt_extended import get_jwt_identity
-        try:
-            identity = get_jwt_identity()
-        except Exception:
-            pass
+

@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           setState({ user: null, status: "unauthenticated", error: null });
         }
-      } catch (err) {
+      } catch {
         // Corrupted JSON or storage failure: wipe clean and fail securely
         localStorage.removeItem("agroguard_access_token");
         localStorage.removeItem("agroguard_refresh_token");
@@ -37,9 +37,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [state.status]);
-
-  // Future implementation: Fetch JWT from secure cookies or local storage,
-  // validate with backend API, and populate user state.
 
   const login = async (credentials: LoginCredentials) => {
     // AuthContext owns login orchestration and persistence.

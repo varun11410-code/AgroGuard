@@ -3,18 +3,17 @@ AgroGuard Backend - Report Controller
 
 Handles request-response lifecycle for report generation endpoints.
 """
+import io
+import base64
 import logging
 from flask import request, jsonify, send_file
 from werkzeug.exceptions import HTTPException
-from pydantic import ValidationError
 from flask_jwt_extended import get_jwt_identity
 
 from app.schemas.report_contract import ReportData
 from app.services.report_service import generate_report
 from app.services.report_management_service import ReportManagementService
 from app.utils.image_helper import fetch_image_to_buffer
-import base64
-import io
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +87,6 @@ class ReportController:
                 download_name=filename
             )
 
-
-
         except ValueError as e:
             return jsonify({
                 "success": False,
@@ -156,10 +153,6 @@ class ReportController:
                 as_attachment=True,
                 download_name=filename
             )
-        except ValueError as e:
-            if str(e) in ["Report not found", "Access denied"]:
-                return jsonify({"success": False, "message": str(e)}), 404 if str(e) == "Report not found" else 403
-            return jsonify({"success": False, "message": str(e)}), 400
         except Exception as e:
             logger.exception("Error downloading historical report:")
             return jsonify({"success": False, "message": "Failed to download historical report"}), 500

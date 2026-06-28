@@ -23,7 +23,7 @@ export interface PaginationMeta {
   total_pages: number;
 }
 
-export interface PaginatedResponse<T> {
+export interface PaginatedResponse {
   pagination: PaginationMeta;
   [key: string]: any; // To allow 'logs', 'users', 'scans', 'reports' keys
 }

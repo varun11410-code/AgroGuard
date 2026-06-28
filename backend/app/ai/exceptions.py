@@ -5,7 +5,7 @@ Defines the standard exception hierarchy for the AI infrastructure.
 These exceptions abstract away provider-specific errors (like GoogleAPIError)
 so that the service layer only handles domain-level AI failures.
 """
-from app.utils.exceptions import AIProviderError
+from app.core.exceptions import AIProviderError
 
 class AIProviderConfigurationError(AIProviderError):
     """Raised when the AI factory fails to resolve a provider due to missing config or invalid name."""

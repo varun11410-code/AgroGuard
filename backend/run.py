@@ -22,6 +22,6 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.getenv("PORT", 5001)),
-        debug=app.config.get("DEBUG", True),
+        debug=app.config.get("DEBUG", False),
         use_reloader=False,  # Reloader causes blueprint registration issues on Windows
     )

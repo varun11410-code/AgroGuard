@@ -17,6 +17,7 @@ except ImportError:
     groq = None
 
 from app.ai.interfaces import AIProvider
+from app.ai.utils import strip_markdown_json
 from app.ai.exceptions import (
     AIProviderError,
     AIProviderConfigurationError,
@@ -113,18 +114,7 @@ class GroqProvider(AIProvider):
         messages.append({"role": "user", "content": prompt})
 
         raw_content = self._execute_with_retry(messages, is_json=True)
-
-        # Normalize markdown if provider returns wrapped JSON
-        cleaned_content = raw_content.strip()
-        if cleaned_content.startswith("```json"):
-            cleaned_content = cleaned_content[7:]
-        elif cleaned_content.startswith("```"):
-            cleaned_content = cleaned_content[3:]
-        
-        if cleaned_content.endswith("```"):
-            cleaned_content = cleaned_content[:-3]
-
-        cleaned_content = cleaned_content.strip()
+        cleaned_content = strip_markdown_json(raw_content)
 
         try:
             parsed_data = json.loads(cleaned_content)

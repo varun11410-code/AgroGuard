@@ -5,8 +5,8 @@
 Current Phase:
 
 ```text
-Storage Layer Complete (Phase 12)
-Security In Progress (Phase 13)
+Logging Complete (Phase 14)
+Deployment In Progress (Phase 15)
 ```
 
 ---

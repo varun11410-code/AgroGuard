@@ -104,7 +104,7 @@ export const reportService = {
           const text = await error.response.data.text();
           const json = JSON.parse(text);
           throw new Error(json.message || 'Failed to generate report');
-        } catch (e) {
+        } catch {
           throw new Error('Failed to generate report due to a server error');
         }
       }
@@ -167,7 +167,7 @@ export const reportService = {
           const text = await error.response.data.text();
           const json = JSON.parse(text);
           throw new Error(json.message || 'Failed to download report');
-        } catch (e) {
+        } catch {
           throw new Error('Failed to download report due to a server error');
         }
       }

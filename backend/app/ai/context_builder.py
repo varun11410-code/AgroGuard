@@ -6,7 +6,6 @@ by the Gemini AI layer.
 """
 from typing import Dict, Any, Optional
 from app.models.scan import Scan
-from app.models.user import User
 from app.core.exceptions import BadRequestException
 import json
 

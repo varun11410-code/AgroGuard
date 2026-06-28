@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +23,6 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const { status, user } = useAuth();
-  const router = useRouter();
 
   const navLinks = status === "authenticated" ? [...PUBLIC_LINKS, ...PROTECTED_LINKS] : PUBLIC_LINKS;
 

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 const FOOTER_LINKS = [
   { label: "GitHub", href: "https://github.com/varun11410-code" },

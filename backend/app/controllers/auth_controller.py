@@ -212,7 +212,6 @@ class AuthController:
             raise e
 
         except Exception as e:
-            import logging
             logging.exception("Unexpected error in preferences endpoint:")
             return jsonify({
                 "success": False,
@@ -248,7 +247,6 @@ class AuthController:
             }), 200
 
         except Exception as e:
-            import logging
             logging.exception("Unexpected error in logout endpoint:")
             return jsonify({
                 "success": False,

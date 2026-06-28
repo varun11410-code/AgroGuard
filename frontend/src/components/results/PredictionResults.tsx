@@ -40,7 +40,6 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
     disease,
     confidence,
     crop,
-    pathogen,
     riskLevel,
     aiSummary,
     treatmentPlans,

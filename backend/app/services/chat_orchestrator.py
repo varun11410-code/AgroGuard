@@ -59,15 +59,15 @@ class ChatOrchestrator:
         system_instruction = None
         if scan_id:
             try:
-                # We need to fetch the scan to pass to the ContextBuilder
-                from app.models.scan import Scan
-                scan = Scan.query.filter_by(id=scan_id, user_id=user_id).first()
-                if scan:
+                from app.repositories.scan_repository import ScanRepository
+                scan = ScanRepository.get_by_id(scan_id)
+                if scan and str(scan.user_id) == user_id:
                     context_dict = ContextBuilder.build_disease_context(scan, selected_plan)
                     system_instruction = build_chatbot_system_instruction(context_dict)
             except Exception as e:
                 # We log but do not fail the chat if context injection fails
                 logger.warning(f"Failed to build disease context: {e}", exc_info=True)
+
 
         # 4. Fetch History for Context
         try:

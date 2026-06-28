@@ -8,6 +8,7 @@ import logging
 
 from app.reports.pdf_template import create_report_template
 from app.schemas.report_contract import ReportData
+from app.core.exceptions import ReportGenerationError
 
 logger = logging.getLogger(__name__)
 
@@ -41,4 +42,4 @@ def generate_report(data: ReportData) -> io.BytesIO:
         
     except Exception as e:
         logger.error(f"Failed to generate PDF report: {str(e)}", exc_info=True)
-        raise Exception(f"Critical failure during PDF compilation: {str(e)}") from e
+        raise ReportGenerationError(f"Critical failure during PDF compilation: {str(e)}") from e

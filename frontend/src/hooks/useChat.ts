@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { chatService, ChatMessageData } from '@/services/chat';
 import { useAuth } from '@/contexts/AuthContext';
 

@@ -25,7 +25,6 @@ export default function UploadWorkflowPage() {
   const { remaining, isExhausted } = useGuestQuota();
 
   const prediction = scanResult;
-  console.log("Page Prediction:", prediction);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 

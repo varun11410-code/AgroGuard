@@ -19,7 +19,6 @@ class ScanController:
         Handle POST /api/scans
         """
         try:
-            logger.warning("FORENSIC: 1. Entered ScanController.predict")
             from app.schemas.scan_schema import ScanPredictionFormSchema
             form_data = ScanPredictionFormSchema(**request.form.to_dict())
             crop_name = form_data.crop
@@ -135,10 +134,8 @@ class ScanController:
 
             # 7. Persist scan for authenticated users
             user_id = get_jwt_identity()
-            logger.warning(f"FORENSIC: 2. user_id value = {user_id}")
             if user_id:
                 try:
-                    logger.warning("FORENSIC: 3. About to call ScanService.save_scan")
                     created_scan = ScanService.save_scan(
                         user_id=user_id,
                         crop_name=crop_name,
@@ -153,7 +150,7 @@ class ScanController:
                     if created_scan.image_url:
                         prediction["image_url"] = created_scan.image_url
                 except Exception as e:
-                    logger.error(f"FORENSIC: ScanService.save_scan failed: {str(e)}")
+                    logger.error(f"Failed to persist scan: {str(e)}")
                     # Proceed to return success even if persistence fails
 
             # 8. Return structured success JSON response

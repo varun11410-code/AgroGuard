@@ -194,9 +194,6 @@ class ModelLoader:
             import tensorflow as tf
             from tensorflow.keras.applications import DenseNet201
             
-            # Disable TF logs for a cleaner terminal
-            os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-            
             # Support custom local weights paths for restricted/air-gapped environments
             local_weights_path = os.getenv("DENSENET201_WEIGHTS_PATH")
             if local_weights_path:

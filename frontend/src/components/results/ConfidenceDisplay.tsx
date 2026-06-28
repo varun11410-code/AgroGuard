@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export interface ConfidenceDisplayProps {
   confidence?: number;
-  isSupported?: boolean;
   className?: string;
 }
 
@@ -13,7 +12,6 @@ import { normalizeConfidence, getConfidenceTheme } from "@/lib/theme";
 
 export function ConfidenceDisplay({
   confidence,
-  isSupported,
   className,
 }: ConfidenceDisplayProps) {
   const [width, setWidth] = useState(0);
