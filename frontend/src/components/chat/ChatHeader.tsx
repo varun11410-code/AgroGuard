@@ -15,7 +15,7 @@ export default function ChatHeader({ onClose }: ChatHeaderProps) {
         <div className="font-syne font-bold text-[15px] text-white leading-tight">AgroGuard AI</div>
         <div className="text-[11.5px] text-white/60 flex items-center gap-1.5 mt-0.5">
           <span className="w-1.5 h-1.5 rounded-full bg-g2 inline-block shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-          Online · Powered by Gemini
+          Online · Powered by AI
         </div>
       </div>
       <button 

@@ -139,7 +139,7 @@ AgroGuard addresses these issues through a unified AI-assisted workflow.
 
 ### F3. AI Agricultural Assistant
 
-* **Description:** Context-aware chatbot powered by a provider-agnostic AI layer.
+* **Description:** Context-aware chatbot powered by a provider-agnostic AI layer (Groq/Gemini).
 * **Mode A: General Agriculture Assistant** (Available to authenticated users)
 * Capabilities: Agriculture questions, disease questions, crop care guidance, farming best practices.
 
@@ -277,8 +277,8 @@ The following features are intentionally excluded:
 
 AgroGuard V1 is considered complete when the following are operational and implemented:
 
-* [x] Frontend deployed.
-* [x] Backend deployed.
+* [x] Frontend deployed on Vercel.
+* [x] Backend deployed on Hugging Face Spaces (Docker).
 * [x] Disease prediction operational.
 * [x] Authentication operational.
 * [x] AI assistant operational.

@@ -226,7 +226,7 @@ Vercel
 
 ### Backend
 
-Render
+Hugging Face Spaces (Docker)
 
 ### Database
 

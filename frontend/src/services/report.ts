@@ -22,6 +22,7 @@ export interface ReportDataPayload {
 export const buildReportPayload = (
   data: {
     scan_id?: string | null;
+    id?: string | null;
     crop_name: string;
     predicted_disease?: string | null;
     confidence_score?: number | null;
@@ -32,8 +33,10 @@ export const buildReportPayload = (
     treatment_plans?: TreatmentPlan[] | null;
   }
 ): ReportDataPayload => {
+  const finalScanId = data.scan_id || data.id;
+  
   return {
-    scan_id: (data.scan_id && !data.scan_id.startsWith('scan_')) ? data.scan_id : null,
+    scan_id: (finalScanId && !finalScanId.startsWith('scan_')) ? finalScanId : null,
     crop: data.crop_name || "Unknown Crop",
     disease: data.predicted_disease || "Unknown Disease",
     confidence: data.confidence_score || 0.0,

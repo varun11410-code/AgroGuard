@@ -1353,31 +1353,31 @@ Prepare portfolio-ready release.
 
 ## TASK 16.1
 
-Create README.md.
+[x] Create README.md.
 
 ---
 
 ## TASK 16.2
 
-Add architecture diagrams.
+[x] Add architecture diagrams.
 
 ---
 
 ## TASK 16.3
 
-Capture screenshots.
+[x] Capture screenshots.
 
 ---
 
 ## TASK 16.4
 
-Record demo video.
+[x] Record demo video.
 
 ---
 
 ## TASK 16.5
 
-Perform recruiter walkthrough test.
+[x] Perform recruiter walkthrough test.
 
 ### Workflow
 
@@ -1399,17 +1399,17 @@ History
 
 ## TASK 16.6
 
-Create Release v1.0
+[x] Create Release v1.0
 
 ### Definition of Done
 
-* Frontend deployed
-* Backend deployed
-* Database deployed
-* ML working
-* AI working
-* Reports working
-* Authentication working
-* Admin dashboard working
-* Security checks completed
-* Documentation complete
+* [x] Frontend deployed
+* [x] Backend deployed
+* [x] Database deployed
+* [x] ML working
+* [x] AI working
+* [x] Reports working
+* [x] Authentication working
+* [x] Admin dashboard working
+* [x] Security checks completed
+* [x] Documentation complete

@@ -26,7 +26,7 @@ export function useChat(scanId?: string, selectedPlan?: string) {
           {
             id: 'system-initial',
             role: 'assistant',
-            message: "Hello! 👋 I'm AgroGuard AI, powered by Google Gemini.<br><br>I can help you with crop disease questions, treatment recommendations, and agricultural guidance. How can I assist you today?"
+            message: "Hello! 👋 I'm AgroGuard AI.<br><br>I can help you with crop disease questions, treatment recommendations, and agricultural guidance. How can I assist you today?"
           }
         ]);
       }

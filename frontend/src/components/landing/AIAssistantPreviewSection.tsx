@@ -75,7 +75,7 @@ export default function AIAssistantPreviewSection() {
             </h2>
 
             <p className="text-[1.05rem] lg:text-[1.15rem] text-[#cbd5e1] leading-[1.8] lg:leading-[1.9] mb-[32px] lg:mb-[48px]">
-              Explore a preview of AgroGuard&apos;s upcoming AI assistant, designed to provide disease guidance, crop care recommendations, and conversational agricultural support through future Gemini integration.
+              Explore a preview of AgroGuard&apos;s upcoming AI assistant, designed to provide disease guidance, crop care recommendations, and conversational agricultural support.
             </p>
 
             {/* Features List */}
@@ -109,7 +109,7 @@ export default function AIAssistantPreviewSection() {
                   <div className="font-['Syne',sans-serif] font-[700] text-[0.95rem] text-white">AgroGuard AI</div>
                   <div className="text-[0.72rem] text-white/60 flex items-center gap-[5px]">
                     <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full inline-block"></span>
-                    Coming Soon • Gemini Integration Planned
+                    Coming Soon • AI Integration Planned
                   </div>
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default function AIAssistantPreviewSection() {
 
             {/* Informational Disclaimer */}
             <p className="text-xs text-white/40 text-center mt-4 max-w-sm mx-auto lg:mx-0 lg:ml-auto leading-relaxed">
-              Gemini-powered AI assistance is planned for a future release and is currently under development.
+              AI assistance is planned for a future release and is currently under development.
             </p>
           </div>
 
