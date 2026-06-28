@@ -1309,13 +1309,13 @@ Deploy production version.
 
 ## TASK 15.1
 
-Deploy frontend to Vercel.
+[x] Deploy frontend to Vercel.
 
 ---
 
 ## TASK 15.2
 
-Deploy backend to Render.
+[x] Deploy backend to Render.
 
 ---
 
