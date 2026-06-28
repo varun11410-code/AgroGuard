@@ -147,7 +147,6 @@ export function PredictionResults({ result, imageUrl, className }: PredictionRes
         {/* Confidence Score */}
         <ConfidenceDisplay 
           confidence={confidence} 
-          isSupported={is_supported}
           className="transition-all duration-500 hover:-translate-y-1 delay-100" 
         />
 
