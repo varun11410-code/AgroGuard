@@ -85,6 +85,10 @@ def create_app(env: str | None = None) -> Flask:
             from app.ml import ModelLoader
             ModelLoader.load_all()
 
+    @app.route("/")
+    def index():
+        return {"status": "AgroGuard API is running successfully!", "version": "1.0.0"}
+
     return app
 
 
