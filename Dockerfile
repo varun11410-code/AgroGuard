@@ -17,7 +17,7 @@ ENV HOME=/home/user \
 WORKDIR $HOME/app
 
 # Copy requirements first to leverage Docker cache
-COPY --chown=user requirements.txt .
+COPY --chown=user backend/requirements.txt .
 
 # Install Python dependencies
 # (We upgrade pip, setuptools, and wheel first to ensure ML packages build correctly)
@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -U pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the backend files
-COPY --chown=user . .
+COPY --chown=user backend/ .
 
 # Expose port 7860 (Hugging Face Spaces default port)
 EXPOSE 7860
