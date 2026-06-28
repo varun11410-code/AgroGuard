@@ -1,13 +1,3 @@
----
-title: AgroGuard
-emoji: 🌿
-colorFrom: green
-colorTo: blue
-sdk: docker
-app_file: Dockerfile
-pinned: false
----
-
 <div align="center">
 
 # 🌿 AgroGuard
