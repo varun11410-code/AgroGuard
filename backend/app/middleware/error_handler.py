@@ -79,6 +79,18 @@ def register_error_handlers(app: Flask) -> None:
             "message": e.message
         }), status_code
 
+    from werkzeug.exceptions import HTTPException
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(e: HTTPException):
+        """
+        Catches standard Werkzeug HTTP exceptions (e.g. 404 Not Found, 405 Method Not Allowed).
+        Returns them as JSON with their proper status codes.
+        """
+        return jsonify({
+            "success": False,
+            "message": e.description
+        }), e.code
+
     @app.errorhandler(Exception)
     def handle_unexpected_exception(e: Exception):
         """
