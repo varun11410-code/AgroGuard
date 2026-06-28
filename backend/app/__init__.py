@@ -126,11 +126,9 @@ def _register_extensions(app: Flask) -> None:
         jti = jwt_payload["jti"]
         return TokenRepository.is_jti_blacklisted(jti)
 
-    # Cross-Origin Resource Sharing
     CORS(
         app,
-        origins=app.config.get("CORS_ORIGINS", ["http://localhost:3000"]),
-        supports_credentials=True,
+        origins="*",
     )
 
 
