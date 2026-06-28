@@ -1,7 +1,8 @@
 import logging
 import cv2
 import numpy as np
-from flask import request, jsonify
+from flask import request
+from app.core.exceptions import AgroGuardBaseException, jsonify
 from flask_jwt_extended import get_jwt_identity
 
 from app.ml import preprocess_image, predict_disease, ImagePreprocessingError, PredictionError

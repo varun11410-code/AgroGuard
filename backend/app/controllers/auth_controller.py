@@ -8,6 +8,7 @@ from flask import request, jsonify
 from werkzeug.exceptions import HTTPException
 from pydantic import ValidationError
 from flask_jwt_extended import get_jwt_identity, get_jwt
+from app.core.exceptions import AgroGuardBaseException
 
 from app.schemas.auth_schema import RegisterRequestSchema, LoginRequestSchema
 from app.services.auth_service import AuthService
@@ -53,7 +54,7 @@ class AuthController:
                 "message": str(e)
             }), 400
 
-        except HTTPException as e:
+        except (HTTPException, AgroGuardBaseException) as e:
             # Re-raise standard Flask HTTP exceptions (e.g., 404, 405) so they aren't caught as 500s
             raise e
 
@@ -99,7 +100,7 @@ class AuthController:
                 "message": str(e)
             }), 400
 
-        except HTTPException as e:
+        except (HTTPException, AgroGuardBaseException) as e:
             raise e
 
         except Exception as e:
@@ -208,7 +209,7 @@ class AuthController:
                 "message": str(e)
             }), 400
 
-        except HTTPException as e:
+        except (HTTPException, AgroGuardBaseException) as e:
             raise e
 
         except Exception as e:

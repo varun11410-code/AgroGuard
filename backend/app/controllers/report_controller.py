@@ -6,7 +6,8 @@ Handles request-response lifecycle for report generation endpoints.
 import io
 import base64
 import logging
-from flask import request, jsonify, send_file
+from flask import request
+from app.core.exceptions import AgroGuardBaseException, jsonify, send_file
 from werkzeug.exceptions import HTTPException
 from flask_jwt_extended import get_jwt_identity
 
@@ -93,7 +94,7 @@ class ReportController:
                 "message": str(e)
             }), 400
 
-        except HTTPException as e:
+        except (HTTPException, AgroGuardBaseException) as e:
             # Re-raise standard Flask HTTP exceptions
             raise e
 
