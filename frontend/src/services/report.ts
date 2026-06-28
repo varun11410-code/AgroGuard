@@ -33,7 +33,7 @@ export const buildReportPayload = (
   }
 ): ReportDataPayload => {
   return {
-    scan_id: data.scan_id || null,
+    scan_id: (data.scan_id && !data.scan_id.startsWith('scan_')) ? data.scan_id : null,
     crop: data.crop_name || "Unknown Crop",
     disease: data.predicted_disease || "Unknown Disease",
     confidence: data.confidence_score || 0.0,
