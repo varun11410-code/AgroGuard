@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Eye, EyeOff } from "lucide-react"
+import { AuthValidationError } from "@/services/auth"
 import { useAuth } from "@/contexts/AuthContext"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,17 +21,27 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setFieldErrors({})
     setIsSubmitting(true)
 
     try {
       await login({ email, password })
       router.push("/upload")
     } catch (err: any) {
-      setError(err.message || "Login failed")
+      if (err instanceof AuthValidationError) {
+        const errors: Record<string, string> = {}
+        err.errors.forEach(e => {
+          errors[e.field] = e.message
+        })
+        setFieldErrors(errors)
+      } else {
+        setError(err.message || "Login failed")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -87,7 +98,9 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className={fieldErrors.email ? "border-red-500" : ""}
               />
+              {fieldErrors.email && <p className="text-sm text-red-500 font-medium">{fieldErrors.email}</p>}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -116,6 +129,7 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {fieldErrors.password && <p className="text-sm text-red-500 font-medium">{fieldErrors.password}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-2">

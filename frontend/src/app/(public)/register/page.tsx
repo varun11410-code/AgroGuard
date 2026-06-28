@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Eye, EyeOff } from "lucide-react"
-import { authService } from "@/services/auth"
+import { authService, AuthValidationError } from "@/services/auth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -22,10 +22,12 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setFieldErrors({})
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
@@ -38,7 +40,15 @@ export default function RegisterPage() {
       await authService.register({ name, email, password })
       router.push("/login")
     } catch (err: any) {
-      setError(err.message || "Registration failed")
+      if (err instanceof AuthValidationError) {
+        const errors: Record<string, string> = {}
+        err.errors.forEach(e => {
+          errors[e.field] = e.message
+        })
+        setFieldErrors(errors)
+      } else {
+        setError(err.message || "Registration failed")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -96,7 +106,9 @@ export default function RegisterPage() {
                 required 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className={fieldErrors.name ? "border-red-500" : ""}
               />
+              {fieldErrors.name && <p className="text-sm text-red-500 font-medium">{fieldErrors.name}</p>}
             </div>
             
             <div className="space-y-2">
@@ -108,7 +120,9 @@ export default function RegisterPage() {
                 required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className={fieldErrors.email ? "border-red-500" : ""}
               />
+              {fieldErrors.email && <p className="text-sm text-red-500 font-medium">{fieldErrors.email}</p>}
             </div>
 
             <div className="space-y-2">
@@ -133,6 +147,7 @@ export default function RegisterPage() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {fieldErrors.password && <p className="text-sm text-red-500 font-medium">{fieldErrors.password}</p>}
             </div>
 
             <div className="space-y-2">

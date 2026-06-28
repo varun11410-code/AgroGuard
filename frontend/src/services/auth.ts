@@ -3,6 +3,13 @@ import api from './api';
 import { User, LoginCredentials, RegisterData, LoginResponse, RegisterResponse, ApiErrorResponse } from '../types/auth';
 import axios from 'axios';
 
+export class AuthValidationError extends Error {
+  constructor(public errors: { field: string; message: string }[]) {
+    super("Validation failed");
+    this.name = "AuthValidationError";
+  }
+}
+
 /**
  * Normalizes backend error responses into a safe, displayable error string.
  */
@@ -12,7 +19,7 @@ function handleAuthError(error: unknown): never {
     
     // Validation errors (400)
     if (data?.errors && Array.isArray(data.errors) && data.errors.length > 0) {
-      throw new Error(data.errors[0].message);
+      throw new AuthValidationError(data.errors);
     }
     
     // Specific business errors (401, 409)
